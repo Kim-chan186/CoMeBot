@@ -5,6 +5,7 @@ Communication_Emotion_Bot
 ## project_BARAM
 
 3학년 1학기 참빛설계
+
 16강동운, 16김찬혁, 16남인수, 18김예린, 18이혜진
 
 
