@@ -1,4 +1,4 @@
-# CoMiBot
+# ComEBot
 Communication_Emotion_Bot
 
 
