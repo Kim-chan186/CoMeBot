@@ -1,5 +1,5 @@
 #include "gui_test.h"
-#include <time.h>
+#include <chrono>
 
 Mat readimg(String name, int x, int y);
 Scalar deg2hue(int x, int y);
@@ -9,12 +9,12 @@ void stick_chart(Mat img, Point emotion);
 
 int main()
 {
-	clock_t start, end;
-	double result;
+	double dTime;
+	chrono::system_clock::time_point tpStart, tpEnd;
 	Mat color_img, stick_img;
 	Point emotion;
 
-	start = clock(); //시간 측정 시작
+	tpStart = chrono::system_clock::now(); //시간 측정 시작
 
 	color_img = readimg("color2.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
 	stick_img = readimg("stick.jpg", 190, 220);		//막대그래프 이미지 불러오기
@@ -26,11 +26,12 @@ int main()
 	color_line_chart(color_img, emotion);	//좌표값에 따라 화살표그려주는 함수
 	stick_chart(stick_img, emotion);		//좌표값을 막대그래프로 나타내주는 함수
 
-	end = clock(); //시간 측정 끝
-	result = (double)(end - start);
-	printf("%f초", result/CLOCKS_PER_SEC);
+	tpEnd = chrono::system_clock::now(); //시간 측정 끝
+	dTime = chrono::duration_cast<chrono::nanoseconds>(tpEnd - tpStart).count() / 1e6;
+	cout << "Elapsed Time: " << dTime << "ms" << endl;
 
-	waitKey(0);
+	return 0;
+	//waitKey(0);
 }
 
 Mat readimg(String name, int x, int y) //이미지파일 불러오고 사이즈 조절하는 함수
@@ -153,7 +154,7 @@ void color_line_chart(Mat img, Point emotion) //좌표값에 따라 화살표그려주는 함�
 	line(img, Point(192, 43), Point(192, 336), gray, 1);	//y축
 	arrowedLine(img, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
 	
-	imshow("grdual_emotion", img);
+	//imshow("grdual_emotion", img);
 }
 
 void stick_chart(Mat img, Point emotion) //좌표값을 막대그래프로 나타내주는 함수
@@ -173,5 +174,5 @@ void stick_chart(Mat img, Point emotion) //좌표값을 막대그래프로 나타내주는 함수
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
 		rectangle(img, Point(115, center_y), Point(160, center_y - emotion.y), blue, -1);
 	
-	imshow("stick_emotion", img);
+	//imshow("stick_emotion", img);
 }
