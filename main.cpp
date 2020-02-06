@@ -154,7 +154,7 @@ void color_line_chart(Mat img, Point emotion) //좌표값에 따라 화살표그려주는 함�
 	line(img, Point(192, 43), Point(192, 336), gray, 1);	//y축
 	arrowedLine(img, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
 	
-	//imshow("grdual_emotion", img);
+	//imshow("grdual_emotion", img); //시간테스트하기위해 주석
 }
 
 void stick_chart(Mat img, Point emotion) //좌표값을 막대그래프로 나타내주는 함수
@@ -174,5 +174,5 @@ void stick_chart(Mat img, Point emotion) //좌표값을 막대그래프로 나타내주는 함수
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
 		rectangle(img, Point(115, center_y), Point(160, center_y - emotion.y), blue, -1);
 	
-	//imshow("stick_emotion", img);
+	//imshow("stick_emotion", img); //시간테스트하기위해 주석
 }
