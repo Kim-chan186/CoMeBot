@@ -20,7 +20,7 @@ int main()
 	center.x = img.rows / 2;
 	center.y = img.cols / 2;
 	
-	printf("º¯È­·®À» ÀÔ·Â : ");
+	printf("ë³€í™”ëŸ‰ì„ ìž…ë ¥ : ");
 	scanf_s("%d %d", &emotion.x, &emotion.y);
 
 	result.x = center.x + emotion.x;
@@ -49,7 +49,7 @@ int main()
 
 	if (emotion.x > max.x | emotion.x < min.x | emotion.y > max.y | emotion.y < min.y)
 	{
-		printf("°ªÀÌ Ç¥Çö¹üÀ§¸¦ ÃÊ°úÇÏ¿´½À´Ï´Ù.\n");
+		printf("ê°’ì´ í‘œí˜„ë²”ìœ„ë¥¼ ì´ˆê³¼í•˜ì˜€ìŠµë‹ˆë‹¤.\n");
 	}
 	else
 	{
