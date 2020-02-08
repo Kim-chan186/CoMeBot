@@ -15,7 +15,15 @@ namespace chan {
 	int CH_count = -1;
 	std::chrono::system_clock::time_point tpStart, tpEnd;
 	
-	/*반복문(while)자리에 사용하며 자동으로 시간을 측정해주는 함수
+	/*
+	
+	# 시작측정
+	for문이나 while문 안에 넣어서 자동으로 시간주기를 측정해주는 함수
+	- Check_Time(int Loop = 1000)
+	- for (int i = 0; (i < 1000)&chan::Check_Time(); i++){}
+	- while(chan::Check_Time()){}
+	- 총 시간이 아니라 제어주기 만큼만(1루프)
+
 	몇번 루프를 수행한뒤 시간을 측정할 것인지를 입력으로 받음
 	-추후 윈도우 상에 글자로 띄우는 것으로 수정 예정
 	-초기화 함수를 만들 예정
