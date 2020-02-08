@@ -1,38 +1,26 @@
-#include "gui_test.h"
-#include <chrono>
+/*감정의 변화를 원형그래프와 막대그래프로 나타내는 코드
+  추후에 감정엔진으로부터 값을 받아와 표현하는 걸로 수정할것*/
 
-using namespace gui;
+#include "gui_test.h"	//gui와 관련된 헤더파일
 
 int main()
 {
-	double dTime;
-	chrono::system_clock::time_point tpStart, tpEnd;
 	Mat color_img, stick_img;
 	Point emotion;
 
-	tpStart = chrono::system_clock::now(); //시간 측정 시작
-	for (int i=0; i < 1000; i++)
-	{
-		color_img = readimg("color2.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
-		stick_img = readimg("stick.jpg", 190, 220);		//막대그래프 이미지 불러오기
-		//printf("변화량을 입력 : ");					//시간테스트할 때 값입력 안받고 고정값으로 테스트함
-		//scanf_s("%d %d", &emotion.x, &emotion.y);
-		emotion.x = 50;			//좌표(50,50)으로 고정하고 시간측정
-		emotion.y = 50;
+	color_img = Gui::readimg("whale.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
+	stick_img = Gui::readimg("stick.jpg", 190, 220);	//막대그래프 이미지 불러오기
+	
+	printf("변화량을 입력 : ");					
+	scanf_s("%d %d", &emotion.x, &emotion.y);	//입력값 emotion에 저장
 
-		color_line_chart(color_img, emotion);	//좌표값에 따라 화살표그려주는 함수
-		stick_chart(stick_img, emotion);		//좌표값을 막대그래프로 나타내주는 함수
-		waitKey(1);
-	}
-	tpEnd = chrono::system_clock::now(); //시간 측정 끝
-	dTime = chrono::duration_cast<chrono::nanoseconds>(tpEnd - tpStart).count() / 1e6;
-	cout << "Elapsed Time: " << dTime << "ms" << endl;
-
-	return 0;
-	//
+	Gui::color_line_chart(color_img, emotion);	//좌표값에 따라 화살표그려주는 함수
+	Gui::stick_chart(stick_img, emotion);		//좌표값을 막대그래프로 나타내주는 함수
+	waitKey(0);
+	
 }
 
-Mat gui::readimg(String name, int x, int y) //이미지파일 불러오고 사이즈 조절하는 함수
+Mat Gui::readimg(String name, int x, int y) //이미지파일 불러오고 사이즈 조절하는 함수
 {
 	Mat img;
 
@@ -42,7 +30,7 @@ Mat gui::readimg(String name, int x, int y) //이미지파일 불러오고 사이즈 조절하�
 	return img;
 }
 
-Scalar gui::deg2hue(int x, int y)//좌표값 받아서 각도에따른 색으로 변환해주는 함수
+Scalar Gui::deg2hue(int x, int y)//좌표값 받아서 각도에따른 색으로 변환해주는 함수
 {
 	//좌표각도->hue값으로 변환
 	float degree;
@@ -69,14 +57,15 @@ Scalar gui::deg2hue(int x, int y)//좌표값 받아서 각도에따른 색으로 변환해주는 함
 	P.h = hue * 2;
 	P.s = 1;
 	P.v = 1;
-	R = gui::hsv2rgb(P);
+	R = Gui::hsv2rgb(P);
 	r = (int)(R.r * 255);
 	g = (int)(R.g * 255);
 	b = (int)(R.b * 255);
+
 	return Scalar(b, g, r);
 }
 
-rgb gui::hsv2rgb(hsv in)//hsv->rgb로 바꾸는 함수
+rgb Gui::hsv2rgb(hsv in)//hsv->rgb로 바꾸는 함수
 {
 	double      hh, p, q, t, ff;
 	long        i;
@@ -134,7 +123,7 @@ rgb gui::hsv2rgb(hsv in)//hsv->rgb로 바꾸는 함수
 	return out;
 }
 
-void gui::color_line_chart(Mat img, Point emotion) //좌표값에 따라 화살표그려주는 함수
+void Gui::color_line_chart(Mat img, Point emotion) //좌표값에 따라 화살표그려주는 함수
 {
 	int hue;
 	Scalar color;
@@ -148,29 +137,30 @@ void gui::color_line_chart(Mat img, Point emotion) //좌표값에 따라 화살표그려주�
 	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
 
 	circle(img, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
-	line(img, Point(45, 192), Point(337, 192), gray, 1);	//x축
-	line(img, Point(192, 43), Point(192, 336), gray, 1);	//y축
+	line(img, Point(39, 192), Point(348, 192), gray, 1);	//x축
+	line(img, Point(192, 38), Point(192, 345), gray, 1);	//y축
 	arrowedLine(img, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
 	
-	imshow("grdual_emotion", img); //시간테스트하기위해 주석
+	imshow("grdual_emotion", img);
 }
 
-void gui::stick_chart(Mat img, Point emotion) //좌표값을 막대그래프로 나타내주는 함수
+void Gui::stick_chart(Mat img, Point emotion) //좌표값을 막대그래프로 나타내주는 함수
 {
 	int center_y = 100; //막대그래프 중심축
+
 	if (emotion.x >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
 	{
-		rectangle(img, Point(30, center_y), Point(75, center_y - emotion.x), green, -1);
+		rectangle(img, Point(31, center_y), Point(74, center_y - emotion.x), green, -1);
 	}
 	else                //감정의 x좌표(긍정,부정)가 음수이면 보라색으로 막대그래프 채움
-		rectangle(img, Point(30, center_y), Point(75, center_y - emotion.x), purple, -1);
+		rectangle(img, Point(31, center_y), Point(74, center_y - emotion.x), purple, -1);
 	
 	if (emotion.y >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
 	{
-		rectangle(img, Point(115, center_y), Point(160, center_y - emotion.y), red, -1);
+		rectangle(img, Point(116, center_y), Point(159, center_y - emotion.y), red, -1);
 	}
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
-		rectangle(img, Point(115, center_y), Point(160, center_y - emotion.y), blue, -1);
+		rectangle(img, Point(116, center_y), Point(159, center_y - emotion.y), blue, -1);
 	
-	imshow("stick_emotion", img); //시간테스트하기위해 주석
+	imshow("stick_emotion", img);
 }
