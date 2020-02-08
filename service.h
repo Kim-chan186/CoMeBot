@@ -1,8 +1,7 @@
 #pragma once
 //편의를 위한 기능들을 정의한 헤더
-#ifndef EMOTION_H
-#define EMOTION_H
-#endif // !EMOTION_H
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include <chrono>
 #include <iostream>
@@ -11,7 +10,8 @@ namespace chan {
 	//** error 출력
 	//* sys 출력
 
-	double dTime;
+	double dTime; // 1loop 당 걸리는 시간
+	
 	int CH_count = -1;
 	std::chrono::system_clock::time_point tpStart, tpEnd;
 	
@@ -49,6 +49,7 @@ namespace chan {
 	
 }
 
+#endif // !EMOTION_H
 /*
 
 //TEST
