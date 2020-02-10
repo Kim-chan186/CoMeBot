@@ -1,5 +1,5 @@
-/*Gui Çì´õÆÄÀÏ
-  main¹®À» °£°áÇÏ°Ô Ç¥ÇöÇÏ±â À§ÇØ »ç¿ëÇÏ´Â Çì´õÆÄÀÏµé°ú º¯¼öµé ÀúÀå*/
+/*Gui í—¤ë”íŒŒì¼
+  mainë¬¸ì„ ê°„ê²°í•˜ê²Œ í‘œí˜„í•˜ê¸° ìœ„í•´ ì‚¬ìš©í•˜ëŠ” í—¤ë”íŒŒì¼ë“¤ê³¼ ë³€ìˆ˜ë“¤ ì €ìž¥*/
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
