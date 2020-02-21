@@ -42,8 +42,8 @@ namespace Gui {
 	Point percent(Point emotion);
 	Scalar deg2hue(int x, int y);
 	rgb hsv2rgb(hsv in);
-	void color_line_chart(Mat img, Point emotion);
-	void stick_chart(Mat img, int pleasantness, int energy);
+	void color_line_chart(Mat& img, Point emotion);
+	void stick_chart(Mat& img, int pleasantness, int energy);
 	Scalar trans_color(int percent, Scalar color);
 }
 
@@ -58,7 +58,6 @@ void gui_main(Point circle_emotion, int stick_pleasantness, int stick_energy)
 {
 	Gui::color_line_chart(color_img, circle_emotion);	//좌표값에 따라 화살표그려주는 함수
 	Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
-	waitKey(0);
 }
 
 //이미지파일 불러오고 사이즈 조절하는 함수
@@ -237,7 +236,7 @@ Gui::hsv Gui::rgb2hsv(rgb in)
 }
 
 //좌표값에 따라 화살표그려주는 함수
-void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이미지, 감정값)
+void Gui::color_line_chart(Mat& img, Point emotion)  //(whale원형그래프이미지, 감정값)
 {
 	int hue;
 	Scalar color;
@@ -270,7 +269,7 @@ void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이�
 }
 
 //좌표값을 막대그래프로 나타내주는 함수
-void Gui::stick_chart(Mat img, int pleasantness, int energy) //(막대그래프이미지, 감정값)
+void Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미지, 감정값)
 {
 	int center_y = 100; //막대그래프 중심축
 	Point result;
