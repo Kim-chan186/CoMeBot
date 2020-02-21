@@ -1,11 +1,10 @@
 //Gui 헤더파일 Gui를 위한 함수들
 
-//main문에서 사용할 때 gui_main(Point emotion, int pleasantness, int energy);함수를 넣어주세요
+//main문에서 사용할 때 gui_main(Point gradually_emotion, Point immediately_emotion, int pleasantness, int energy);함수를 넣어주세요
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cmath>
-
 
 using namespace cv;
 using namespace std;
@@ -42,22 +41,28 @@ namespace Gui {
 	Point percent(Point emotion);
 	Scalar deg2hue(int x, int y);
 	rgb hsv2rgb(hsv in);
-	void color_line_chart(Mat& img, Point emotion);
-	void stick_chart(Mat& img, int pleasantness, int energy);
+	Mat color_line_chart(Mat img, Point emotion);
+	Mat color_line_chart2(Mat& img, Point emotion);
+	Mat stick_chart(Mat& img, int pleasantness, int energy);
 	Scalar trans_color(int percent, Scalar color);
+	void combine_imshow(Mat circleL, Mat circleS, Mat stick);
 }
 
 Point circle_emotionn;
 int stick_pleasantness;
 int stick_energy;
 
-Mat color_img = Gui::readimg("img/whale.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
-Mat stick_img = Gui::readimg("img/stick.jpg", 190, 220);	//막대그래프 이미지 불러오기
+Mat color_img = Gui::readimg("img/whale.jpg", 600, 600);	//원형색상그래프 이미지 불러오기
+Mat color_img2 = Gui::readimg("img/whale.jpg", 380, 380);	//원형색상그래프 이미지 불러오기
+Mat stick_img = Gui::readimg("img/stick.jpg", 380, 220);	//막대그래프 이미지 불러오기
 
-void gui_main(Point circle_emotion, int stick_pleasantness, int stick_energy)
+void gui_main(Point circleL_emotion, Point circleS_emotion, int stick_pleasantness, int stick_energy)
 {
-	Gui::color_line_chart(color_img, circle_emotion);	//좌표값에 따라 화살표그려주는 함수
-	Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
+	Mat circleL = Gui::color_line_chart(color_img, circleL_emotion);	//좌표값에 따라 화살표그려주는 함수(점진적인감정)
+	Mat circleS = Gui::color_line_chart2(color_img2, circleS_emotion);	//좌표값에 따라 화살표그려주는 함수(즉각적인감정)
+	Mat stick = Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
+
+	Gui::combine_imshow(circleL, circleS, stick);
 }
 
 //이미지파일 불러오고 사이즈 조절하는 함수
@@ -236,19 +241,16 @@ Gui::hsv Gui::rgb2hsv(rgb in)
 }
 
 //좌표값에 따라 화살표그려주는 함수
-void Gui::color_line_chart(Mat& img, Point emotion)  //(whale원형그래프이미지, 감정값)
+Mat Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이미지, 감정값)
 {
 	int hue;
 	Scalar color;
 	Point center, result;
-	int max_x = 348;
-	int max_y = 345;
-	int min_x = 39;
-	int min_y = 38;
 	
 	double R;
 	double theta;
 	Mat img_circle = img.clone();
+
 	emotion = Gui::percent(emotion);
 
 	center.x = img.rows / 2;			//이미지 중심좌표저장
@@ -261,15 +263,43 @@ void Gui::color_line_chart(Mat& img, Point emotion)  //(whale원형그래프이미지, �
 	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
 
 	circle(img_circle, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
-	line(img_circle, Point(min_x, center.y), Point(max_x, center.y), gray, 1);	//x축
-	line(img_circle, Point(center.x, min_y), Point(center.x, max_y), gray, 1);	//y축
 	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
 
-	imshow("grdual_emotion", img_circle);
+	//imshow("grdual_emotion", img_circle);
+
+	return img_circle;
+}
+
+Mat Gui::color_line_chart2(Mat& img, Point emotion)  //(whale원형그래프이미지, 감정값)
+{
+	int hue;
+	Scalar color;
+	Point center, result;
+
+	double R;
+	double theta;
+	Mat img_circle2 = img.clone();
+	emotion = Gui::percent(emotion);
+
+	center.x = img.rows / 2;			//이미지 중심좌표저장
+	center.y = img.cols / 2;
+
+	//감정좌표를 원형그래프 범위 내의 값으로 변환하는것은 아직 수정이 필요함
+	result.x = center.x + emotion.x;				//감정값의 원점을 이미지 중심으로 옮김
+	result.y = img.cols - (center.y + emotion.y);	//y좌표의 0점이 화면상단에서 시작하므로 반전시킴
+
+	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
+
+	circle(img_circle2, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
+	arrowedLine(img_circle2, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
+
+	//imshow("immediate_emotion", img_circle2);
+
+	return img_circle2;
 }
 
 //좌표값을 막대그래프로 나타내주는 함수
-void Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미지, 감정값)
+Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미지, 감정값)
 {
 	int center_y = 100; //막대그래프 중심축
 	Point result;
@@ -281,26 +311,28 @@ void Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미�
 	if (pleasantness >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
 	{
 		green = Gui::trans_color(pleasantness, green);
-		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), green, -1);
+		rectangle(img_stick, Point(126, center_y), Point(169, center_y - result.x), green, -1);
 	}
 	else                //감정의 x좌표(긍정,부정)가 음수이면 보라색으로 막대그래프 채움
 	{
 		purple = Gui::trans_color(pleasantness, purple);
-		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), purple, -1);
+		rectangle(img_stick, Point(126, center_y), Point(169, center_y - result.x), purple, -1);
 	}
 
 	if (energy >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
 	{
 		red = Gui::trans_color(energy, red);
-		rectangle(img_stick, Point(116, center_y), Point(159, center_y - result.y), red, -1);
+		rectangle(img_stick, Point(211, center_y), Point(254, center_y - result.y), red, -1);
 	}
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
 	{
 		blue = Gui::trans_color(energy, blue);
-		rectangle(img_stick, Point(116, center_y), Point(159, center_y - result.y), blue, -1);
+		rectangle(img_stick, Point(211, center_y), Point(254, center_y - result.y), blue, -1);
 	}
 
-	imshow("stick_emotion", img_stick);
+	//imshow("stick_emotion", img_stick);
+
+	return img_stick;
 }
 
 Scalar Gui::trans_color(int emotion, Scalar color)
@@ -310,6 +342,8 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 		emotion = emotion*(-1);
 	}
 	double percent = (double)emotion / 100.0;
+
+	percent = (percent / 2 + 0.5);
 
 	//감정정도에 따라 color 채도 변화
 	rgb R;
@@ -331,5 +365,12 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 	return Scalar(b, g, r);
 }
 
-//한글 주석 test
-//한글되나
+void Gui::combine_imshow(Mat circleL, Mat circleS, Mat stick)
+{
+	Mat vertical, horizontal;
+
+	vconcat(circleS, stick, vertical);
+	hconcat(circleL, vertical, horizontal);
+	
+	imshow("result", horizontal);
+}
