@@ -2,7 +2,9 @@
 
 
 ## stick.jpg
-![sys_arc](https://user-images.githubusercontent.com/15dcd0e67206573cbbedd53bdd5d6a8fc8ffe7e4.jpg)
+
+![whale](https://user-images.githubusercontent.com/52673977/75038814-91a09980-54fa-11ea-8fb1-d9a789364353.JPG)
 
 ## whale.JPG
-![sys_arc](https://user-images.githubusercontent.com/8ed0dff10449d61398f55484b7363ff8e3276ad4.jpg)
+
+![stick](https://user-images.githubusercontent.com/52673977/75038817-92d1c680-54fa-11ea-9bfc-afdd2c1800a2.jpg)
