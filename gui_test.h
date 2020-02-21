@@ -1,9 +1,7 @@
 /*Gui 헤더파일
   Gui를 위한 함수들*/
 
-//main문에서 사용할 때 Gui::readimg함수로 고래그래프 사이즈(384,384),막대그래프 사이즈(190,220) 이미지 읽어오고 ex)color_img = Gui::readimg("whale.jpg", 384, 384), stick_img = Gui::readimg("stick.jpg", 190, 220)
-//Gui::color_line_chart함수로 고래그래프 이미지에 감정값을 넣어주면 이미지에 화살표로 표현됨 ex)Gui::color_line_chart(color_img, emotion)
-//Gui::stick_chart함수에 감정값을 넣어 막대그래프로 표현 ex)Gui::stick_chart(stick_img, emotion)
+//main문에서 사용할 때 gui_main();함수를 넣어주세요
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -45,6 +43,21 @@ namespace Gui {
 	rgb hsv2rgb(hsv in);
 	void color_line_chart(Mat img, Point emotion);
 	void stick_chart(Mat img, Point emotion);
+}
+
+Point circle_emotion, stick_emotion;
+
+Mat color_img = Gui::readimg("whale.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
+Mat stick_img = Gui::readimg("stick.jpg", 190, 220);	//막대그래프 이미지 불러오기
+
+void gui_main()
+{
+	printf("원형그래프 좌표, 막대그래프 변화량(pleasantness,energy순으로)를 입력 : ");
+	scanf_s("%d %d %d %d", &circle_emotion.x, &circle_emotion.y, &stick_emotion.x, &stick_emotion.y);	//입력값 emotion에 저장
+
+	Gui::color_line_chart(color_img, circle_emotion);	//좌표값에 따라 화살표그려주는 함수
+	Gui::stick_chart(stick_img, stick_emotion);		//좌표값을 막대그래프로 나타내주는 함수
+	waitKey(0);
 }
 
 //이미지파일 불러오고 사이즈 조절하는 함수
@@ -183,7 +196,11 @@ void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이�
 	int hue;
 	Scalar color;
 	Point center, result;
-	Point max(348, 345), min(39, 38);
+	int max_x = 348;
+	int max_y = 345;
+	int min_x = 39;
+	int min_y = 38;
+	
 	double R;
 	double theta;
 
@@ -199,8 +216,8 @@ void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이�
 	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
 
 	circle(img, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
-	line(img, Point(min.x, center.y), Point(max.x, center.y), gray, 1);	//x축
-	line(img, Point(center.x, min.y), Point(center.x, max.y), gray, 1);	//y축
+	line(img, Point(min_x, center.y), Point(max_x, center.y), gray, 1);	//x축
+	line(img, Point(center.x, min_y), Point(center.x, max_y), gray, 1);	//y축
 	arrowedLine(img, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
 
 	imshow("grdual_emotion", img);
