@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 //Gui Çì´õÆÄÀÏ Gui¸¦ À§ÇÑ ÇÔ¼öµé
-=======
-//Gui í—¤ë”íŒŒì¼ Guië¥¼ ìœ„í•œ í•¨ìˆ˜ë“¤
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 
 //main¹®¿¡¼­ »ç¿ëÇÒ ¶§ gui_main(Point emotion, int pleasantness, int energy);ÇÔ¼ö¸¦ ³Ö¾îÁÖ¼¼¿ä
 
@@ -55,7 +51,6 @@ Point circle_emotionn;
 int stick_pleasantness;
 int stick_energy;
 
-<<<<<<< HEAD
 Mat color_img = Gui::readimg("img/whale.jpg", 384, 384);	//¿øÇü»ö»ó±×·¡ÇÁ ÀÌ¹ÌÁö ºÒ·¯¿À±â
 Mat stick_img = Gui::readimg("img/stick.jpg", 190, 220);	//¸·´ë±×·¡ÇÁ ÀÌ¹ÌÁö ºÒ·¯¿À±â
 
@@ -63,15 +58,6 @@ void gui_main(Point circle_emotion, int stick_pleasantness, int stick_energy)
 {
 	Gui::color_line_chart(color_img, circle_emotion);	//ÁÂÇ¥°ª¿¡ µû¶ó È­»ìÇ¥±×·ÁÁÖ´Â ÇÔ¼ö
 	Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//ÁÂÇ¥°ªÀ» ¸·´ë±×·¡ÇÁ·Î ³ªÅ¸³»ÁÖ´Â ÇÔ¼ö
-=======
-Mat color_img = Gui::readimg("img/whale.jpg", 384, 384);	//ì›í˜•ìƒ‰ìƒê·¸ë˜í”„ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
-Mat stick_img = Gui::readimg("img/stick.jpg", 190, 220);	//ë§‰ëŒ€ê·¸ë˜í”„ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
-
-void gui_main(Point circle_emotion, int stick_pleasantness, int stick_energy)
-{
-	Gui::color_line_chart(color_img, circle_emotion);	//ì¢Œí‘œê°’ì— ë”°ë¼ í™”ì‚´í‘œê·¸ë ¤ì£¼ëŠ” í•¨ìˆ˜
-	Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//ì¢Œí‘œê°’ì„ ë§‰ëŒ€ê·¸ë˜í”„ë¡œ ë‚˜íƒ€ë‚´ì£¼ëŠ” í•¨ìˆ˜
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 }
 
 //ÀÌ¹ÌÁöÆÄÀÏ ºÒ·¯¿À°í »çÀÌÁî Á¶ÀıÇÏ´Â ÇÔ¼ö
@@ -204,11 +190,7 @@ Gui::rgb Gui::hsv2rgb(hsv in)
 	return out;
 }
 
-<<<<<<< HEAD
 //rgb->hsv·Î ¹Ù²Ù´Â ÇÔ¼ö
-=======
-//rgb->hsvë¡œ ë°”ê¾¸ëŠ” í•¨ìˆ˜
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 Gui::hsv Gui::rgb2hsv(rgb in)
 {
 	hsv        out;
@@ -253,13 +235,8 @@ Gui::hsv Gui::rgb2hsv(rgb in)
 	return out;
 }
 
-<<<<<<< HEAD
 //ÁÂÇ¥°ª¿¡ µû¶ó È­»ìÇ¥±×·ÁÁÖ´Â ÇÔ¼ö
 void Gui::color_line_chart(Mat& img, Point emotion)  //(whale¿øÇü±×·¡ÇÁÀÌ¹ÌÁö, °¨Á¤°ª)
-=======
-//ì¢Œí‘œê°’ì— ë”°ë¼ í™”ì‚´í‘œê·¸ë ¤ì£¼ëŠ” í•¨ìˆ˜
-void Gui::color_line_chart(Mat& img, Point emotion)  //(whaleì›í˜•ê·¸ë˜í”„ì´ë¯¸ì§€, ê°ì •ê°’)
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 {
 	int hue;
 	Scalar color;
@@ -283,37 +260,21 @@ void Gui::color_line_chart(Mat& img, Point emotion)  //(whaleì›í˜•ê·¸ë˜í”„ì´ë
 
 	color = deg2hue(emotion.x, emotion.y);			//ÁÂÇ¥¿¡ µû¸¥ bgr°ª ¹Ş¾Æ¿È
 
-<<<<<<< HEAD
 	circle(img_circle, Point(center.x, center.y), 4, gray, -1);	//±×·¡ÇÁ Áß½É
 	line(img_circle, Point(min_x, center.y), Point(max_x, center.y), gray, 1);	//xÃà
 	line(img_circle, Point(center.x, min_y), Point(center.x, max_y), gray, 1);	//yÃà
 	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//È­»ìÇ¥±×¸®±â
-=======
-	circle(img_circle, Point(center.x, center.y), 4, gray, -1);	//ê·¸ë˜í”„ ì¤‘ì‹¬
-	line(img_circle, Point(min_x, center.y), Point(max_x, center.y), gray, 1);	//xì¶•
-	line(img_circle, Point(center.x, min_y), Point(center.x, max_y), gray, 1);	//yì¶•
-	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//í™”ì‚´í‘œê·¸ë¦¬ê¸°
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 
 	imshow("grdual_emotion", img_circle);
 }
 
-<<<<<<< HEAD
 //ÁÂÇ¥°ªÀ» ¸·´ë±×·¡ÇÁ·Î ³ªÅ¸³»ÁÖ´Â ÇÔ¼ö
 void Gui::stick_chart(Mat& img, int pleasantness, int energy) //(¸·´ë±×·¡ÇÁÀÌ¹ÌÁö, °¨Á¤°ª)
-=======
-//ì¢Œí‘œê°’ì„ ë§‰ëŒ€ê·¸ë˜í”„ë¡œ ë‚˜íƒ€ë‚´ì£¼ëŠ” í•¨ìˆ˜
-void Gui::stick_chart(Mat& img, int pleasantness, int energy) //(ë§‰ëŒ€ê·¸ë˜í”„ì´ë¯¸ì§€, ê°ì •ê°’)
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 {
 	int center_y = 100; //¸·´ë±×·¡ÇÁ Áß½ÉÃà
 	Point result;
 	Mat img_stick = img.clone();
-<<<<<<< HEAD
 	//°¨Á¤°ª(-100~100¹üÀ§¸¦ ¸·´ë±×·¡ÇÁ -90~90¹üÀ§·Î ³ªÅ¸³»´Â½Ä
-=======
-	//ê°ì •ê°’(-100~100ë²”ìœ„ë¥¼ ë§‰ëŒ€ê·¸ë˜í”„ -90~90ë²”ìœ„ë¡œ ë‚˜íƒ€ë‚´ëŠ”ì‹
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 	result.x = (int)((pleasantness / 10) * 9);
 	result.y = (int)((energy / 10) * 9);
 
@@ -324,31 +285,16 @@ void Gui::stick_chart(Mat& img, int pleasantness, int energy) //(ë§‰ëŒ€ê·¸ë˜í”„
 	}
 	else                //°¨Á¤ÀÇ xÁÂÇ¥(±àÁ¤,ºÎÁ¤)°¡ À½¼öÀÌ¸é º¸¶ó»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
 	{
-<<<<<<< HEAD
 		purple = Gui::trans_color(pleasantness, purple);
 		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), purple, -1);
 	}
-=======
-		green = Gui::trans_color(pleasantness, green);
-		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), green, -1);
-	}
-	else                //ê°ì •ì˜ xì¢Œí‘œ(ê¸ì •,ë¶€ì •)ê°€ ìŒìˆ˜ì´ë©´ ë³´ë¼ìƒ‰ìœ¼ë¡œ ë§‰ëŒ€ê·¸ë˜í”„ ì±„ì›€
-	{
-		purple = Gui::trans_color(pleasantness, purple);
-		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), purple, -1);
-	}
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 
 	if (energy >= 0) //°¨Á¤ÀÇ yÁÂÇ¥(¿¡³ÊÁö)°¡ ¾ç¼öÀÌ¸é »¡°£»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
 	{
 		red = Gui::trans_color(energy, red);
 		rectangle(img_stick, Point(116, center_y), Point(159, center_y - result.y), red, -1);
 	}
-<<<<<<< HEAD
 	else                //°¨Á¤ÀÇ yÁÂÇ¥(¿¡³ÊÁö)°¡ À½¼öÀÌ¸é ÆÄ¶õ»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
-=======
-	else                //ê°ì •ì˜ yì¢Œí‘œ(ì—ë„ˆì§€)ê°€ ìŒìˆ˜ì´ë©´ íŒŒë€ìƒ‰ìœ¼ë¡œ ë§‰ëŒ€ê·¸ë˜í”„ ì±„ì›€
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 	{
 		blue = Gui::trans_color(energy, blue);
 		rectangle(img_stick, Point(116, center_y), Point(159, center_y - result.y), blue, -1);
@@ -365,11 +311,7 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 	}
 	double percent = (double)emotion / 100.0;
 
-<<<<<<< HEAD
 	//°¨Á¤Á¤µµ¿¡ µû¶ó color Ã¤µµ º¯È­
-=======
-	//ê°ì •ì •ë„ì— ë”°ë¼ color ì±„ë„ ë³€í™”
->>>>>>> f9fc032c0772be8da8d79cb98b2de85aa773a179
 	rgb R;
 	hsv P;
 	int r, g, b;
@@ -388,3 +330,6 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 
 	return Scalar(b, g, r);
 }
+
+//ÇÑ±Û ÁÖ¼® test
+//ÇÑ±ÛµÇ³ª
