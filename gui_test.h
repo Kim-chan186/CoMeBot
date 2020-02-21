@@ -1,7 +1,7 @@
 /*Gui 헤더파일
   Gui를 위한 함수들*/
 
-//main문에서 사용할 때 gui_main();함수를 넣어주세요
+//main문에서 사용할 때 gui_main(Point emotion, int pleasantness, int energy);함수를 넣어주세요
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -36,27 +36,27 @@ namespace Gui {
 	} hsv;
 
 	static rgb   hsv2rgb(hsv in);
+	static hsv  rgb2hsv(rgb in);
 
 	Mat readimg(String name, int x, int y);
 	Point percent(Point emotion);
 	Scalar deg2hue(int x, int y);
 	rgb hsv2rgb(hsv in);
 	void color_line_chart(Mat img, Point emotion);
-	void stick_chart(Mat img, Point emotion);
+	void stick_chart(Mat img, int pleasantness, int energy);
 }
 
-Point circle_emotion, stick_emotion;
+Point circle_emotionn;
+int stick_pleasantness;
+int stick_energy;
 
 Mat color_img = Gui::readimg("whale.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
 Mat stick_img = Gui::readimg("stick.jpg", 190, 220);	//막대그래프 이미지 불러오기
 
-void gui_main()
+void gui_main(Point circle_emotion, int stick_pleasantness, int stick_energy)
 {
-	printf("원형그래프 좌표, 막대그래프 변화량(pleasantness,energy순으로)를 입력 : ");
-	scanf_s("%d %d %d %d", &circle_emotion.x, &circle_emotion.y, &stick_emotion.x, &stick_emotion.y);	//입력값 emotion에 저장
-
 	Gui::color_line_chart(color_img, circle_emotion);	//좌표값에 따라 화살표그려주는 함수
-	Gui::stick_chart(stick_img, stick_emotion);		//좌표값을 막대그래프로 나타내주는 함수
+	Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
 	waitKey(0);
 }
 
@@ -190,6 +190,51 @@ Gui::rgb Gui::hsv2rgb(hsv in)
 	return out;
 }
 
+//rgb->hsv로 바꾸는 함수
+Gui::hsv Gui::rgb2hsv(rgb in)
+{
+	hsv        out;
+	double      min, max, delta;
+
+	min = in.r < in.g ? in.r : in.g;
+	min = min  < in.b ? min : in.b;
+
+	max = in.r > in.g ? in.r : in.g;
+	max = max  > in.b ? max : in.b;
+
+	out.v = max;                                // v
+	delta = max - min;
+	if (max > 0.0) { // NOTE: if Max is == 0, this divide would cause a crash
+		out.s = (delta / max);                  // s
+	}
+	else {
+		// if max is 0, then r = g = b = 0
+		// s = 0, v is undefined
+		out.s = 0.0;
+		out.h = 0.0;                            // its now undefined
+		return out;
+	}
+	if (in.r >= max)                           // > is bogus, just keeps compilor happy
+		if (delta == 0) {
+			out.h = 0.0;
+		}
+		else {
+			out.h = (in.g - in.b) / delta;        // between yellow & magenta
+		}
+	else
+		if (in.g >= max)
+			out.h = 2.0 + (in.b - in.r) / delta;  // between cyan & yellow
+		else
+			out.h = 4.0 + (in.r - in.g) / delta;  // between magenta & cyan
+
+	out.h *= 60.0;                              // degrees
+
+	if (out.h < 0.0)
+		out.h += 360.0;
+
+	return out;
+}
+
 //좌표값에 따라 화살표그려주는 함수
 void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이미지, 감정값)
 {
@@ -224,23 +269,23 @@ void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이�
 }
 
 //좌표값을 막대그래프로 나타내주는 함수
-void Gui::stick_chart(Mat img, Point emotion) //(막대그래프이미지, 감정값)
+void Gui::stick_chart(Mat img, int pleasantness, int energy) //(막대그래프이미지, 감정값)
 {
 	int center_y = 100; //막대그래프 중심축
 	Point result;
 
 	//감정값(-100~100범위를 막대그래프 -90~90범위로 나타내는식
-	result.x = (int)((emotion.x / 10) * 9);
-	result.y = (int)((emotion.y / 10) * 9);
+	result.x = (int)((pleasantness / 10) * 9);
+	result.y = (int)((energy / 10) * 9);
 
-	if (emotion.x >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
+	if (pleasantness >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
 	{
 		rectangle(img, Point(31, center_y), Point(74, center_y - result.x), green, -1);
 	}
 	else                //감정의 x좌표(긍정,부정)가 음수이면 보라색으로 막대그래프 채움
 		rectangle(img, Point(31, center_y), Point(74, center_y - result.x), purple, -1);
 
-	if (emotion.y >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
+	if (energy >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
 	{
 		rectangle(img, Point(116, center_y), Point(159, center_y - result.y), red, -1);
 	}
