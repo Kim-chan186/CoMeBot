@@ -1,17 +1,23 @@
-/*Gui 헤더파일
-  Gui를 위한 함수들*/
+#pragma once
+//Gui 헤더파일
+//Gui를 위한 함수들
+//main문에서 사용할 때 gui_main(Point emotion, int pleasantness, int energy)함수를 넣어주세요
 
-//main문에서 사용할 때 gui_main(Point emotion, int pleasantness, int energy);함수를 넣어주세요
+#ifndef GUI_H
+#define GUI_H
+
+#define PI 3.14
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cmath>
-#define PI 3.14
+
 
 using namespace cv;
 using namespace std;
 
 namespace Gui {
+
 	Scalar black(0, 0, 0);
 	Scalar red(0, 0, 255);
 	Scalar green(0, 180, 0);
@@ -247,3 +253,4 @@ void Gui::stick_chart(Mat img, int pleasantness, int energy) //(막대그래프�
 
 	imshow("stick_emotion", img);
 }
+#endif /// !EMOTION_H
