@@ -41,7 +41,6 @@ namespace Gui {
 	Mat readimg(String name, int x, int y);
 	Point percent(Point emotion);
 	Scalar deg2hue(int x, int y);
-	rgb hsv2rgb(hsv in);
 	void color_line_chart(Mat img, Point emotion);
 	void stick_chart(Mat img, int pleasantness, int energy);
 }
@@ -50,14 +49,13 @@ Point circle_emotionn;
 int stick_pleasantness;
 int stick_energy;
 
-Mat color_img = Gui::readimg("whale.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
-Mat stick_img = Gui::readimg("stick.jpg", 190, 220);	//막대그래프 이미지 불러오기
+Mat color_img = Gui::readimg("img/whale.jpg", 384, 384);	//원형색상그래프 이미지 불러오기
+Mat stick_img = Gui::readimg("img/stick.jpg", 190, 220);	//막대그래프 이미지 불러오기
 
 void gui_main(Point circle_emotion, int stick_pleasantness, int stick_energy)
 {
 	Gui::color_line_chart(color_img, circle_emotion);	//좌표값에 따라 화살표그려주는 함수
 	Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
-	waitKey(0);
 }
 
 //이미지파일 불러오고 사이즈 조절하는 함수
