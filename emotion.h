@@ -13,7 +13,7 @@
 
 
 namespace emotion {
-#define percent 0.1 //10%
+	const double percent = 0.1; //10%
 }
 
 using namespace std;
@@ -51,13 +51,12 @@ cv::Point Emotion::emotion2mode() {
 	/// 1000 / (*time_seed) 1초 동안 루프의 반복횟수
 	/// percent 1초당 원하는 이동량(퍼센트)
 	///등비수열의 합을 로그로 근사하여 계산한 식
-	num = pow(1-percent, 1/(1000.0 / (*time_seed) -1));
+	num = pow(1- emotion::percent, 1/(1000.0 / (*time_seed) -1));
 	delta = emotion * num;
 	this->mode += emotion - delta;
 	this->emotion = delta;
 	
 	return emotion;
-	
 }
 void Emotion::process() {
 	std::cout << "gg";
