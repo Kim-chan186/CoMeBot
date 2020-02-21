@@ -1,5 +1,4 @@
-/*Gui 헤더파일
-  Gui를 위한 함수들*/
+//Gui 헤더파일 Gui를 위한 함수들
 
 //main문에서 사용할 때 gui_main(Point emotion, int pleasantness, int energy);함수를 넣어주세요
 
@@ -249,7 +248,7 @@ void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이�
 	
 	double R;
 	double theta;
-
+	Mat img_circle = img.clone();
 	emotion = Gui::percent(emotion);
 
 	center.x = img.rows / 2;			//이미지 중심좌표저장
@@ -261,12 +260,12 @@ void Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이�
 
 	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
 
-	circle(img, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
-	line(img, Point(min_x, center.y), Point(max_x, center.y), gray, 1);	//x축
-	line(img, Point(center.x, min_y), Point(center.x, max_y), gray, 1);	//y축
-	arrowedLine(img, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
+	circle(img_circle, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
+	line(img_circle, Point(min_x, center.y), Point(max_x, center.y), gray, 1);	//x축
+	line(img_circle, Point(center.x, min_y), Point(center.x, max_y), gray, 1);	//y축
+	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
 
-	imshow("grdual_emotion", img);
+	imshow("grdual_emotion", img_circle);
 }
 
 //좌표값을 막대그래프로 나타내주는 함수
@@ -274,7 +273,7 @@ void Gui::stick_chart(Mat img, int pleasantness, int energy) //(막대그래프�
 {
 	int center_y = 100; //막대그래프 중심축
 	Point result;
-
+	Mat img_stick = img.clone();
 	//감정값(-100~100범위를 막대그래프 -90~90범위로 나타내는식
 	result.x = (int)((pleasantness / 10) * 9);
 	result.y = (int)((energy / 10) * 9);
@@ -282,26 +281,26 @@ void Gui::stick_chart(Mat img, int pleasantness, int energy) //(막대그래프�
 	if (pleasantness >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
 	{
 		green = Gui::trans_color(pleasantness, green);
-		rectangle(img, Point(31, center_y), Point(74, center_y - result.x), green, -1);
+		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), green, -1);
 	}
 	else                //감정의 x좌표(긍정,부정)가 음수이면 보라색으로 막대그래프 채움
 	{
 		purple = Gui::trans_color(pleasantness, purple);
-		rectangle(img, Point(31, center_y), Point(74, center_y - result.x), purple, -1);
+		rectangle(img_stick, Point(31, center_y), Point(74, center_y - result.x), purple, -1);
 	}
 
 	if (energy >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
 	{
 		red = Gui::trans_color(energy, red);
-		rectangle(img, Point(116, center_y), Point(159, center_y - result.y), red, -1);
+		rectangle(img_stick, Point(116, center_y), Point(159, center_y - result.y), red, -1);
 	}
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
 	{
 		blue = Gui::trans_color(energy, blue);
-		rectangle(img, Point(116, center_y), Point(159, center_y - result.y), blue, -1);
+		rectangle(img_stick, Point(116, center_y), Point(159, center_y - result.y), blue, -1);
 	}
 
-	imshow("stick_emotion", img);
+	imshow("stick_emotion", img_stick);
 }
 
 Scalar Gui::trans_color(int emotion, Scalar color)
