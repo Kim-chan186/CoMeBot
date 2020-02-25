@@ -84,7 +84,7 @@ bool Emotion::mode2emotion() {
 
 bool Emotion::vanishing() {
 	if (!*time_seed) {
-		cout << " ** emtion.h error time_seed is zero !!\n";
+		cout << "\n ** emtion.h error time_seed is zero !!\n";
 		return 0;
 	}
 	else {

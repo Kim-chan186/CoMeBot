@@ -1,6 +1,7 @@
 #pragma once
-#ifndef EMOTION_H
-#define EMOTION_H
+#ifndef FRAME_H
+#define FRAME_H
 
+#include "Debug.h"
 
 #endif /// !EMOTION_H

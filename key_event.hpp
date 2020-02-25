@@ -15,6 +15,7 @@ namespace chan {
 		
 		//무입력
 		if (key == -1) {
+			return 1;
 		}
 		else if (key == 109) {
 			string str;
@@ -36,7 +37,7 @@ namespace chan {
 
 		//ESC
 		else if (key == 27) {
-			cout << "  ** ESC로 프로그램을 종료합니다. \n\n";
+			cout << "\n  ** ESC로 프로그램을 종료합니다. \n\n";
 			return 0;
 		}
 

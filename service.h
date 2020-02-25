@@ -51,7 +51,7 @@ namespace chan {
 			return 1;
 		}
 		else {
-			printf("\n** error Check_Time!!\n");
+			printf("\n ** error Check_Time!! \n");
 			return 1;
 		}
 		/*//TEST Check_Time
@@ -66,6 +66,7 @@ namespace chan {
 					c = b = a * c - b;
 					//시간소모_end
 		}}}*/
+
 	}//end Check_Time
 	
 	int* int_track_vaule = nullptr;

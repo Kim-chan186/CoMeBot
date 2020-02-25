@@ -9,11 +9,17 @@
 #include "cam.h"
 
 using namespace cv;
-using namespace chan;
+
 namespace cam {
 	#define pi 3.141592
 
-	void center_line(cv::Mat& frame, int angle = 30, Scalar color = Scalar(0, 0, 255)) {
+	void center_line(cv::Mat& frame, Scalar color = Scalar(0, 255, 0)) {
+
+		line(frame, Point(frame.cols / 2, 0), Point(frame.cols / 2, frame.rows), Scalar(0, 255, 0));
+		line(frame, Point(0, frame.rows / 2), Point(frame.cols, frame.rows / 2), Scalar(0, 255, 0));
+	}
+
+	void Calibration_line(cv::Mat& frame, int angle = 30, Scalar color = Scalar(0, 0, 255)) {
 		Point center(frame.cols / 2, frame.rows / 2);
 
 		//대각선길이를 기준으로 원을 그림
@@ -27,8 +33,7 @@ namespace cam {
 			//circle(frame, center + Point(x1, y1), radius, Scalar(255 - i * 30, 0, i * 30), -1);
 		}
 		//중앙 십자선
-		line(frame, Point(frame.cols / 2, 0), Point(frame.cols / 2, frame.rows), Scalar(0, 255, 0));
-		line(frame, Point(0, frame.rows / 2), Point(frame.cols, frame.rows / 2), Scalar(0, 255, 0));
+		center_line(frame);
 	}//End center_line
 
 	//angle 무시하고 만들었
@@ -43,8 +48,8 @@ namespace cam {
 	bool ground_projection(cv::Mat& frame) {
 		parallel_line(frame);
 
-		//center_line(frame, 5, Scalar(0, 0, 255));
-		center_line(frame); //, Scalar(255, 0, 255));
+		// Calibration_line(frame, 5, Scalar(0, 0, 255));
+		Calibration_line(frame); //, Scalar(255, 0, 255));
 
 		return 1;
 	}

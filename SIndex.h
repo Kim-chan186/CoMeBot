@@ -20,7 +20,7 @@ public:
 };
 
 SIndex::SIndex() {
-	printf("** String to int Map error, 초기화하여 사용해 주시길 바랍니다.\n");
+	printf("\n ** String to int Map error, 초기화하여 사용해 주시길 바랍니다.\n");
 }
 
 SIndex::SIndex(std::string* _str, int _num) {

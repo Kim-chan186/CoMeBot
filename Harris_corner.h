@@ -23,7 +23,7 @@ void cornerHarris_demo(int, void*);
 void harris_corner(int argc, char** argv)
 {
 
-	CommandLineParser parser(argc, argv, "{@input | building.jpg | input image}");
+	CommandLineParser parser(argc, argv, "{@input | test_data/building.jpg | input image}");
 	src = imread(samples::findFile(parser.get<String>("@input")));
 
 	if (src.empty())
@@ -51,7 +51,7 @@ void cornerHarris_demo(int, void*)
 	cornerHarris(src_gray, dst, blockSize, apertureSize, k);
 
 	Mat dst_norm, dst_norm_scaled;
-	normalize(dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat());
+	normalize(dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, noArray());
 	// 정규화
 	// 가장 어두운 부분을 0으로, 가장 밝은 부분을 255로
 	// 그 외의 부분은 0과 255의 상대적인 위치에 해당하는 값으로 정규화
