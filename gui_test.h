@@ -44,6 +44,7 @@ namespace Gui {
 	Mat color_line_chart(Mat img, Point emotion);
 	Mat color_line_chart2(Mat& img, Point emotion);
 	Mat stick_chart(Mat& img, int pleasantness, int energy);
+	Mat draw_rect(Mat img, int p, int emotion, Scalar color);
 	Scalar trans_color(int percent, Scalar color);
 	void combine_imshow(Mat circleL, Mat circleS, Mat stick);
 }
@@ -301,7 +302,6 @@ Mat Gui::color_line_chart2(Mat& img, Point emotion)  //(whale원형그래프이미지, �
 //좌표값을 막대그래프로 나타내주는 함수
 Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미지, 감정값)
 {
-	int center_y = 100; //막대그래프 중심축
 	Point result;
 	Mat img_stick = img.clone();
 	//감정값(-100~100범위를 막대그래프 -90~90범위로 나타내는식
@@ -310,31 +310,44 @@ Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미지
 
 	if (pleasantness >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
 	{
-		green = Gui::trans_color(pleasantness, green);
-		rectangle(img_stick, Point(126, center_y), Point(169, center_y - result.x), green, -1);
+		img_stick = draw_rect(img_stick, 125, result.x, green);
 	}
 	else                //감정의 x좌표(긍정,부정)가 음수이면 보라색으로 막대그래프 채움
 	{
-		purple = Gui::trans_color(pleasantness, purple);
-		rectangle(img_stick, Point(126, center_y), Point(169, center_y - result.x), purple, -1);
+		img_stick = draw_rect(img_stick, 125, result.x, purple);
 	}
 
 	if (energy >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
 	{
-		red = Gui::trans_color(energy, red);
-		rectangle(img_stick, Point(211, center_y), Point(254, center_y - result.y), red, -1);
+		img_stick = draw_rect(img_stick, 210, result.y, red);
 	}
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
 	{
-		blue = Gui::trans_color(energy, blue);
-		rectangle(img_stick, Point(211, center_y), Point(254, center_y - result.y), blue, -1);
+		img_stick = draw_rect(img_stick, 210, result.y, blue);
 	}
 
 	//imshow("stick_emotion", img_stick);
-
 	return img_stick;
 }
 
+//stick_chart에 사용되는 직사각형 그리기 함수
+Mat Gui::draw_rect(Mat img, int p ,int emotion ,Scalar color)
+{
+	Mat img_clone = img.clone();
+	int center_y = 100;	//막대그래프 중심축
+
+	if (emotion >= 0)
+		color = trans_color(emotion + 5, color);
+
+	else
+		color = trans_color(emotion - 5, color);
+
+	rectangle(img_clone, Point(p+1, center_y), Point(p + 44, center_y - emotion), color, -1);
+
+	return img_clone;
+}
+
+//막대바 색 채도 변경 함수
 Scalar Gui::trans_color(int emotion, Scalar color)
 {
 	if (emotion < 0)
@@ -365,6 +378,7 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 	return Scalar(b, g, r);
 }
 
+//세가지의 창을 하나로 합치는 함수
 void Gui::combine_imshow(Mat circleL, Mat circleS, Mat stick)
 {
 	Mat vertical, horizontal;
