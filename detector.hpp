@@ -190,7 +190,7 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 		std::cout << "\n ** Stabilization.h error : havent enough pts < 3 \n";
 		return 0;
 	}
-	cv::Mat H = cv::findHomography(ptsPrevious, ptsCurrent, cv::RANSAC);
+	cv::Mat H = cv::findHomography(ptsPrevious, ptsCurrent, cv::RANSAC, ;
 	//0 - 모든 점을 사용하는 정규 방법, 즉 최소 제곱 법(default)
 	//RANSAC - RANSAC 기반의 강력한 방법
 	//LMEDS - 최소 중간 값의 강력한 방법

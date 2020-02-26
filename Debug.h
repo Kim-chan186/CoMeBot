@@ -84,7 +84,6 @@ namespace debug {
 	}
 	//data : 이미지 배열, show : buffer_img, n : 배열 크기
 	void show_compare(cv::Mat* data, cv::Mat& show, unsigned int n){
-			debug::empty(show);
 		if (show.empty()) {
 			show = data[n];
 		}
@@ -97,7 +96,6 @@ namespace debug {
 		else {
 			imshow("debug:show_compare", show);
 		}
-		
 	}
 
 	void show_blending(cv::Mat& data, cv::Mat& data2) {
