@@ -9,7 +9,87 @@
 using namespace cv;
 using namespace std;
 
+namespace EWords {
+	//감정단어관련 Point
+	//원본 이미지(emotion_grid)사이즈 (840,737)
+	Point zeroP(424, 368); //그래프 원점
+	Point 놀라(506, 323);
+	Point 흥분(521, 219);
+	Point 설레(604, 368);
+	Point 열망(626, 333);
+	Point 사랑(668, 330);
+	Point 속시(648, 301);
+	Point 후련(671, 297);
+	Point 감탄(694, 302);
+	Point 자랑(711, 289);
+	Point 긍지(694, 279);
+	Point 뿌듯(665, 274);
+	Point 감격(676, 261);
+	Point 재미(695, 255);
+	Point 부럽(507, 419);
+	Point 그립(480, 537);
+	Point 연민(446, 662);
+	Point 애틋(546, 546);
+	Point 찡하(549, 521);
+	Point 쑥쓰(408, 543);
+	Point 부끄(390, 561);
+	Point 미안(391, 591);
+	Point 불쌍(373, 629);
+	Point 안티(373, 643);
+	Point 측은(403, 676);
+	Point 민망(358, 560);
+	Point 당혹(345, 483);
+	Point 창피(340, 521);
+	Point 후회(321, 513);
+	Point 죄책(319, 533);
+	Point 허전(303, 633);
+	Point 씁쓸(286, 614);
+	Point 초조(284, 533);
+	Point 불안(284, 515);
+	Point 절박(280, 484);
+	Point 착잡(279, 558);
+	Point 허무(276, 594);
+	Point 지루(259, 489);
+	Point 상실(257, 567);
+	Point 슬픔(259, 583);
+	Point 서글(252, 624);
+	Point 우울(236, 587);
+	Point 소외(239, 557);
+	Point 심란(240, 528);
+	Point 속상(242, 481);
+	Point 야속(240, 378);
+	Point 참담(234, 460);
+	Point 괴롭(214, 399);
+	Point 비참(210, 443);
+	Point 좌절(204, 481);
+	Point 불행(192, 428);
+	Point 절망(196, 409);
+	Point 황당(314, 284);
+	Point 수치(277, 322);
+	Point 겁나(278, 365);
+	Point 섬뜩(278, 223);
+	Point 질투(261, 243);
+	Point 두렵(257, 307);
+	Point 무섭(240, 256);
+	Point 약오(233, 205);
+	Point 실망(224, 311);
+	Point 억울(220, 268);
+	Point 원망(216, 221);
+	Point 얄밉(215, 174);
+	Point 격분(212, 121);
+	Point 환멸(200, 153);
+	Point 불쾌(199, 194);
+	Point 반감(182, 140);
+	Point 짜증(178, 186);
+	Point 밉다(168, 129);
+	Point 증오(163, 113);
+	Point 배신(164, 201);
+	Point 경멸(140, 94);
+	Point 역겹(121, 106);
+}
+
 namespace Gui {
+	//Gui관련 함수,변수
 	const double PI = 3.14;
 	Scalar black(0, 0, 0);
 	Scalar red(0, 0, 255);
@@ -42,8 +122,8 @@ namespace Gui {
 	Scalar deg2hue(int x, int y);
 	rgb hsv2rgb(hsv in);
 	Mat color_line_chart(Mat img, Point emotion);
-	Mat color_line_chart2(Mat& img, Point emotion);
 	Mat stick_chart(Mat& img, int pleasantness, int energy);
+	Mat emotion_word_point(Mat& img, Point word);
 	Mat draw_rect(Mat img, int p, int emotion, Scalar color);
 	Scalar trans_color(int percent, Scalar color);
 	void combine_imshow(Mat circleL, Mat circleS, Mat stick);
@@ -53,25 +133,28 @@ Point circle_emotionn;
 int stick_pleasantness;
 int stick_energy;
 
-Mat color_img = Gui::readimg("img/whale.jpg", 600, 600);	//원형색상그래프 이미지 불러오기
-Mat color_img2 = Gui::readimg("img/whale.jpg", 380, 380);	//원형색상그래프 이미지 불러오기
-Mat stick_img = Gui::readimg("img/stick.jpg", 380, 220);	//막대그래프 이미지 불러오기
+Mat color_img = imread("img/whale.jpg", IMREAD_COLOR);	//원형색상그래프 이미지 불러오기//Mat color_imgS = Gui::readimg("img/whale.jpg", 380, 380);	//원형색상그래프 이미지 불러오기
+Mat stick_img = imread("img/stick7.jpg", IMREAD_COLOR);	//막대그래프 이미지 불러오기
+Mat emotion_grid = imread("img/emotion_grid.jpg", IMREAD_COLOR);	//emotion_grid 이미지 불러오기
+
+using namespace EWords;
 
 void gui_main(Point circleL_emotion, Point circleS_emotion, int stick_pleasantness, int stick_energy)
 {
 	Mat circleL = Gui::color_line_chart(color_img, circleL_emotion);	//좌표값에 따라 화살표그려주는 함수(점진적인감정)
-	Mat circleS = Gui::color_line_chart2(color_img2, circleS_emotion);	//좌표값에 따라 화살표그려주는 함수(즉각적인감정)
+	Mat circleS = Gui::color_line_chart(color_img, circleS_emotion);	//좌표값에 따라 화살표그려주는 함수(즉각적인감정)
 	Mat stick = Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
+	//Mat grid = Gui::emotion_word_point(emotion_grid, word);	//입력받은 감정단어를 emotion_grid에 점찍어주는 함수
 
+	//resize(grid, grid, Size(588, 516));	//사이즈 축소
+	//imshow("emotion gird", grid);
 	Gui::combine_imshow(circleL, circleS, stick);
 }
 
 //이미지파일 불러오고 사이즈 조절하는 함수
 Mat Gui::readimg(String name, int x, int y)  //(파일명, x축size, y축size)
 {
-	Mat img;
-
-	img = imread(name, IMREAD_COLOR);
+	Mat img = imread(name, IMREAD_COLOR);
 	resize(img, img, Size(x, y));
 
 	return img;
@@ -80,24 +163,9 @@ Mat Gui::readimg(String name, int x, int y)  //(파일명, x축size, y축size)
 //감정값 whale이미지에 맞게 비율 맞추는 함수
 Point Gui::percent(Point emotion)  //(감정값)
 {
-	if (emotion.x >= 0)
-	{
-		emotion.x = (int)(emotion.x *(155.0 / 100.0));
-	}
-	else if (emotion.x < 0)
-	{
-		emotion.x = (int)(emotion.x *(152.0 / 100.0));
-	}
-
-	if (emotion.y >= 0)
-	{
-		emotion.y = (int)(emotion.y *(153.0 / 100.0));
-	}
-	else if (emotion.y < 0)
-	{
-		emotion.y = (int)(emotion.y *(152.0 / 100.0));
-	}
-
+	emotion *= (379.0 / 100.0);
+	//printf("%d, %d \n", emotion.x, emotion.y);
+	
 	return emotion;
 }
 
@@ -244,59 +312,28 @@ Gui::hsv Gui::rgb2hsv(rgb in)
 //좌표값에 따라 화살표그려주는 함수
 Mat Gui::color_line_chart(Mat img, Point emotion)  //(whale원형그래프이미지, 감정값)
 {
-	int hue;
 	Scalar color;
 	Point center, result;
 	
-	double R;
-	double theta;
 	Mat img_circle = img.clone();
 
 	emotion = Gui::percent(emotion);
 
-	center.x = img.rows / 2;			//이미지 중심좌표저장
-	center.y = img.cols / 2;
+	center.x = img_circle.cols / 2;			//이미지 중심좌표저장
+	center.y = img_circle.rows / 2;
 
 	//감정좌표를 원형그래프 범위 내의 값으로 변환하는것은 아직 수정이 필요함
 	result.x = center.x + emotion.x;				//감정값의 원점을 이미지 중심으로 옮김
-	result.y = img.cols - (center.y + emotion.y);	//y좌표의 0점이 화면상단에서 시작하므로 반전시킴
+	result.y = img_circle.cols - (center.y + emotion.y);	//y좌표의 0점이 화면상단에서 시작하므로 반전시킴
 
 	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
 
-	circle(img_circle, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
-	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
+	circle(img_circle, Point(center.x, center.y), 6, gray, -1);	//그래프 중심
+	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 5, CV_8UC3, 0, 0.1);	//화살표그리기
 
 	//imshow("grdual_emotion", img_circle);
 
 	return img_circle;
-}
-
-Mat Gui::color_line_chart2(Mat& img, Point emotion)  //(whale원형그래프이미지, 감정값)
-{
-	int hue;
-	Scalar color;
-	Point center, result;
-
-	double R;
-	double theta;
-	Mat img_circle2 = img.clone();
-	emotion = Gui::percent(emotion);
-
-	center.x = img.rows / 2;			//이미지 중심좌표저장
-	center.y = img.cols / 2;
-
-	//감정좌표를 원형그래프 범위 내의 값으로 변환하는것은 아직 수정이 필요함
-	result.x = center.x + emotion.x;				//감정값의 원점을 이미지 중심으로 옮김
-	result.y = img.cols - (center.y + emotion.y);	//y좌표의 0점이 화면상단에서 시작하므로 반전시킴
-
-	color = deg2hue(emotion.x, emotion.y);			//좌표에 따른 bgr값 받아옴
-
-	circle(img_circle2, Point(center.x, center.y), 4, gray, -1);	//그래프 중심
-	arrowedLine(img_circle2, Point(center.x, center.y), Point(result.x, result.y), color, 2, CV_8UC3, 0, 0.1);	//화살표그리기
-
-	//imshow("immediate_emotion", img_circle2);
-
-	return img_circle2;
 }
 
 //좌표값을 막대그래프로 나타내주는 함수
@@ -305,44 +342,64 @@ Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프이미지
 	Point result;
 	Mat img_stick = img.clone();
 	//감정값(-100~100범위를 막대그래프 -90~90범위로 나타내는식
-	result.x = (int)((pleasantness / 10) * 9);
-	result.y = (int)((energy / 10) * 9);
+	result.x = (int)(pleasantness * (180.0/100.0));
+	result.y = (int)(energy * (180.0 / 100.0));
 
 	if (pleasantness >= 0) //감정의 x좌표(긍정,부정)가 양수이면 초록색으로 막대그래프 채움
 	{
-		img_stick = draw_rect(img_stick, 125, result.x, green);
+		img_stick = draw_rect(img_stick, 250, result.x, green);
 	}
 	else                //감정의 x좌표(긍정,부정)가 음수이면 보라색으로 막대그래프 채움
 	{
-		img_stick = draw_rect(img_stick, 125, result.x, purple);
+		img_stick = draw_rect(img_stick, 250, result.x, purple);
 	}
 
 	if (energy >= 0) //감정의 y좌표(에너지)가 양수이면 빨간색으로 막대그래프 채움
 	{
-		img_stick = draw_rect(img_stick, 210, result.y, red);
+		img_stick = draw_rect(img_stick, 420, result.y, red);
 	}
 	else                //감정의 y좌표(에너지)가 음수이면 파란색으로 막대그래프 채움
 	{
-		img_stick = draw_rect(img_stick, 210, result.y, blue);
+		img_stick = draw_rect(img_stick, 420, result.y, blue);
 	}
 
 	//imshow("stick_emotion", img_stick);
+
 	return img_stick;
+}
+
+//입력받은 감정단어를 emotion_grid에 점찍어주는 함수
+Mat Gui::emotion_word_point(Mat& img, Point word) 
+{
+	Mat img_grid = img.clone();
+	Point word_color = word;	//word_color은 deg2hue함수를 사용하기 위한 좌표값을 위한 변수
+
+	//word값을 emotion값으로 변화시켜주는 계산식
+	word_color.x -= zeroP.x;
+	word_color.y -= zeroP.y;
+	word_color.y = word_color.y * (-1);
+
+	Scalar color = Gui::deg2hue(word_color.x, word_color.y); //단어좌표 위치에 따른 색상 변환
+	circle(img_grid, Point(word.x, word.y), 4, color, -1);
+
+	//imshow("emotion_grid", emotion_grid);
+
+	return img_grid;
 }
 
 //stick_chart에 사용되는 직사각형 그리기 함수
 Mat Gui::draw_rect(Mat img, int p ,int emotion ,Scalar color)
 {
 	Mat img_clone = img.clone();
-	int center_y = 100;	//막대그래프 중심축
+	int center_y = 200;	//막대그래프 중심축
 
 	if (emotion >= 0)
-		color = trans_color(emotion + 5, color);
+		color = trans_color((emotion / 2), color);
 
 	else
-		color = trans_color(emotion - 5, color);
+		color = trans_color((emotion / 2), color);
 
-	rectangle(img_clone, Point(p+1, center_y), Point(p + 44, center_y - emotion), color, -1);
+	rectangle(img_clone, Point(p+2, center_y), Point(p + 88, center_y - emotion), color, -1);
 
 	return img_clone;
 }
@@ -382,6 +439,10 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 void Gui::combine_imshow(Mat circleL, Mat circleS, Mat stick)
 {
 	Mat vertical, horizontal;
+
+	resize(circleL, circleL, Size(600,600));
+	resize(circleS, circleS, Size(380,380));
+	resize(stick, stick, Size(380, 220));
 
 	vconcat(circleS, stick, vertical);
 	hconcat(circleL, vertical, horizontal);
