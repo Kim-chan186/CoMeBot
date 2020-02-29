@@ -2,8 +2,11 @@
 
 
 ## stick.jpg
-
-
 ![stick](https://user-images.githubusercontent.com/53402709/75603306-67f5fc80-5b10-11ea-89e6-e743c22ae67d.png)
+
 ## whale.JPG
 ![whale](https://user-images.githubusercontent.com/52673977/75038814-91a09980-54fa-11ea-8fb1-d9a789364353.JPG)
+
+## emotion_grid.png
+![emotion_grid](https://user-images.githubusercontent.com/53402709/75603331-9f64a900-5b10-11ea-9e53-87243c8175b9.png)
+
