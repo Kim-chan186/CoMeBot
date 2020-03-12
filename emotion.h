@@ -13,7 +13,9 @@
 
 
 namespace emotion {
+
 	const double vanishing_percent = 0.1; //10%
+
 	const double inertial_percent = 0.3; //30%
 }
 
@@ -23,13 +25,16 @@ class Emotion
 {
 private:
 	cv::Point2d mode = cv::Point2d(0, 0);
+
 	cv::Point2d emotion = cv::Point2d(0, 0);
 
 	int *event, *event_flag, *time_seed,
 		line_gain; //coordinate Map line's gain(haed of arrow)
 
 	cv::Mat mode_map, emotion_map, event_map, bg, frame;
+
 	SIndex mode_index; //String to int map, Search of
+
 	std::string txt; //save txt file name
 
 public:
@@ -55,10 +60,12 @@ public:
 	void process();
 };//End class
 
+
 void Emotion::get(cv::Point& emotion, cv::Point& mode){
 	emotion = this->emotion;
 	mode = this->mode;
 }
+
 
 /// 1000 / (*time_seed) 1초 동안 루프의 반복횟수
 /// percent 1초당 원하는 이동량(퍼센트)
@@ -67,6 +74,7 @@ bool Emotion::delta() {
 	this->mode2emotion();
 	return this->vanishing();
 }
+
 
 bool Emotion::mode2emotion() {
 	if (!*time_seed) {
@@ -82,6 +90,7 @@ bool Emotion::mode2emotion() {
 	}
 }
 
+
 bool Emotion::vanishing() {
 	if (!*time_seed) {
 		cout << "\n ** emtion.h error time_seed is zero !!\n";
@@ -96,16 +105,21 @@ bool Emotion::vanishing() {
 	}
 }
 
+
 void Emotion::process() {
 	std::cout << "gg";
 }
 
+
 void  Emotion::print_emotion() {
 	printf("emotion : (%lf, %lf) \n", this->emotion.x, this->emotion.y);
 }
+
+
 void  Emotion::print_mode() {
 	printf("mode : (%lf, %lf) \n", this->mode.x, this->mode.y);
 }
+
 
 // ** 생성자 ** //
 Emotion::Emotion(cv::Point emotion, cv::Point mode, int* _time_seed) {
@@ -113,16 +127,22 @@ Emotion::Emotion(cv::Point emotion, cv::Point mode, int* _time_seed) {
 	this->emotion = emotion;
 	this->time_seed = _time_seed; ///단위 ms
 }
+
+
 ///_time_seed관련 코드 수정 필요
 Emotion::Emotion(cv::Point emotion, cv::Point mode){
 	this->mode = mode;
 	this->emotion = emotion;
 }
 
+
 Emotion::Emotion(cv::Point mode)
 	: Emotion(mode, cv::Point(0, 0)) {}
 
+
 Emotion::Emotion(){}
+
+
 
 Emotion::Emotion(int* _time_seed) : Emotion() {
 	this->time_seed = _time_seed; ///단위 ms
@@ -136,11 +156,12 @@ Emotion::Emotion(string* _str, int _str_num, int* _time_seed)
 {
 	this->mode_index = SIndex(_str, _str_num);
 }
+
+
 // ** 소멸자 ** //
 Emotion::~Emotion()
 {
 }
-
 
 #endif /// !EMOTION_H
 

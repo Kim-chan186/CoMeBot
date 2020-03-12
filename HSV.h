@@ -24,15 +24,31 @@
 
 
 class Transf_Color_Area {
-	int High1[3], Low1[3], High2[3], Low2[3], key = 0;
+
+	int High1[3], 
+		Low1[3], 
+		High2[3], 
+		Low2[3],
+		key = 0;
+
 	int vaule[3];
-	unsigned int Transfer_Error[3] = { HUE_GRAVITY, SATURATION_GRAVITY, VALUE_GRAVITY };
+
+	unsigned int Transfer_Error[3] = { 
+		HUE_GRAVITY, 
+		SATURATION_GRAVITY,
+		VALUE_GRAVITY 
+	};
 
 public:
+
 	Transf_Color_Area() {}
+
+
 	Transf_Color_Area(const int& vaule1, const int& vaule2, const int& vaule3) {//생성자 > 기준 값 set 후, 색 영역지정
 		this->set_Color(vaule1, vaule2, vaule3);
 	}
+
+
 	void set_Color(const int& vaule1, const int& vaule2, const int& vaule3) {//기준 값 set 후, 색 영역지정
 		vaule[0] = vaule1;
 		vaule[1] = vaule2;
@@ -49,6 +65,7 @@ public:
 		this->set_Color_Area();
 	}
 
+
 	void Set_Tolerance_Error(int vaule, int Dimen) {//가중치 변경 후, 색 영역 변경
 		if ((Dimen > -1) || (Dimen < 3))
 			Transfer_Error[Dimen] = vaule;
@@ -58,6 +75,7 @@ public:
 
 		this->set_Color_Area();//값은 1개만 변하는데 3번 계산함
 	}
+
 
 	void set_Color_Area() { //색 영역지정
 
@@ -128,8 +146,9 @@ public:
 
 		}
 		this->print();
-
 	}
+
+
 	void print() {
 
 		if (this->get_key() == 0) {
@@ -154,18 +173,22 @@ public:
 		}
 	}
 
+
 	int get_High(const int dimen, int key = 0) {//
 		if (key == 0)
 			return High1[dimen];
 		else
 			return High2[dimen];
 	}
+
+
 	int get_Low(const int dimen, int key = 0) {
 		if (key == 0)
 			return Low1[dimen];
 		else
 			return Low2[dimen];
 	}
+
 
 	bool get_key() {//
 		return key;
@@ -175,6 +198,8 @@ public:
 	Scalar High_Scalar(int key = 0) {//
 		return Scalar(get_High(0, key), get_High(1, key), get_High(2, key));
 	}
+
+
 	Scalar Low_Scalar(int key = 0) {
 		return Scalar(get_Low(0, key), get_Low(1, key), get_Low(2, key));
 	}
@@ -190,34 +215,50 @@ public:
 
 
 class Variable {
+
 public:
 	static int track1;
+
 	static int track2;
+
 	static int track3;
+
 	static int track4;
+
 	static int track5;
 	//static Mat cpm_img;
 
 };
 //Mat Variable::cpm_img(1, 1, CV_8UC3, Scalar(0, 0, 0));
 int Variable::track1 = HUE_GRAVITY;
+
 int Variable::track2 = SATURATION_GRAVITY;
+
 int Variable::track3 = VALUE_GRAVITY;
+
 int Variable::track4 = 3; // 수축
+
 int Variable::track5 = 3; // 팽창
 
 
 class On_track {
+
 public:
 	static void track1(int track_vaule, void* userdata) {
 		((Transf_Color_Area*)userdata)->Set_Tolerance_Error(track_vaule, 0);
 	}
+
+
 	static void track2(int track_vaule, void* userdata) {
 		((Transf_Color_Area*)userdata)->Set_Tolerance_Error(track_vaule, 1);
 	}
+
+
 	static void track3(int track_vaule, void* userdata) {
 		((Transf_Color_Area*)userdata)->Set_Tolerance_Error(track_vaule, 2);
 	}
+
+
 	static void track4(int track_vaule, void* userdata) {
 		if (track_vaule == 0) {
 			track_vaule = 1;
@@ -225,6 +266,8 @@ public:
 		}
 		track_vaule = (*(int*)userdata);
 	}
+
+
 	static void track5(int track_vaule, void* userdata) {
 		if (track_vaule == 0) {
 			track_vaule = 1;
@@ -244,6 +287,9 @@ Point point_past[2] = { Point(0,0),Point(420,0) };
 Point point[2];
 
 Mat cpm_img;
+Mat img_hsv;
+Mat img_mask1;
+Mat img_mask2;
 
 bool HSV_set() {
 	int range_count = 0;         //일반 변수
@@ -272,9 +318,6 @@ bool HSV_set() {
 	return 1;
 }//End HSV_set()
 
-Mat img_hsv;
-Mat img_mask1;
-Mat img_mask2;
 
 bool HSV(Mat& _cpm_img){
 	cpm_img = _cpm_img;
@@ -302,7 +345,6 @@ bool HSV(Mat& _cpm_img){
 
 	/*erode(img_mask1, img_mask1, getStructuringElement(MORPH_ELLIPSE,
 		Size(Variable::track5, Variable::track5)));*/
-
 
 
 	Mat img_labels, stats, centroids;

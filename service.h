@@ -69,13 +69,18 @@ namespace chan {
 
 	}//end Check_Time
 	
+
 	int* int_track_vaule = nullptr;
+
 	double* double_track_vaule = nullptr;
+
 	//빠른 트렉바
 	//이후 클래스로 변경
 	static void on_trackbar(int _value , void* _userdata) {
 		_userdata = (double*)(int*)(int)((*(int*)_value) / 10.0);
 	}
+
+
 	void fast_trackbar(double* _value) {
 		cv::namedWindow("track Bar");
 		double_track_vaule = _value;

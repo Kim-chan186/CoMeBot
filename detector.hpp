@@ -6,30 +6,38 @@
 #include "Debug.h"
 #include "help_mat.h"
 
+#include <fstream>
+
 namespace chan {
 
 	const std::string Stabilization = "test_data/PoliceFootage.mov";  // Name of your input file
 
-#define resize_Factor 0.25 // Resize the input frames by this factor
+	#define resize_Factor 0.25 // Resize the input frames by this factor
 
-#define descriptorDistanceThreshold 7.0//7.0; // Good matches are below "descriptorDistanceThreshold" times the minimum distance
+	#define descriptorDistanceThreshold 7.0//7.0; // Good matches are below "descriptorDistanceThreshold" times the minimum distance
 
-#define correctionAmount 0.8 //	const double  //Set it between 0 and 1: The higher the smoother the footage will be
+	#define correctionAmount 0.8 //	const double  //Set it between 0 and 1: The higher the smoother the footage will be
 
-#define	akazeThreshold 4e-4 //	const float  //The higher the less features it will track
 
-#define	SIFTThreshold 0.04
+	#define	akazeThreshold 4e-4 //	const float  //The higher the less features it will track
 
-#define	SUFTThreshold 2000
+	#define	SIFTThreshold 0.04
 
-#define	BRISKThreshold 30
+	#define	SUFTThreshold 400
 
-#define ORB_edgeThreshold 31
-#define ORB_fastThreshold 20
+	#define	BRISKThreshold 30
 
+
+	#define ORB_edgeThreshold 31
+
+	#define ORB_fastThreshold 20
 }
 
+
+
 class detector{
+	//ofstream fout;
+
 	std::vector<cv::KeyPoint> kptsCurrent, kptsPrevious;
 	cv::Mat descCurrent, descPrevious;
 
@@ -73,8 +81,12 @@ class detector{
 	bool kfInitialized = false;
 
 	string str;
+
 public:
+
 	detector(cv::Mat& frame, string str) {
+		//fout.open("xlsx/" + str + ".xlsx");
+
 		this->str = str;
 		this->matcher = cv::BFMatcher(cv::NORM_HAMMING);
 		this->kf = cv::KalmanFilter(8, 8, 0, CV_64F);
@@ -120,6 +132,7 @@ public:
 };//End detector
 
 
+
 bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& frame_show, bool debug) {
 
 	//이전 값 저장
@@ -135,6 +148,7 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 
 	std::vector<cv::Point2f> ptsCurrent;
 	std::vector<cv::Point2f> ptsPrevious;
+
 
 	if (str == "AKAZA") {
 		this->AKAZA->detectAndCompute(frameCorrected, cv::noArray(), kptsCurrent, descCurrent);
@@ -158,21 +172,26 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 	}
 	check_8UC1(descCurrent);
 	
+
 	// We havent retrieved enough keypoints
 	if (kptsCurrent.size() < 20) {
 		std::cout << "\n ** Stabilization.h error : havent retrieved enough keypoints \n";
 		return 0;
 	}
+
+
 	//debug::show_wait(descCurrent, descPrevious);
 	matcher.match(descCurrent, descPrevious, matches);
 	//matcher.knnMatch(descCurrent, descPrevious, nn_matches, 2);
 	
+
 	double minDistance = 100;
 	for (unsigned int i = 0; i < matches.size(); i++) {
 		if (matches[i].distance < minDistance) {
 			minDistance = matches[i].distance;
 		}
 	}
+
 
 	for (unsigned int i = 0; i < matches.size(); i++) {
 		if (matches[i].distance <
@@ -187,10 +206,10 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 	// 호모 그래피를 계산하려면 각 이미지에 4 포인트 이상 필요
 	// RANSAC로 인해 임계 값을 더 높게 설정
 	if (ptsCurrent.size() < 10 || ptsPrevious.size() < 10) {
-		std::cout << "\n ** Stabilization.h error : havent enough pts < 3 \n";
+		std::cout << "\n ** Stabilization.h error : " << str << " is havent enough pts < 3 \n\n";
 		return 0;
 	}
-	cv::Mat H = cv::findHomography(ptsPrevious, ptsCurrent, cv::RANSAC, ;
+	cv::Mat H = cv::findHomography(ptsPrevious, ptsCurrent, cv::RANSAC);
 	//0 - 모든 점을 사용하는 정규 방법, 즉 최소 제곱 법(default)
 	//RANSAC - RANSAC 기반의 강력한 방법
 	//LMEDS - 최소 중간 값의 강력한 방법
@@ -205,11 +224,13 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 		kfInitialized = true;
 	}
 	
+
 	// The homography calculation has failed
 	if (H.cols < 3) {
 		std::cout << "\n ** Stabilization.h error : H.cols < 3 \n";
 		return 0;
 	}
+
 
 	// 칼만 필터 루프 : 예측 및 수정
 	cv::Mat predicted = kf.predict();
@@ -217,7 +238,11 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 	HEstimated.push_back(cv::Mat(1, 1, CV_64F, cv::Scalar(1)));
 
 	HEstimated = HEstimated.reshape(1, 3);
+	cout << str << endl << HEstimated << endl << endl;
 	
+	//파일 저장
+	//this->fout << HEstimated << endl;
+
 	// smoothing 양을 제어합니다.
 	// 이전 weight가 많을수록 footage의 안정성이 향상됩니다
 	cv::addWeighted(previousH, correctionAmount, cv::Mat::eye(3, 3, CV_64F),
@@ -241,6 +266,7 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 		cv::Size(frame_clone.cols, frame_clone.rows), cv::INTER_CUBIC);
 	
 	previousH = HCorrection.clone();
+
 
 	if (debug) {
 		cv::drawKeypoints(frame_clone, kptsCurrent, frame_show);
@@ -272,3 +298,62 @@ bool detector::Stabilization(cv::Mat& frame, cv::Mat& frame_clone, cv::Mat& fram
 }
 
 #endif /// !EMOTION_H
+
+// // ** TEST Detector
+//do
+//{
+//	Mat frame = Mat();
+//	cam::cam_Initialize(frame, "noise_cam.avi");// chan::Stabilization);
+//	VideoCapture cam = (cam::_cam);
+//
+//
+//	Mat frame_AKAZA = Mat();
+//	Mat frame_AKAZA_show = Mat();
+//	detector AKAZA(frame, "AKAZA");
+//
+//
+//	Mat frame_SIFT = Mat();
+//	Mat frame_SIFT_show = Mat();
+//	detector SIFT(frame, "SIFT");
+//
+//
+//	Mat frame_BRISK = Mat();
+//	Mat frame_BRISK_show = Mat();
+//	detector BRISK(frame, "BRISK");
+//
+//
+//	Mat frame_ORB = Mat();
+//	Mat frame_ORB_show = Mat();
+//	detector ORB(frame, "ORB");
+//
+//
+//	Mat frame_SURF = Mat();
+//	Mat frame_SURF_show = Mat();
+//	detector SURF(frame, "SURF");
+//
+//
+//	for (int i = 0; chan::key_event(cam)&(!frame.empty()); cam >> frame, i++) {
+//
+//		AKAZA.Stabilization(frame, frame_AKAZA, frame_AKAZA_show, true);
+//		SIFT.Stabilization(frame, frame_SIFT, frame_SIFT_show, true);
+//		BRISK.Stabilization(frame, frame_BRISK, frame_BRISK_show, true);
+//		ORB.Stabilization(frame, frame_ORB, frame_ORB_show, true);
+//		//SURF.Stabilization(frame, frame_SURF, frame_SURF_show, true);
+//
+//		//debug::show_blending(frame_AKAZA, frame_SIFT);
+//
+//		const int num = 4;
+//		Mat buf[num] = {
+//			frame_AKAZA_show,
+//			frame_SIFT_show,
+//			frame_BRISK_show,
+//			frame_ORB_show,
+//			//frame_SURF_show 
+//		}, buf2 = Mat();
+//
+//		debug::show_compare(buf, buf2, num - 1);
+//
+//		waitKey(0);// 정확도, ground truth, Tf를 어캐 적용해야
+//		//수행시간
+//	}
+//} while (0); */

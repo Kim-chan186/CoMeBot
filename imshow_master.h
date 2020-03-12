@@ -9,27 +9,32 @@
 
 void Window_HSV_set() {
 	//윈도우 생성
-	cv::namedWindow("이진화 영상", cv::WINDOW_AUTOSIZE);
-	cv::namedWindow("원본 영상", cv::WINDOW_AUTOSIZE);
-	cv::namedWindow("트렉바", cv::WINDOW_AUTOSIZE);
+	cv::namedWindow("mask", cv::WINDOW_AUTOSIZE);
+	cv::namedWindow("frame", cv::WINDOW_AUTOSIZE);
+	cv::namedWindow("console", cv::WINDOW_NORMAL);
 
 
-	//"트렉바"윈도우에 트렉바 생성, 이벤트 등록
-	cv::createTrackbar("hue :", "트렉바", &Variable::track1, 90, On_track::track1, pa);
-	cv::createTrackbar("sat :", "트렉바", &Variable::track2, 255, On_track::track2, pa);
-	cv::createTrackbar("val :", "트렉바", &Variable::track3, 255, On_track::track3, pa);
-	cv::createTrackbar("수축 :", "트렉바", &Variable::track4, 20, On_track::track4, pa);
-	cv::createTrackbar("팽창 :", "트렉바", &Variable::track5, 20, On_track::track5, pa);
+	cv::resizeWindow("console", 1000, 1000);
+	cv::moveWindow("console", 0, 0);
+
+
+	//"console"윈도우에 트렉바 생성, 이벤트 등록
+	cv::createTrackbar("hue :", "console", &Variable::track1, 90, On_track::track1, pa);
+	cv::createTrackbar("sat :", "console", &Variable::track2, 255, On_track::track2, pa);
+	cv::createTrackbar("val :", "console", &Variable::track3, 255, On_track::track3, pa);
+	cv::createTrackbar("수축 :", "console", &Variable::track4, 20, On_track::track4, pa);
+	cv::createTrackbar("팽창 :", "console", &Variable::track5, 20, On_track::track5, pa);
 	//0일때 죽는거 수정 해야함
 
 	//윈도우에 콜백함수를 등록
 	cv::setMouseCallback("원본 영상", Mouse_Event, pa);
 }
-void imshow_master() {
-	//윈도우 출력
-	cv::imshow("이진화 영상", img_mask1);
-	cv::imshow("원본 영상", cpm_img);
-}
 
+
+void imshow_master(Mat& frame, Mat& mask){
+	//윈도우 출력
+	cv::imshow("mask", mask);
+	cv::imshow("frame", frame);
+}
 
 #endif /// !EMOTION_H

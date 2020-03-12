@@ -9,23 +9,38 @@
 class SIndex
 {
 private:
-	std::string* Str;
-	int num;
+	std::string Str[10];
+
+	unsigned int num;
+
 public:
+
 	SIndex();
-	SIndex(std::string* _str, int _num);
+
+	SIndex(std::string* _str, unsigned int _num);
+
+	void set(std::string* _str, unsigned int _num);
+
 	int search(std::string);
 	std::string search(int);
 	void print_all();
 };
 
 SIndex::SIndex() {
-	printf("\n ** String to int Map error, 초기화하여 사용해 주시길 바랍니다.\n");
 }
 
-SIndex::SIndex(std::string* _str, int _num) {
-	this->Str = _str;
+
+SIndex::SIndex(std::string* _str, unsigned int _num) {
+	this->set(_str, _num);
+}
+
+void SIndex::set(std::string* _str, unsigned int _num) {
+	for (int i = 0; i < _num; i++) {
+		this->Str[i] = _str[i];
+	}
 	this->num = _num;
+
+	print_all();
 }
 
 int SIndex::search(std::string _str) //find string in index(map)
@@ -36,6 +51,8 @@ int SIndex::search(std::string _str) //find string in index(map)
 	}
 	return -1;	//is not find
 }// End search
+
+
 std::string SIndex::search(int _num) //find index(map) in strings
 {
 	return Str[_num];	//is not find
