@@ -57,7 +57,7 @@ namespace chan {
 
 		//(text, hue, transparency(0~100), point(+-100), font_scale(0~50));
 		void show() {
-			brain_typo(
+			Gui::brain_typo(
 				this->text,
 				this->hue, 
 				this->transparency,
