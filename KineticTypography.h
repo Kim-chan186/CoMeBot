@@ -5,7 +5,7 @@
 #define KINETIC_TYPOGRAGHY_H
 
 #include <opencv2/core.hpp>
-#include <gui_test.h>
+//#include <gui_test.h>
 
 #include "Debug.h"
 
@@ -18,7 +18,7 @@ namespace chan {
 
 	class typo {
 
-		Gui::EWords text;
+		//Gui::EWords text;
 
 		float hue;				//0~180
 
@@ -57,13 +57,13 @@ namespace chan {
 
 		//(text, hue, transparency(0~100), point(+-100), font_scale(0~50));
 		void show() {
-			Gui::brain_typo(
+			/*Gui::brain_typo(
 				this->text,
 				this->hue, 
 				this->transparency,
 				this->point,
 				this->font_scale
-			);
+			);*/
 		}
 
 		typo();
@@ -88,7 +88,7 @@ namespace chan {
 	// ** »ý¼ºÀÚ ** //
 
 	typo::typo() {
-		this->text = EW::³î¶ó;
+		//this->text = EW::³î¶ó;
 		this->hue = 0;
 		this->transparency = 80;
 		this->point = cv::Point(0, 0);
@@ -106,7 +106,7 @@ namespace chan {
 		cv::Vec2d vec,
 		int* _time_see)
 	{
-		this->text = EW::³î¶ó;
+		//this->text = EW::³î¶ó;
 		this->hue = hue;
 		this->transparency = transparency;
 		this->point = point;

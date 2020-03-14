@@ -48,11 +48,16 @@ Point operator - (Point& p1, const int& n) {
 
 namespace cam { //										<< namespace "cam" >>
 	
+	//new로 수정예정
 	cv::VideoCapture _cam = VideoCapture();
+
+	Mat* cam_img = nullptr;
 
 	int cam_num;
 
 	bool cam_Initialize(cv::Mat& frame, string str) {
+
+		cam_img = &frame;
 
 		_cam.open(str);
 		if (!_cam.isOpened()) {
@@ -71,7 +76,9 @@ namespace cam { //										<< namespace "cam" >>
 
 
 	bool cam_Initialize(cv::Mat& frame, int cam_num = 186) {
-		
+
+		cam_img = &frame;
+
 		if (cam_num == 186) {
 
 			frame = Mat(Size(640/3, 1), CV_8UC3, Scalar::all(1));
