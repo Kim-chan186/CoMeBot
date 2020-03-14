@@ -1,12 +1,12 @@
-//Gui Çì´õÆÄÀÏ Gui¸¦ À§ÇÑ ÇÔ¼öµé
+//Gui í—¤ë”íŒŒì¼ Guië¥¼ ìœ„í•œ í•¨ìˆ˜ë“¤
 
-/*main¹®¿¡¼­ »ç¿ëÇÒ ¶§ 
-gui_main(Point gradually_emotion, Point immediately_emotion, int pleasantness, int energy);ÇÔ¼ö¸¦ ³Ö¾îÁÖ¼¼¿ä
-brain_typo(EWords text, float hue, int transparency, Point point, int font_scale); Ewords text´Â emotion_grid¿¡ ÀÖ´Â ´Ü¾î¸í(ex:³î¶ó,Àç¹Ì...)(ÂüÁ¶¡Ønamespace EW),
-																				   transparency(Åõ¸íµµ)´Â 0(Åõ¸í)~100(ºÒÅõ¸í)»çÀÌÀÇ °ª,
-																				   point´Â ´Ü¾îÀ§Ä¡ÁÂÇ¥ ¿øÁ¡(0,0) max´Â(100,100), min´Â(-100,-100)ÀÓ
-																				   font_scaleÀº ±ÛÀÚÆùÆ®Å©±â (0~50)»çÀÌÀÇ °ª ÀûÁ¤»çÀÌÁî´Â 10~20Á¤µµ (0~5)Á¤µµ´Â Áã¶Ë¸¸ÇÏ°í, 30ÀÌ»óÀº ¾öÃ»Å­ ÀûÀıÇÑ »çÀÌÁî¸¦ Ã£À¸½Ã±æ!
-																				   (Âü°í¡ØÆùÆ®±½±â´Â Á¤¼öÇüÀ¸·Î¹Û¿¡ ÁöÁ¤ÀÌ ¾ÈµÇ¼­ Å©±â¿¡ µû¶ó ±½±â°¡ ¹Ù²î°Ô ÇØ³õ±äÇßÁö¸¸ ºÒ¿¬¼ÓÀûÀÌ¿©¼­ ºÎÀÚ¿¬½º·¯¿òÀÌ ÀÖÀ½)
+/*mainë¬¸ì—ì„œ ì‚¬ìš©í•  ë•Œ 
+gui_main(Point gradually_emotion, Point immediately_emotion, int pleasantness, int energy);í•¨ìˆ˜ë¥¼ ë„£ì–´ì£¼ì„¸ìš”
+brain_typo(EWords text, float hue, int transparency, Point point, int font_scale); Ewords textëŠ” emotion_gridì— ìˆëŠ” ë‹¨ì–´ëª…(ex:ë†€ë¼,ì¬ë¯¸...)(ì°¸ì¡°â€»namespace EW),
+																				   transparency(íˆ¬ëª…ë„)ëŠ” 0(íˆ¬ëª…)~100(ë¶ˆíˆ¬ëª…)ì‚¬ì´ì˜ ê°’,
+																				   pointëŠ” ë‹¨ì–´ìœ„ì¹˜ì¢Œí‘œ ì›ì (0,0) maxëŠ”(100,100), minëŠ”(-100,-100)ì„
+																				   font_scaleì€ ê¸€ìí°íŠ¸í¬ê¸° (0~50)ì‚¬ì´ì˜ ê°’ ì ì •ì‚¬ì´ì¦ˆëŠ” 10~20ì •ë„ (0~5)ì •ë„ëŠ” ì¥ë˜¥ë§Œí•˜ê³ , 30ì´ìƒì€ ì—„ì²­í¼ ì ì ˆí•œ ì‚¬ì´ì¦ˆë¥¼ ì°¾ìœ¼ì‹œê¸¸!
+																				   (ì°¸ê³ â€»í°íŠ¸êµµê¸°ëŠ” ì •ìˆ˜í˜•ìœ¼ë¡œë°–ì— ì§€ì •ì´ ì•ˆë˜ì„œ í¬ê¸°ì— ë”°ë¼ êµµê¸°ê°€ ë°”ë€Œê²Œ í•´ë†“ê¸´í–ˆì§€ë§Œ ë¶ˆì—°ì†ì ì´ì—¬ì„œ ë¶€ìì—°ìŠ¤ëŸ¬ì›€ì´ ìˆìŒ)
 */
 
 #include <opencv2/opencv.hpp>
@@ -17,7 +17,7 @@ using namespace cv;
 using namespace std;
 
 namespace Gui {
-	//Gui°ü·Ã ÇÔ¼ö,º¯¼ö
+	//Guiê´€ë ¨ í•¨ìˆ˜,ë³€ìˆ˜
 	const double PI = 3.14;
 
 	Scalar black(0, 0, 0);
@@ -48,8 +48,8 @@ namespace Gui {
 
 	struct EWords
 	{
-		Point p;	//°¨Á¤´Ü¾î ÁÂÇ¥
-		String text;	//°¨Á¤´Ü¾î 
+		Point p;	//ê°ì •ë‹¨ì–´ ì¢Œí‘œ
+		String text;	//ê°ì •ë‹¨ì–´ 
 	};
 
 	struct brain_data
@@ -79,123 +79,123 @@ namespace Gui {
 }
 
 namespace EW {
-	//°¨Á¤´Ü¾î°ü·Ã Point
-	//¿øº» ÀÌ¹ÌÁö(emotion_grid)»çÀÌÁî (840,737)
-	Point zeroP(424, 368); //±×·¡ÇÁ ¿øÁ¡
-	//¿µ¾î´Ü¾î´Â ±×³É »çÀü°Ë»öÇØ¼­ matchÇÑ°Å¶ó Ç°»çµéÀÌ ÀÏ°üÀûÀÌÁö ¾Ê°í Àß¸øµÇ¾úÀ»¼öÀÖÀ½ ÃßÈÄ ¼öÁ¤
-	Gui::EWords ³î¶ó = { { 506, 323 },"surprise" };
-	Gui::EWords ÈïºĞ = { { 521, 219 },"upset" };
-	Gui::EWords ¼³·¹ = { { 604, 368 },"throb" };
-	Gui::EWords ¿­¸Á = { { 626, 333 },"desire" };
-	Gui::EWords »ç¶û = { { 668, 330 },"love" };
-	Gui::EWords ¼Ó½Ã = { { 648, 301 },"refresh" };
-	Gui::EWords ÈÄ·Ã = { { 671, 297 },"relieved" };
-	Gui::EWords °¨Åº = { { 694, 302 },"amazed" };
-	Gui::EWords ÀÚ¶û = { { 711, 289 },"proud" };
-	Gui::EWords ±àÁö = { { 694, 279 },"pride" };
-	Gui::EWords »Ñµí = { { 665, 274 },"brimful" };
-	Gui::EWords °¨°İ = { { 676, 261 },"inspiring" };
-	Gui::EWords Àç¹Ì = { { 695, 255 },"fun" };
-	Gui::EWords ºÎ·´ = { { 507, 419 },"envy" };
-	Gui::EWords ±×¸³ = { { 480, 537 },"miss" };
-	Gui::EWords ¿¬¹Î = { { 446, 662 },"compassion" };
-	Gui::EWords ¾ÖÆ¶ = { { 546, 546 },"fond" };
-	Gui::EWords ÂôÇÏ = { { 549, 521 },"touch" };
-	Gui::EWords ¾¦¾² = { { 408, 543 },"unbecoming" };
-	Gui::EWords ºÎ²ô = { { 390, 561 },"shy" };
-	Gui::EWords ¹Ì¾È = { { 391, 591 },"sorry" };
-	Gui::EWords ºÒ½Ö = { { 373, 629 },"poor" };
-	Gui::EWords ¾ÈÆ¼ = { { 373, 643 },"anti" };
-	Gui::EWords ÃøÀº = { { 403, 676 },"pity" };
-	Gui::EWords ¹Î¸Á = { { 358, 560 },"awkward" };
-	Gui::EWords ´çÈ¤ = { { 345, 483 },"perplexed" };
-	Gui::EWords Ã¢ÇÇ = { { 340, 521 },"embarrassed" };
-	Gui::EWords ÈÄÈ¸ = { { 321, 513 },"regret" };
-	Gui::EWords ÁËÃ¥ = { { 319, 533 },"guilty" };
-	Gui::EWords ÇãÀü = { { 303, 633 },"empty" };
-	Gui::EWords ¾¹¾µ = { { 286, 614 },"bitter" };
-	Gui::EWords ÃÊÁ¶ = { { 284, 533 },"nervous" };
-	Gui::EWords ºÒ¾È = { { 284, 515 },"anxiety" };
-	Gui::EWords Àı¹Ú = { { 280, 484 },"desperate" };
-	Gui::EWords ÂøÀâ = { { 279, 558 },"intricacy" };
-	Gui::EWords Çã¹« = { { 276, 594 },"notingness" };
-	Gui::EWords Áö·ç = { { 259, 489 },"boring" };
-	Gui::EWords »ó½Ç = { { 257, 567 },"lose" };
-	Gui::EWords ½½ÇÄ = { { 259, 583 },"sadness" };
-	Gui::EWords ¼­±Û = { { 252, 624 },"sorrowful" };
-	Gui::EWords ¿ì¿ï = { { 236, 587 },"depression" };
-	Gui::EWords ¼Ò¿Ü = { { 239, 557 },"isolation" };
-	Gui::EWords ½É¶õ = { { 240, 528 },"disturbed" };
-	Gui::EWords ¼Ó»ó = { { 242, 481 },"hurt" };
-	Gui::EWords ¾ß¼Ó = { { 240, 378 },"unkind" };
-	Gui::EWords Âü´ã = { { 234, 460 },"dismal" };
-	Gui::EWords ±«·Ó = { { 214, 399 },"bully" };
-	Gui::EWords ºñÂü = { { 210, 443 },"misery" };
-	Gui::EWords ÁÂÀı = { { 204, 481 },"frustration" };
-	Gui::EWords ºÒÇà = { { 192, 428 },"unfortunate" };
-	Gui::EWords Àı¸Á = { { 196, 409 },"despair" };
-	Gui::EWords È²´ç = { { 314, 284 },"absurd" };
-	Gui::EWords ¼öÄ¡ = { { 277, 322 },"shame" };
-	Gui::EWords °Ì³ª = { { 278, 365 },"scare" };
-	Gui::EWords ¼¶¶à = { { 278, 223 },"creepy" };
-	Gui::EWords ÁúÅõ = { { 261, 243 },"jealousy" };
-	Gui::EWords µÎ·Æ = { { 257, 307 },"afraid" };
-	Gui::EWords ¹«¼· = { { 240, 256 },"scare" };
-	Gui::EWords ¾à¿À = { { 233, 205 },"provoking" };
-	Gui::EWords ½Ç¸Á = { { 224, 311 },"disappoint" };
-	Gui::EWords ¾ï¿ï = { { 220, 268 },"aggrievement" };
-	Gui::EWords ¿ø¸Á = { { 216, 221 },"resent" };
-	Gui::EWords ¾â¹Ó = { { 215, 174 },"detestable" };
-	Gui::EWords °İºĞ = { { 212, 121 },"outrages" };
-	Gui::EWords È¯¸ê = { { 200, 153 },"disillusion" };
-	Gui::EWords ºÒÄè = { { 199, 194 },"offend" };
-	Gui::EWords ¹İ°¨ = { { 182, 140 },"antipathy" };
-	Gui::EWords Â¥Áõ = { { 178, 186 },"annoyance" };
-	Gui::EWords ¹Ó´Ù = { { 168, 129 },"hate" };
-	Gui::EWords Áõ¿À = { { 163, 113 },"hatred" };
-	Gui::EWords ¹è½Å = { { 164, 201 },"betrayal" };
-	Gui::EWords ¿ª°ã = { { 121, 106 },"disgusting" };
-	Gui::EWords °æ¸ê = { { 140, 94 },"contempt" };
+	//ê°ì •ë‹¨ì–´ê´€ë ¨ Point
+	//ì›ë³¸ ì´ë¯¸ì§€(emotion_grid)ì‚¬ì´ì¦ˆ (840,737)
+	Point zeroP(424, 368); //ê·¸ë˜í”„ ì›ì 
+	//ì˜ì–´ë‹¨ì–´ëŠ” ê·¸ëƒ¥ ì‚¬ì „ê²€ìƒ‰í•´ì„œ matchí•œê±°ë¼ í’ˆì‚¬ë“¤ì´ ì¼ê´€ì ì´ì§€ ì•Šê³  ì˜ëª»ë˜ì—ˆì„ìˆ˜ìˆìŒ ì¶”í›„ ìˆ˜ì •
+	Gui::EWords ë†€ë¼ = { { 506, 323 },"surprise" };
+	Gui::EWords í¥ë¶„ = { { 521, 219 },"upset" };
+	Gui::EWords ì„¤ë ˆ = { { 604, 368 },"throb" };
+	Gui::EWords ì—´ë§ = { { 626, 333 },"desire" };
+	Gui::EWords ì‚¬ë‘ = { { 668, 330 },"love" };
+	Gui::EWords ì†ì‹œ = { { 648, 301 },"refresh" };
+	Gui::EWords í›„ë ¨ = { { 671, 297 },"relieved" };
+	Gui::EWords ê°íƒ„ = { { 694, 302 },"amazed" };
+	Gui::EWords ìë‘ = { { 711, 289 },"proud" };
+	Gui::EWords ê¸ì§€ = { { 694, 279 },"pride" };
+	Gui::EWords ë¿Œë“¯ = { { 665, 274 },"brimful" };
+	Gui::EWords ê°ê²© = { { 676, 261 },"inspiring" };
+	Gui::EWords ì¬ë¯¸ = { { 695, 255 },"fun" };
+	Gui::EWords ë¶€ëŸ½ = { { 507, 419 },"envy" };
+	Gui::EWords ê·¸ë¦½ = { { 480, 537 },"miss" };
+	Gui::EWords ì—°ë¯¼ = { { 446, 662 },"compassion" };
+	Gui::EWords ì• í‹‹ = { { 546, 546 },"fond" };
+	Gui::EWords ì°¡í•˜ = { { 549, 521 },"touch" };
+	Gui::EWords ì‘¥ì“° = { { 408, 543 },"unbecoming" };
+	Gui::EWords ë¶€ë„ = { { 390, 561 },"shy" };
+	Gui::EWords ë¯¸ì•ˆ = { { 391, 591 },"sorry" };
+	Gui::EWords ë¶ˆìŒ = { { 373, 629 },"poor" };
+	Gui::EWords ì•ˆí‹° = { { 373, 643 },"anti" };
+	Gui::EWords ì¸¡ì€ = { { 403, 676 },"pity" };
+	Gui::EWords ë¯¼ë§ = { { 358, 560 },"awkward" };
+	Gui::EWords ë‹¹í˜¹ = { { 345, 483 },"perplexed" };
+	Gui::EWords ì°½í”¼ = { { 340, 521 },"embarrassed" };
+	Gui::EWords í›„íšŒ = { { 321, 513 },"regret" };
+	Gui::EWords ì£„ì±… = { { 319, 533 },"guilty" };
+	Gui::EWords í—ˆì „ = { { 303, 633 },"empty" };
+	Gui::EWords ì”ì“¸ = { { 286, 614 },"bitter" };
+	Gui::EWords ì´ˆì¡° = { { 284, 533 },"nervous" };
+	Gui::EWords ë¶ˆì•ˆ = { { 284, 515 },"anxiety" };
+	Gui::EWords ì ˆë°• = { { 280, 484 },"desperate" };
+	Gui::EWords ì°©ì¡ = { { 279, 558 },"intricacy" };
+	Gui::EWords í—ˆë¬´ = { { 276, 594 },"notingness" };
+	Gui::EWords ì§€ë£¨ = { { 259, 489 },"boring" };
+	Gui::EWords ìƒì‹¤ = { { 257, 567 },"lose" };
+	Gui::EWords ìŠ¬í”” = { { 259, 583 },"sadness" };
+	Gui::EWords ì„œê¸€ = { { 252, 624 },"sorrowful" };
+	Gui::EWords ìš°ìš¸ = { { 236, 587 },"depression" };
+	Gui::EWords ì†Œì™¸ = { { 239, 557 },"isolation" };
+	Gui::EWords ì‹¬ë€ = { { 240, 528 },"disturbed" };
+	Gui::EWords ì†ìƒ = { { 242, 481 },"hurt" };
+	Gui::EWords ì•¼ì† = { { 240, 378 },"unkind" };
+	Gui::EWords ì°¸ë‹´ = { { 234, 460 },"dismal" };
+	Gui::EWords ê´´ë¡­ = { { 214, 399 },"bully" };
+	Gui::EWords ë¹„ì°¸ = { { 210, 443 },"misery" };
+	Gui::EWords ì¢Œì ˆ = { { 204, 481 },"frustration" };
+	Gui::EWords ë¶ˆí–‰ = { { 192, 428 },"unfortunate" };
+	Gui::EWords ì ˆë§ = { { 196, 409 },"despair" };
+	Gui::EWords í™©ë‹¹ = { { 314, 284 },"absurd" };
+	Gui::EWords ìˆ˜ì¹˜ = { { 277, 322 },"shame" };
+	Gui::EWords ê²ë‚˜ = { { 278, 365 },"scare" };
+	Gui::EWords ì„¬ëœ© = { { 278, 223 },"creepy" };
+	Gui::EWords ì§ˆíˆ¬ = { { 261, 243 },"jealousy" };
+	Gui::EWords ë‘ë µ = { { 257, 307 },"afraid" };
+	Gui::EWords ë¬´ì„­ = { { 240, 256 },"scare" };
+	Gui::EWords ì•½ì˜¤ = { { 233, 205 },"provoking" };
+	Gui::EWords ì‹¤ë§ = { { 224, 311 },"disappoint" };
+	Gui::EWords ì–µìš¸ = { { 220, 268 },"aggrievement" };
+	Gui::EWords ì›ë§ = { { 216, 221 },"resent" };
+	Gui::EWords ì–„ë°‰ = { { 215, 174 },"detestable" };
+	Gui::EWords ê²©ë¶„ = { { 212, 121 },"outrages" };
+	Gui::EWords í™˜ë©¸ = { { 200, 153 },"disillusion" };
+	Gui::EWords ë¶ˆì¾Œ = { { 199, 194 },"offend" };
+	Gui::EWords ë°˜ê° = { { 182, 140 },"antipathy" };
+	Gui::EWords ì§œì¦ = { { 178, 186 },"annoyance" };
+	Gui::EWords ë°‰ë‹¤ = { { 168, 129 },"hate" };
+	Gui::EWords ì¦ì˜¤ = { { 163, 113 },"hatred" };
+	Gui::EWords ë°°ì‹  = { { 164, 201 },"betrayal" };
+	Gui::EWords ì—­ê²¹ = { { 121, 106 },"disgusting" };
+	Gui::EWords ê²½ë©¸ = { { 140, 94 },"contempt" };
 }
 
 using namespace EW;
 
 int index = 0;
 
-String pre_text[100];	//brain_typoÇÔ¼ö °ü·Ã ´Ü¾îÀúÀå¼Ò
-Gui::brain_data pre_data[100];	//brain_typoÇÔ¼ö °ü·Ã dataÀúÀå¼Ò
+String pre_text[100];	//brain_typoí•¨ìˆ˜ ê´€ë ¨ ë‹¨ì–´ì €ì¥ì†Œ
+Gui::brain_data pre_data[100];	//brain_typoí•¨ìˆ˜ ê´€ë ¨ dataì €ì¥ì†Œ
 
-Mat color_img = imread("img/whale.jpg", IMREAD_COLOR);	//¿øÇü»ö»ó±×·¡ÇÁ ÀÌ¹ÌÁö ºÒ·¯¿À±â//Mat color_imgS = Gui::readimg("img/whale.jpg", 380, 380);	//¿øÇü»ö»ó±×·¡ÇÁ ÀÌ¹ÌÁö ºÒ·¯¿À±â
-Mat stick_img = imread("img/stick.jpg", IMREAD_COLOR);	//¸·´ë±×·¡ÇÁ ÀÌ¹ÌÁö ºÒ·¯¿À±â
-Mat emotion_grid = imread("img/emotion_grid.jpg", IMREAD_COLOR);	//emotion_grid ÀÌ¹ÌÁö ºÒ·¯¿À±â
-Mat black_bg = imread("img/black_bg.jpg", IMREAD_COLOR);	//°ËÁ¤¹è°æ ºÒ·¯¿À±â
-Mat white_bg = imread("img/white_bg.jpg", IMREAD_COLOR);	//°ËÁ¤¹è°æ ºÒ·¯¿À±â
+Mat color_img = imread("img/whale.jpg", IMREAD_COLOR);	//ì›í˜•ìƒ‰ìƒê·¸ë˜í”„ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°//Mat color_imgS = Gui::readimg("img/whale.jpg", 380, 380);	//ì›í˜•ìƒ‰ìƒê·¸ë˜í”„ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
+Mat stick_img = imread("img/stick.jpg", IMREAD_COLOR);	//ë§‰ëŒ€ê·¸ë˜í”„ ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
+Mat emotion_grid = imread("img/emotion_grid.jpg", IMREAD_COLOR);	//emotion_grid ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸°
+Mat black_bg = imread("img/black_bg.jpg", IMREAD_COLOR);	//ê²€ì •ë°°ê²½ ë¶ˆëŸ¬ì˜¤ê¸°
+Mat white_bg = imread("img/white_bg.jpg", IMREAD_COLOR);	//ê²€ì •ë°°ê²½ ë¶ˆëŸ¬ì˜¤ê¸°
 
 void gui_main(Point circleL_emotion, Point circleS_emotion, int stick_pleasantness, int stick_energy)
 {
-	Mat circleL = Gui::color_line_chart(color_img, circleL_emotion);	//ÁÂÇ¥°ª¿¡ µû¶ó È­»ìÇ¥±×·ÁÁÖ´Â ÇÔ¼ö(Á¡ÁøÀûÀÎ°¨Á¤)
-	Mat circleS = Gui::color_line_chart(color_img, circleS_emotion);	//ÁÂÇ¥°ª¿¡ µû¶ó È­»ìÇ¥±×·ÁÁÖ´Â ÇÔ¼ö(Áï°¢ÀûÀÎ°¨Á¤)
-	Mat stick = Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//ÁÂÇ¥°ªÀ» ¸·´ë±×·¡ÇÁ·Î ³ªÅ¸³»ÁÖ´Â ÇÔ¼ö
+	Mat circleL = Gui::color_line_chart(color_img, circleL_emotion);	//ì¢Œí‘œê°’ì— ë”°ë¼ í™”ì‚´í‘œê·¸ë ¤ì£¼ëŠ” í•¨ìˆ˜(ì ì§„ì ì¸ê°ì •)
+	Mat circleS = Gui::color_line_chart(color_img, circleS_emotion);	//ì¢Œí‘œê°’ì— ë”°ë¼ í™”ì‚´í‘œê·¸ë ¤ì£¼ëŠ” í•¨ìˆ˜(ì¦‰ê°ì ì¸ê°ì •)
+	Mat stick = Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//ì¢Œí‘œê°’ì„ ë§‰ëŒ€ê·¸ë˜í”„ë¡œ ë‚˜íƒ€ë‚´ì£¼ëŠ” í•¨ìˆ˜
 	
 	Gui::combine_imshow(circleL, circleS, stick);
 }
 
 void brain_typo(Gui::EWords text, float hue, int transparency, Point point, int font_scale)
 {
-	int flag = 0;//flagÃÊ±âÈ­
+	int flag = 0;//flagì´ˆê¸°í™”
 
-	Mat img = white_bg;	//±âº»¹è°æ ¼³Á¤
-	Gui::brain_data data = { img,text,hue,transparency,point,font_scale }; //ÀÔ·Â¹ŞÀº °ª dataº¯¼ö¿¡ ´ã±â
+	Mat img = white_bg;	//ê¸°ë³¸ë°°ê²½ ì„¤ì •
+	Gui::brain_data data = { img,text,hue,transparency,point,font_scale }; //ì…ë ¥ë°›ì€ ê°’ dataë³€ìˆ˜ì— ë‹´ê¸°
 
 	if (index == 0)
-	{	//Ã³À½°ªÀº ¸ğµÎ data,text°ª ¸ğµÎ ÀúÀå
+	{	//ì²˜ìŒê°’ì€ ëª¨ë‘ data,textê°’ ëª¨ë‘ ì €ì¥
 		pre_data[index] = Gui::whale_brain(data);
 		pre_text[index] = data.text.text;
 		index++;
 	}
 	else
 	{
-		//±âÁ¸ ´Ü¾îµé°ú ºñ±³ÇÏ¿© ÀÌ¹Ì ÀÖ´Â ´Ü¾î¸é ±âÁ¸´Ü¾îdata¿¡ »õ·Î¿î dataµ¤±â
+		//ê¸°ì¡´ ë‹¨ì–´ë“¤ê³¼ ë¹„êµí•˜ì—¬ ì´ë¯¸ ìˆëŠ” ë‹¨ì–´ë©´ ê¸°ì¡´ë‹¨ì–´dataì— ìƒˆë¡œìš´ dataë®ê¸°
 		for (int i = 0; i < index; i++)
 		{
 			if (pre_text[i] == data.text.text)
@@ -205,7 +205,7 @@ void brain_typo(Gui::EWords text, float hue, int transparency, Point point, int 
 				//printf("already\n");
 			}
 		}
-		if (flag == 0)//±âÁ¸¿¡ ¾ø´Â ´Ü¾î¸é data,textÀúÀå
+		if (flag == 0)//ê¸°ì¡´ì— ì—†ëŠ” ë‹¨ì–´ë©´ data,textì €ì¥
 		{
 			pre_data[index] = Gui::whale_brain(data);
 			pre_text[index] = data.text.text;
@@ -214,17 +214,17 @@ void brain_typo(Gui::EWords text, float hue, int transparency, Point point, int 
 		}
 	}
 
-	//imgÃâ·ÂÀ» À§ÇÑ for¹®
+	//imgì¶œë ¥ì„ ìœ„í•œ forë¬¸
 	for (int i = 0; i < index; i++)
 	{
 		if (i == 0)
 		{
-			//Ã¹index imgºÒ·¯¿À±â
+			//ì²«index imgë¶ˆëŸ¬ì˜¤ê¸°
 			img = pre_data[i].img;
 		}
 		else
 		{
-			//´Ü¾î Ãß°¡ÇØ¼­ img»ı¼º
+			//ë‹¨ì–´ ì¶”ê°€í•´ì„œ imgìƒì„±
 			pre_data[i].img = img;
 			pre_data[i] = Gui::whale_brain(pre_data[i]);
 			img = pre_data[i].img;
@@ -234,8 +234,8 @@ void brain_typo(Gui::EWords text, float hue, int transparency, Point point, int 
 	//waitKey(500);
 }
 
-//ÀÌ¹ÌÁöÆÄÀÏ ºÒ·¯¿À°í »çÀÌÁî Á¶ÀıÇÏ´Â ÇÔ¼ö
-Mat Gui::readimg(String name, int x, int y)  //(ÆÄÀÏ¸í, xÃàsize, yÃàsize)
+//ì´ë¯¸ì§€íŒŒì¼ ë¶ˆëŸ¬ì˜¤ê³  ì‚¬ì´ì¦ˆ ì¡°ì ˆí•˜ëŠ” í•¨ìˆ˜
+Mat Gui::readimg(String name, int x, int y)  //(íŒŒì¼ëª…, xì¶•size, yì¶•size)
 {
 	Mat img = imread(name, IMREAD_COLOR);
 	resize(img, img, Size(x, y));
@@ -243,7 +243,7 @@ Mat Gui::readimg(String name, int x, int y)  //(ÆÄÀÏ¸í, xÃàsize, yÃàsize)
 	return img;
 }
 
-//°¨Á¤°ª whaleÀÌ¹ÌÁö¿¡ ¸Â°Ô ºñÀ² ¸ÂÃß´Â ÇÔ¼ö
+//ê°ì •ê°’ whaleì´ë¯¸ì§€ì— ë§ê²Œ ë¹„ìœ¨ ë§ì¶”ëŠ” í•¨ìˆ˜
 Point Gui::percent(Point emotion)
 {
 	emotion *= (379.0 / 100.0);
@@ -251,7 +251,7 @@ Point Gui::percent(Point emotion)
 	return emotion;
 }
 
-//ÁÂÇ¥->°¢µµ·Î º¯È¯ÇÏ´Â ÇÔ¼ö
+//ì¢Œí‘œ->ê°ë„ë¡œ ë³€í™˜í•˜ëŠ” í•¨ìˆ˜
 float Gui::xy2deg(int x, int y)
 {
 	float degree = atan2(x, y) * 180 / PI;
@@ -259,13 +259,13 @@ float Gui::xy2deg(int x, int y)
 	return degree;
 }
 
-//°¢µµ¿¡µû¸¥ »öÀ¸·Î º¯È¯ÇØÁÖ´Â ÇÔ¼ö
+//ê°ë„ì—ë”°ë¥¸ ìƒ‰ìœ¼ë¡œ ë³€í™˜í•´ì£¼ëŠ” í•¨ìˆ˜
 Scalar Gui::deg2hue(float degree)
 {
-	//ÁÂÇ¥°¢µµ->hue°ªÀ¸·Î º¯È¯
+	//ì¢Œí‘œê°ë„->hueê°’ìœ¼ë¡œ ë³€í™˜
 	int hue;
 
-	//°¢µµ°ªÀÌ -180~180 ¹üÀ§·Î Ç¥ÇöµÇ±â ¶§¹®¿¡ 0~360µµ·Î º¯È¯ÇÏ±âÀ§ÇÑ Á¶°Ç¹®
+	//ê°ë„ê°’ì´ -180~180 ë²”ìœ„ë¡œ í‘œí˜„ë˜ê¸° ë•Œë¬¸ì— 0~360ë„ë¡œ ë³€í™˜í•˜ê¸°ìœ„í•œ ì¡°ê±´ë¬¸
 	if (degree >= 0)
 	{
 		hue = (int)degree / 2;
@@ -277,7 +277,7 @@ Scalar Gui::deg2hue(float degree)
 		hue = (int)degree / 2;
 	}
 
-	//hue°ª color·Î º¯È¯
+	//hueê°’ colorë¡œ ë³€í™˜
 	rgb R;
 	hsv P;
 	int r, g, b;
@@ -292,7 +292,7 @@ Scalar Gui::deg2hue(float degree)
 	return Scalar(b, g, r);
 }
 
-//hsv->rgb·Î ¹Ù²Ù´Â ÇÔ¼ö
+//hsv->rgbë¡œ ë°”ê¾¸ëŠ” í•¨ìˆ˜
 Gui::rgb Gui::hsv2rgb(hsv in)
 {
 	double      hh, p, q, t, ff;
@@ -351,7 +351,7 @@ Gui::rgb Gui::hsv2rgb(hsv in)
 	return out;
 }
 
-//rgb->hsv·Î ¹Ù²Ù´Â ÇÔ¼ö
+//rgb->hsvë¡œ ë°”ê¾¸ëŠ” í•¨ìˆ˜
 Gui::hsv Gui::rgb2hsv(rgb in)
 {
 	hsv        out;
@@ -396,8 +396,8 @@ Gui::hsv Gui::rgb2hsv(rgb in)
 	return out;
 }
 
-//ÁÂÇ¥°ª¿¡ µû¶ó È­»ìÇ¥±×·ÁÁÖ´Â ÇÔ¼ö
-Mat Gui::color_line_chart(Mat img, Point emotion)  //(whale¿øÇü±×·¡ÇÁÀÌ¹ÌÁö, °¨Á¤°ª)
+//ì¢Œí‘œê°’ì— ë”°ë¼ í™”ì‚´í‘œê·¸ë ¤ì£¼ëŠ” í•¨ìˆ˜
+Mat Gui::color_line_chart(Mat img, Point emotion)  //(whaleì›í˜•ê·¸ë˜í”„ì´ë¯¸ì§€, ê°ì •ê°’)
 {
 	Scalar color;
 	Point center, result;
@@ -406,47 +406,47 @@ Mat Gui::color_line_chart(Mat img, Point emotion)  //(whale¿øÇü±×·¡ÇÁÀÌ¹ÌÁö, °¨Á
 
 	emotion = percent(emotion);
 
-	center.x = img_circle.cols / 2;			//ÀÌ¹ÌÁö Áß½ÉÁÂÇ¥ÀúÀå
+	center.x = img_circle.cols / 2;			//ì´ë¯¸ì§€ ì¤‘ì‹¬ì¢Œí‘œì €ì¥
 	center.y = img_circle.rows / 2;
 
-	result.x = center.x + emotion.x;				//°¨Á¤°ªÀÇ ¿øÁ¡À» ÀÌ¹ÌÁö Áß½ÉÀ¸·Î ¿Å±è
-	result.y = img_circle.cols - (center.y + emotion.y);	//yÁÂÇ¥ÀÇ 0Á¡ÀÌ È­¸é»ó´Ü¿¡¼­ ½ÃÀÛÇÏ¹Ç·Î ¹İÀü½ÃÅ´
+	result.x = center.x + emotion.x;				//ê°ì •ê°’ì˜ ì›ì ì„ ì´ë¯¸ì§€ ì¤‘ì‹¬ìœ¼ë¡œ ì˜®ê¹€
+	result.y = img_circle.cols - (center.y + emotion.y);	//yì¢Œí‘œì˜ 0ì ì´ í™”ë©´ìƒë‹¨ì—ì„œ ì‹œì‘í•˜ë¯€ë¡œ ë°˜ì „ì‹œí‚´
 
 	
-	color = deg2hue(xy2deg(emotion.x, emotion.y));			//ÁÂÇ¥¿¡ µû¸¥ bgr°ª ¹Ş¾Æ¿È
+	color = deg2hue(xy2deg(emotion.x, emotion.y));			//ì¢Œí‘œì— ë”°ë¥¸ bgrê°’ ë°›ì•„ì˜´
 
-	circle(img_circle, Point(center.x, center.y), 6, gray, -1);	//±×·¡ÇÁ Áß½É
-	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 5, CV_8UC3, 0, 0.1);	//È­»ìÇ¥±×¸®±â
+	circle(img_circle, Point(center.x, center.y), 6, gray, -1);	//ê·¸ë˜í”„ ì¤‘ì‹¬
+	arrowedLine(img_circle, Point(center.x, center.y), Point(result.x, result.y), color, 5, CV_8UC3, 0, 0.1);	//í™”ì‚´í‘œê·¸ë¦¬ê¸°
 
 	//imshow("grdual_emotion", img_circle);
 
 	return img_circle;
 }
 
-//ÁÂÇ¥°ªÀ» ¸·´ë±×·¡ÇÁ·Î ³ªÅ¸³»ÁÖ´Â ÇÔ¼ö
-Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(¸·´ë±×·¡ÇÁÀÌ¹ÌÁö, °¨Á¤°ª)
+//ì¢Œí‘œê°’ì„ ë§‰ëŒ€ê·¸ë˜í”„ë¡œ ë‚˜íƒ€ë‚´ì£¼ëŠ” í•¨ìˆ˜
+Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(ë§‰ëŒ€ê·¸ë˜í”„ì´ë¯¸ì§€, ê°ì •ê°’)
 {
 	Point result;
 	Mat img_stick = img.clone();
 
-	//°¨Á¤°ª(-100~100¹üÀ§¸¦ ¸·´ë±×·¡ÇÁ -180~180¹üÀ§·Î ³ªÅ¸³»´Â½Ä
+	//ê°ì •ê°’(-100~100ë²”ìœ„ë¥¼ ë§‰ëŒ€ê·¸ë˜í”„ -180~180ë²”ìœ„ë¡œ ë‚˜íƒ€ë‚´ëŠ”ì‹
 	result.x = (int)(pleasantness * (180.0/100.0));
 	result.y = (int)(energy * (180.0 / 100.0));
 
-	if (pleasantness >= 0) //°¨Á¤ÀÇ xÁÂÇ¥(±àÁ¤,ºÎÁ¤)°¡ ¾ç¼öÀÌ¸é ÃÊ·Ï»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
+	if (pleasantness >= 0) //ê°ì •ì˜ xì¢Œí‘œ(ê¸ì •,ë¶€ì •)ê°€ ì–‘ìˆ˜ì´ë©´ ì´ˆë¡ìƒ‰ìœ¼ë¡œ ë§‰ëŒ€ê·¸ë˜í”„ ì±„ì›€
 	{
 		img_stick = draw_rect(img_stick, 250, result.x, green);
 	}
-	else                //°¨Á¤ÀÇ xÁÂÇ¥(±àÁ¤,ºÎÁ¤)°¡ À½¼öÀÌ¸é º¸¶ó»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
+	else                //ê°ì •ì˜ xì¢Œí‘œ(ê¸ì •,ë¶€ì •)ê°€ ìŒìˆ˜ì´ë©´ ë³´ë¼ìƒ‰ìœ¼ë¡œ ë§‰ëŒ€ê·¸ë˜í”„ ì±„ì›€
 	{
 		img_stick = draw_rect(img_stick, 250, result.x, purple);
 	}
 
-	if (energy >= 0) //°¨Á¤ÀÇ yÁÂÇ¥(¿¡³ÊÁö)°¡ ¾ç¼öÀÌ¸é »¡°£»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
+	if (energy >= 0) //ê°ì •ì˜ yì¢Œí‘œ(ì—ë„ˆì§€)ê°€ ì–‘ìˆ˜ì´ë©´ ë¹¨ê°„ìƒ‰ìœ¼ë¡œ ë§‰ëŒ€ê·¸ë˜í”„ ì±„ì›€
 	{
 		img_stick = draw_rect(img_stick, 420, result.y, red);
 	}
-	else                //°¨Á¤ÀÇ yÁÂÇ¥(¿¡³ÊÁö)°¡ À½¼öÀÌ¸é ÆÄ¶õ»öÀ¸·Î ¸·´ë±×·¡ÇÁ Ã¤¿ò
+	else                //ê°ì •ì˜ yì¢Œí‘œ(ì—ë„ˆì§€)ê°€ ìŒìˆ˜ì´ë©´ íŒŒë€ìƒ‰ìœ¼ë¡œ ë§‰ëŒ€ê·¸ë˜í”„ ì±„ì›€
 	{
 		img_stick = draw_rect(img_stick, 420, result.y, blue);
 	}
@@ -456,12 +456,12 @@ Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(¸·´ë±×·¡ÇÁÀÌ¹ÌÁö
 	return img_stick;
 }
 
-//ÀÔ·Â¹ŞÀº °¨Á¤´Ü¾î¸¦ emotion_grid¿¡ Á¡Âï¾îÁÖ´Â ÇÔ¼ö
+//ì…ë ¥ë°›ì€ ê°ì •ë‹¨ì–´ë¥¼ emotion_gridì— ì ì°ì–´ì£¼ëŠ” í•¨ìˆ˜
 Mat Gui::emotion_word_point(Mat& img, Point word) 
 {
 	Mat img_grid = img.clone();
 	
-	Scalar color = emotion_word_color(word);	//wordÀÇ À§Ä¡ÁÂÇ¥¿¡ ¸Â´Â »ö»óÀ» ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+	Scalar color = emotion_word_color(word);	//wordì˜ ìœ„ì¹˜ì¢Œí‘œì— ë§ëŠ” ìƒ‰ìƒì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 	circle(img_grid, Point(word.x, word.y), 4, color, -1);
 
 	//imshow("emotion_grid", emotion_grid);
@@ -469,11 +469,11 @@ Mat Gui::emotion_word_point(Mat& img, Point word)
 	return img_grid;
 }
 
-//stick_chart¿¡ »ç¿ëµÇ´Â Á÷»ç°¢Çü ±×¸®±â ÇÔ¼ö
+//stick_chartì— ì‚¬ìš©ë˜ëŠ” ì§ì‚¬ê°í˜• ê·¸ë¦¬ê¸° í•¨ìˆ˜
 Mat Gui::draw_rect(Mat img, int p ,int emotion ,Scalar color)
 {
 	Mat img_clone = img.clone();
-	int center_y = 200;	//¸·´ë±×·¡ÇÁ Áß½ÉÃà
+	int center_y = 200;	//ë§‰ëŒ€ê·¸ë˜í”„ ì¤‘ì‹¬ì¶•
 
 	if (emotion >= 0)
 		color = trans_color((emotion / 2), color);
@@ -486,7 +486,7 @@ Mat Gui::draw_rect(Mat img, int p ,int emotion ,Scalar color)
 	return img_clone;
 }
 
-//¸·´ë¹Ù »ö Ã¤µµ º¯°æ ÇÔ¼ö
+//ë§‰ëŒ€ë°” ìƒ‰ ì±„ë„ ë³€ê²½ í•¨ìˆ˜
 Scalar Gui::trans_color(int emotion, Scalar color)
 {
 	if (emotion < 0)
@@ -497,7 +497,7 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 
 	percent = (percent / 2 + 0.5);
 
-	//°¨Á¤Á¤µµ¿¡ µû¶ó color Ã¤µµ º¯È­
+	//ê°ì •ì •ë„ì— ë”°ë¼ color ì±„ë„ ë³€í™”
 	rgb R;
 	hsv P;
 	int r, g, b;
@@ -517,12 +517,12 @@ Scalar Gui::trans_color(int emotion, Scalar color)
 	return Scalar(b, g, r);
 }
 
-//text »ö Ã¤µµ º¯°æ ÇÔ¼ö
+//text ìƒ‰ ì±„ë„ ë³€ê²½ í•¨ìˆ˜
 Scalar Gui::trans_text_color(int emotion, Scalar color, int bl_n_wh)
 {
 	double percent = (double)emotion / 100.0;
 
-	//°¨Á¤Á¤µµ¿¡ µû¶ó color Ã¤µµ º¯È­
+	//ê°ì •ì •ë„ì— ë”°ë¼ color ì±„ë„ ë³€í™”
 	rgb R;
 	hsv P;
 	int r, g, b;
@@ -531,13 +531,13 @@ Scalar Gui::trans_text_color(int emotion, Scalar color, int bl_n_wh)
 	R.g = (double)color[1] / 255.0;
 	R.r = (double)color[2] / 255.0;
 	P = Gui::rgb2hsv(R);
-	if (bl_n_wh == 1) //Èò¹è°æÀÏ¶§
+	if (bl_n_wh == 1) //í°ë°°ê²½ì¼ë•Œ
 	{
 		P.h = P.h;
 		P.s = P.s * percent;
 		P.v = P.v;
 	}
-	else             //°ËÀº¹è°æÀÏ¶§
+	else             //ê²€ì€ë°°ê²½ì¼ë•Œ
 	{
 		P.h = P.h;
 		P.s = P.s;
@@ -551,12 +551,12 @@ Scalar Gui::trans_text_color(int emotion, Scalar color, int bl_n_wh)
 	return Scalar(b, g, r);
 }
 
-//´Ü¾îÀÇ ÁÂÇ¥ À§Ä¡¿¡ µû¸¥ »ö»ó º¯È¯ÇÔ¼ö
+//ë‹¨ì–´ì˜ ì¢Œí‘œ ìœ„ì¹˜ì— ë”°ë¥¸ ìƒ‰ìƒ ë³€í™˜í•¨ìˆ˜
 Scalar Gui::emotion_word_color(Point word)
 {
-	Point word_color = word;	//word_colorÀº deg2hueÇÔ¼ö¸¦ »ç¿ëÇÏ±â À§ÇÑ ÁÂÇ¥°ªÀ» À§ÇÑ º¯¼ö
+	Point word_color = word;	//word_colorì€ deg2hueí•¨ìˆ˜ë¥¼ ì‚¬ìš©í•˜ê¸° ìœ„í•œ ì¢Œí‘œê°’ì„ ìœ„í•œ ë³€ìˆ˜
 
-	//word°ªÀ» emotion°ªÀ¸·Î º¯È­½ÃÄÑÁÖ´Â °è»ê½Ä
+	//wordê°’ì„ emotionê°’ìœ¼ë¡œ ë³€í™”ì‹œì¼œì£¼ëŠ” ê³„ì‚°ì‹
 	word_color.x -= zeroP.x;
 	word_color.y -= zeroP.y;
 	word_color.y = word_color.y * (-1);
@@ -565,20 +565,20 @@ Scalar Gui::emotion_word_color(Point word)
 	return deg2hue(xy2deg(word_color.x, word_color.y)); 
 }
 
-//°í·¡ ³ú¼Ó ÅØ½ºÆ®¸¦ ³ªÅ¸³»´Â ÇÔ¼ö
+//ê³ ë˜ ë‡Œì† í…ìŠ¤íŠ¸ë¥¼ ë‚˜íƒ€ë‚´ëŠ” í•¨ìˆ˜
 Gui::brain_data Gui::whale_brain(brain_data data)
 {
 	Mat brain = data.img.clone();
 	String text = data.text.text;
 
-	float hue = 450 - (data.hue * 2);	//360 - (hue*2 - 90) ±×·¡ÇÁÀÇ »ö»óÀÌ hue°ªº¯È­ÀÇ ¹İ´ë¹æÇâ¿¡ 90µµ È¸ÀüÇÏ¿© ³ªÅ¸³»ÀÖ¾î º¸Á¤ÇÏ´Â °è»ê
+	float hue = 450 - (data.hue * 2);	//360 - (hue*2 - 90) ê·¸ë˜í”„ì˜ ìƒ‰ìƒì´ hueê°’ë³€í™”ì˜ ë°˜ëŒ€ë°©í–¥ì— 90ë„ íšŒì „í•˜ì—¬ ë‚˜íƒ€ë‚´ìˆì–´ ë³´ì •í•˜ëŠ” ê³„ì‚°
 	if (hue > 360)
 		hue -= 360;
 	Scalar color = deg2hue(hue);
 
-	color = trans_text_color(data.transparency, color, 1);//Åõ¸íµµ(0~100),»ö,(°ËÀº¹è°æ=0,Èò¹è°æ=1)
+	color = trans_text_color(data.transparency, color, 1);//íˆ¬ëª…ë„(0~100),ìƒ‰,(ê²€ì€ë°°ê²½=0,í°ë°°ê²½=1)
 
-	//Áß½ÉÁÂÇ¥·Î ³ªÅ¸³»´Â ½Ä
+	//ì¤‘ì‹¬ì¢Œí‘œë¡œ ë‚˜íƒ€ë‚´ëŠ” ì‹
 	Point p = data.point;
 	p *= 3;
 	p.x += 300;
@@ -589,8 +589,8 @@ Gui::brain_data Gui::whale_brain(brain_data data)
 	double fontScale = scale;
 	int thickness = (int)scale + 1;
 	int baseLine;
-	Size size = getTextSize(text, font, fontScale, thickness, &baseLine);	//text»çÀÌÁî°è»ê ÇÔ¼ö
-	Point word_center;	//textÀÇ Áß½ÉÁÂÇ¥¸¦ wordÁÂÇ¥¿Í ÀÏÄ¡½ÃÅ°±âÀ§ÇÑ °è»ê½Ä
+	Size size = getTextSize(text, font, fontScale, thickness, &baseLine);	//textì‚¬ì´ì¦ˆê³„ì‚° í•¨ìˆ˜
+	Point word_center;	//textì˜ ì¤‘ì‹¬ì¢Œí‘œë¥¼ wordì¢Œí‘œì™€ ì¼ì¹˜ì‹œí‚¤ê¸°ìœ„í•œ ê³„ì‚°ì‹
 	word_center.x = p.x - (size.width / 2);
 	word_center.y = p.y + (size.height / 2);
 
@@ -601,7 +601,7 @@ Gui::brain_data Gui::whale_brain(brain_data data)
 	return data;
 }
 
-//¼¼°¡ÁöÀÇ Ã¢À» ÇÏ³ª·Î ÇÕÄ¡´Â ÇÔ¼ö
+//ì„¸ê°€ì§€ì˜ ì°½ì„ í•˜ë‚˜ë¡œ í•©ì¹˜ëŠ” í•¨ìˆ˜
 void Gui::combine_imshow(Mat circleL, Mat circleS, Mat stick)
 {
 	Mat vertical, horizontal;
