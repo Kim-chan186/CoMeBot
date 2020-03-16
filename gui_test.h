@@ -1,12 +1,13 @@
 //Gui 헤더파일 Gui를 위한 함수들
 
 /*main문에서 사용할 때 
-gui_main(Point gradually_emotion, Point immediately_emotion, int pleasantness, int energy);함수를 넣어주세요
-brain_typo(EWords text, float hue, int transparency, Point point, int font_scale); Ewords text는 emotion_grid에 있는 단어명(ex:놀라,재미...)(참조※namespace EW),
-																				   transparency(투명도)는 0(투명)~100(불투명)사이의 값,
-																				   point는 단어위치좌표 원점(0,0) max는(100,100), min는(-100,-100)임
-																				   font_scale은 글자폰트크기 (0~50)사이의 값 적정사이즈는 10~20정도 (0~5)정도는 쥐똥만하고, 30이상은 엄청큼 적절한 사이즈를 찾으시길!
-																				   (참고※폰트굵기는 정수형으로밖에 지정이 안되서 크기에 따라 굵기가 바뀌게 해놓긴했지만 불연속적이여서 부자연스러움이 있음)
+gui_main(Point mode, Point emotion, int pleasantness, int energy);함수를 넣어주세요
+brain_typo(EWords text, float hue, int transparency, Point point, int font_scale);
+	Ewords text는 emotion_grid에 있는 단어명(ex:놀라,재미...)(참조※namespace EW),
+	transparency(투명도)는 0(투명)~100(불투명)사이의 값,
+	point는 단어위치좌표 원점(0,0) max는(100,100), min는(-100,-100)임
+	font_scale은 글자폰트크기 (0~50)사이의 값 적정사이즈는 10~20정도 (0~5)정도는 쥐똥만하고, 30이상은 엄청큼 적절한 사이즈를 찾으시길!
+	(참고※폰트굵기는 정수형으로밖에 지정이 안되서 크기에 따라 굵기가 바뀌게 해놓긴했지만 불연속적이여서 부자연스러움이 있음)
 */
 
 #include <opencv2/opencv.hpp>
@@ -55,7 +56,7 @@ namespace Gui {
 	struct brain_data
 	{
 		Mat img;
-		EWords text;
+		EWords word;
 		float hue;
 		int transparency;
 		Point point;
@@ -165,18 +166,30 @@ int index = 0;
 String pre_text[100];	//brain_typo함수 관련 단어저장소
 Gui::brain_data pre_data[100];	//brain_typo함수 관련 data저장소
 
-Mat color_img = imread("img/whale.jpg", IMREAD_COLOR);	//원형색상그래프 이미지 불러오기//Mat color_imgS = Gui::readimg("img/whale.jpg", 380, 380);	//원형색상그래프 이미지 불러오기
+Mat color_img = imread("img/whale.jpg", IMREAD_COLOR);	//원형색상그래프 이미지 불러오기
 Mat stick_img = imread("img/stick.jpg", IMREAD_COLOR);	//막대그래프 이미지 불러오기
 Mat emotion_grid = imread("img/emotion_grid.jpg", IMREAD_COLOR);	//emotion_grid 이미지 불러오기
 Mat black_bg = imread("img/black_bg.jpg", IMREAD_COLOR);	//검정배경 불러오기
 Mat white_bg = imread("img/white_bg.jpg", IMREAD_COLOR);	//검정배경 불러오기
 
-void gui_main(Point circleL_emotion, Point circleS_emotion, int stick_pleasantness, int stick_energy)
+void gui_main(Point mode, Point emotion, int stick_pleasantness, int stick_energy)
 {
-	Mat circleL = Gui::color_line_chart(color_img, circleL_emotion);	//좌표값에 따라 화살표그려주는 함수(점진적인감정)
-	Mat circleS = Gui::color_line_chart(color_img, circleS_emotion);	//좌표값에 따라 화살표그려주는 함수(즉각적인감정)
-	Mat stick = Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
-	
+	Mat circleL, circleS, stick;
+	if (!color_img.empty())
+	{
+		circleL = Gui::color_line_chart(color_img, mode);	//좌표값에 따라 화살표그려주는 함수(점진적인감정)
+		circleS = Gui::color_line_chart(color_img, emotion);	//좌표값에 따라 화살표그려주는 함수(즉각적인감정)
+	}
+	else 
+		cout << "color_img read fail";
+
+	if (!stick_img.empty())
+	{
+		stick = Gui::stick_chart(stick_img, stick_pleasantness, stick_energy);		//좌표값을 막대그래프로 나타내주는 함수
+	}
+	else
+		cout << "stick_img read fail";
+
 	Gui::combine_imshow(circleL, circleS, stick);
 }
 
@@ -184,53 +197,59 @@ void brain_typo(Gui::EWords text, float hue, int transparency, Point point, int 
 {
 	int flag = 0;//flag초기화
 
-	Mat img = white_bg;	//기본배경 설정
-	Gui::brain_data data = { img,text,hue,transparency,point,font_scale }; //입력받은 값 data변수에 담기
-
-	if (index == 0)
-	{	//처음값은 모두 data,text값 모두 저장
-		pre_data[index] = Gui::whale_brain(data);
-		pre_text[index] = data.text.text;
-		index++;
-	}
-	else
+	if (!white_bg.empty())
 	{
-		//기존 단어들과 비교하여 이미 있는 단어면 기존단어data에 새로운 data덮기
-		for (int i = 0; i < index; i++)
-		{
-			if (pre_text[i] == data.text.text)
-			{
-				pre_data[i] = Gui::whale_brain(data);
-				flag = 1;
-				//printf("already\n");
-			}
-		}
-		if (flag == 0)//기존에 없는 단어면 data,text저장
-		{
+		Mat img = white_bg;	//기본배경 설정
+		Gui::brain_data data = { img,text,hue,transparency,point,font_scale }; //입력받은 값 data변수에 담기
+
+		if (index == 0)
+		{	//처음값은 모두 data,text값 모두 저장
 			pre_data[index] = Gui::whale_brain(data);
-			pre_text[index] = data.text.text;
-			//printf("not yet\n");
+			pre_text[index] = data.word.text;
 			index++;
-		}
-	}
-
-	//img출력을 위한 for문
-	for (int i = 0; i < index; i++)
-	{
-		if (i == 0)
-		{
-			//첫index img불러오기
-			img = pre_data[i].img;
 		}
 		else
 		{
-			//단어 추가해서 img생성
-			pre_data[i].img = img;
-			pre_data[i] = Gui::whale_brain(pre_data[i]);
-			img = pre_data[i].img;
+			//기존 단어들과 비교하여 이미 있는 단어면 기존단어data에 새로운 data덮기
+			for (int i = 0; i < index; i++)
+			{
+				if (pre_text[i] == data.word.text)
+				{
+					pre_data[i] = Gui::whale_brain(data);
+					flag = 1;
+					//printf("already\n");
+				}
+			}
+			if (flag == 0)//기존에 없는 단어면 data,text저장
+			{
+				pre_data[index] = Gui::whale_brain(data);
+				pre_text[index] = data.word.text;
+				//printf("not yet\n");
+				index++;
+			}
 		}
+
+		//img출력을 위한 for문
+		for (int i = 0; i < index; i++)
+		{
+			if (i == 0)
+			{
+				//첫index img불러오기
+				img = pre_data[i].img;
+			}
+			else
+			{
+				//단어 추가해서 img생성
+				pre_data[i].img = img;
+				pre_data[i] = Gui::whale_brain(pre_data[i]);
+				img = pre_data[i].img;
+			}
+		}
+		imshow("whale brain", img);
+
 	}
-	imshow("whale brain", img);
+	else
+		cout << "bg_img read fail";
 	//waitKey(500);
 }
 
@@ -456,19 +475,6 @@ Mat Gui::stick_chart(Mat& img, int pleasantness, int energy) //(막대그래프�
 	return img_stick;
 }
 
-//입력받은 감정단어를 emotion_grid에 점찍어주는 함수
-Mat Gui::emotion_word_point(Mat& img, Point word) 
-{
-	Mat img_grid = img.clone();
-	
-	Scalar color = emotion_word_color(word);	//word의 위치좌표에 맞는 색상을 반환하는 함수
-	circle(img_grid, Point(word.x, word.y), 4, color, -1);
-
-	//imshow("emotion_grid", emotion_grid);
-
-	return img_grid;
-}
-
 //stick_chart에 사용되는 직사각형 그리기 함수
 Mat Gui::draw_rect(Mat img, int p ,int emotion ,Scalar color)
 {
@@ -551,10 +557,23 @@ Scalar Gui::trans_text_color(int emotion, Scalar color, int bl_n_wh)
 	return Scalar(b, g, r);
 }
 
-//단어의 좌표 위치에 따른 색상 변환함수
-Scalar Gui::emotion_word_color(Point word)
+//입력받은 감정단어를 emotion_grid에 점찍어주는 함수
+Mat Gui::emotion_word_point(Mat& img, Point p)
 {
-	Point word_color = word;	//word_color은 deg2hue함수를 사용하기 위한 좌표값을 위한 변수
+	Mat img_grid = img.clone();
+
+	Scalar color = emotion_word_color(p);	//word의 위치좌표에 맞는 색상을 반환하는 함수
+	circle(img_grid, Point(p.x, p.y), 4, color, -1);
+
+	//imshow("emotion_grid", emotion_grid);
+
+	return img_grid;
+}
+
+//단어의 좌표 위치에 따른 색상 변환함수
+Scalar Gui::emotion_word_color(Point p)
+{
+	Point word_color = p;	//word_color은 deg2hue함수를 사용하기 위한 좌표값을 위한 변수
 
 	//word값을 emotion값으로 변화시켜주는 계산식
 	word_color.x -= zeroP.x;
@@ -566,10 +585,10 @@ Scalar Gui::emotion_word_color(Point word)
 }
 
 //고래 뇌속 텍스트를 나타내는 함수
-Gui::brain_data Gui::whale_brain(brain_data data)
+Gui::brain_data Gui::whale_brain(Gui::brain_data data)
 {
 	Mat brain = data.img.clone();
-	String text = data.text.text;
+	String text = data.word.text;
 
 	float hue = 450 - (data.hue * 2);	//360 - (hue*2 - 90) 그래프의 색상이 hue값변화의 반대방향에 90도 회전하여 나타내있어 보정하는 계산
 	if (hue > 360)
