@@ -1,150 +1,75 @@
 #pragma once
-<<<<<<< HEAD:cpp/service.h
 //ÆíÀÇ¸¦ À§ÇÑ ±â´ÉµéÀ» Á¤ÀÇÇÑ Çì´õ
-=======
-//íŽ¸ì˜ë¥¼ ìœ„í•œ ê¸°ëŠ¥ë“¤ì„ ì •ì˜í•œ í—¤ë”
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include <chrono>
 #include <iostream>
 
 namespace chan {
-<<<<<<< HEAD:cpp/service.h
 	//** error Ãâ·Â
 	//* sys Ãâ·Â
 
 	double dTime; // 1loop ´ç °É¸®´Â ½Ã°£
-=======
-	//** error ì¶œë ¥
-	//* sys ì¶œë ¥
 
-	double dTime; // 1loop ë‹¹ ê±¸ë¦¬ëŠ” ì‹œê°„
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
-	
 	int CH_count = -1;
 	std::chrono::system_clock::time_point tpStart, tpEnd;
-	
+
 	/*
-	
-<<<<<<< HEAD:cpp/service.h
+
 	# ½ÃÀÛÃøÁ¤
 	for¹®ÀÌ³ª while¹® ¾È¿¡ ³Ö¾î¼­ ÀÚµ¿À¸·Î ½Ã°£ÁÖ±â¸¦ ÃøÁ¤ÇØÁÖ´Â ÇÔ¼ö
-
 	- Check_Time(int Loop = 1000)
-
 	- for (int i = 0; (i < 1000)&chan::Check_Time(); i++){}
 	- while(chan::Check_Time()){}
-
 	- ÃÑ ½Ã°£ÀÌ ¾Æ´Ï¶ó Á¦¾îÁÖ±â ¸¸Å­¸¸(1·çÇÁ)
-
 	¸î¹ø ·çÇÁ¸¦ ¼öÇàÇÑµÚ ½Ã°£À» ÃøÁ¤ÇÒ °ÍÀÎÁö¸¦ ÀÔ·ÂÀ¸·Î ¹ÞÀ½
 	-ÃßÈÄ À©µµ¿ì »ó¿¡ ±ÛÀÚ·Î ¶ç¿ì´Â °ÍÀ¸·Î ¼öÁ¤ ¿¹Á¤
 	-ÃÊ±âÈ­ ÇÔ¼ö¸¦ ¸¸µé ¿¹Á¤
-=======
-	# ì‹œìž‘ì¸¡ì •
-	forë¬¸ì´ë‚˜ whileë¬¸ ì•ˆì— ë„£ì–´ì„œ ìžë™ìœ¼ë¡œ ì‹œê°„ì£¼ê¸°ë¥¼ ì¸¡ì •í•´ì£¼ëŠ” í•¨ìˆ˜
-	- Check_Time(int Loop = 1000)
-	- for (int i = 0; (i < 1000)&chan::Check_Time(); i++){}
-	- while(chan::Check_Time()){}
-	- ì´ ì‹œê°„ì´ ì•„ë‹ˆë¼ ì œì–´ì£¼ê¸° ë§Œí¼ë§Œ(1ë£¨í”„)
-	ëª‡ë²ˆ ë£¨í”„ë¥¼ ìˆ˜í–‰í•œë’¤ ì‹œê°„ì„ ì¸¡ì •í•  ê²ƒì¸ì§€ë¥¼ ìž…ë ¥ìœ¼ë¡œ ë°›ìŒ
-	-ì¶”í›„ ìœˆë„ìš° ìƒì— ê¸€ìžë¡œ ë„ìš°ëŠ” ê²ƒìœ¼ë¡œ ìˆ˜ì • ì˜ˆì •
-	-ì´ˆê¸°í™” í•¨ìˆ˜ë¥¼ ë§Œë“¤ ì˜ˆì •
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
 	*/
-
 	bool Check_Time(int Loop = 1000) {
 		CH_count++;
 
-		if(CH_count == 0) {
-<<<<<<< HEAD:cpp/service.h
+		if (CH_count == 0) {
 			tpStart = std::chrono::system_clock::now(); //½Ã°£ ÃøÁ¤ ½ÃÀÛ 
-			printf("½ÃÀÛ");
-=======
-			tpStart = std::chrono::system_clock::now(); //ì‹œê°„ ì¸¡ì • ì‹œìž‘ 
-			printf("ì‹œìž‘");
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
+			printf("tlwkr");
 			return 1;
 		}
-		else if (CH_count < Loop){
+		else if (CH_count < Loop) {
 			return 1;
 		}
-		else if(CH_count == Loop) {
-<<<<<<< HEAD:cpp/service.h
+		else if (CH_count == Loop) {
 			tpEnd = std::chrono::system_clock::now(); //½Ã°£ ÃøÁ¤ ³¡
-			dTime = std::chrono::duration_cast<std::chrono::nanoseconds>(tpEnd - tpStart).count() /1e6 / Loop;
+			dTime = std::chrono::duration_cast<std::chrono::nanoseconds>(tpEnd - tpStart).count() / 1e6 / Loop;
+			std::cout << "Loop Time: " << dTime << "ms" << std::endl;
 			printf("Loop Time: %.3lf ms\n", dTime);
 
 			tpStart = std::chrono::system_clock::now(); //½Ã°£ ÃøÁ¤ ½ÃÀÛ
-=======
-			tpEnd = std::chrono::system_clock::now(); //ì‹œê°„ ì¸¡ì • ë
-			dTime = std::chrono::duration_cast<std::chrono::nanoseconds>(tpEnd - tpStart).count() /1e6 / Loop;
-			printf("Loop Time: %.3lf ms\n", dTime);
-
-			tpStart = std::chrono::system_clock::now(); //ì‹œê°„ ì¸¡ì • ì‹œìž‘
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
 			CH_count = 0;
 			return 1;
 		}
 		else {
-			printf("\n ** error Check_Time!! \n");
+			printf("\n** error Check_Time!!\n");
 			return 1;
 		}
-		/*//TEST Check_Time
-		for (int i = 0; (i < 1000)&chan::Check_Time(); i++) {
-<<<<<<< HEAD:cpp/service.h
-			cout << "!";//´ÊÃß±â À§ÇØ µð¹ö±ë ¸ðµå·Î ºôµå
-			for (int j = 0; j < 1000; j++) {
-				for (int k = 0; k < 1000; k++) {
-					//½Ã°£¼Ò¸ð
-=======
-			cout << "!";//ëŠ¦ì¶”ê¸° ìœ„í•´ ë””ë²„ê¹… ëª¨ë“œë¡œ ë¹Œë“œ
-			for (int j = 0; j < 1000; j++) {
-				for (int k = 0; k < 1000; k++) {
-					//ì‹œê°„ì†Œëª¨
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
-					int a = 100;
-					int b = 100;
-					int c = a = a * b;
-					c = b = a * c - b;
-<<<<<<< HEAD:cpp/service.h
-					//½Ã°£¼Ò¸ð_end
-=======
-					//ì‹œê°„ì†Œëª¨_end
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
-		}}}*/
-
 	}//end Check_Time
-	
-
-	int* int_track_vaule = nullptr;
-
-	double* double_track_vaule = nullptr;
-
-<<<<<<< HEAD:cpp/service.h
-	//ºü¸¥ Æ®·º¹Ù
-	//ÀÌÈÄ Å¬·¡½º·Î º¯°æ
-=======
-	//ë¹ ë¥¸ íŠ¸ë ‰ë°”
-	//ì´í›„ í´ëž˜ìŠ¤ë¡œ ë³€ê²½
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
-	static void on_trackbar(int _value , void* _userdata) {
-		_userdata = (double*)(int*)(int)((*(int*)_value) / 10.0);
-	}
-
-
-	void fast_trackbar(double* _value) {
-		cv::namedWindow("track Bar");
-		double_track_vaule = _value;
-		cv::createTrackbar("value / 10.0", "track Bar", int_track_vaule, 1000, on_trackbar, _value);
-		//setTrackbarPos("low threshold", "Canny", 50);
-		//00 = getTrackbarPos('low threshold', 'Canny')
-	}
-
 
 }
-<<<<<<< HEAD:cpp/service.h
 
-
-=======
->>>>>>> 74479fc5bfa5f5b21941707898be987380fc147f:service.h
+#endif // !EMOTION_H
+/*
+//TEST
+	for (int i = 0; (i < 1000)&chan::Check_Time(); i++) {
+		cout << "!";//´ÊÃß±â À§ÇØ µð¹ö±ë ¸ðµå·Î ºôµå
+		for (int j = 0; j < 1000; j++) {
+			for (int k = 0; k < 1000; k++) {
+				//½Ã°£¼Ò¸ð
+				int a = 100;
+				int b = 100;
+				int c = a = a * b;
+				c = b = a * c - b;
+				//½Ã°£¼Ò¸ð_end
+			}
+		}
+	}
+*/
