@@ -18,4 +18,5 @@ Communication_Emotion_Bot
 
 
 ## Hardware Architecture
+<img width="582" alt="hw" src="https://user-images.githubusercontent.com/52673977/77333956-83e36b80-6d67-11ea-809c-83a00d6180e6.png">
 
