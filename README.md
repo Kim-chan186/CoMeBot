@@ -1,4 +1,5 @@
-# ComEBot
+﻿# ComEBot
+
 Communication_Emotion_Bot
 
 
@@ -13,3 +14,8 @@ Communication_Emotion_Bot
 ## System Architecture
 
 ![sys_arc](https://user-images.githubusercontent.com/52673977/73717132-40538480-475c-11ea-8513-fb641a1aa128.png)
+
+
+
+## Hardware Architecture
+
