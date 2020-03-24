@@ -1,4 +1,5 @@
 """
+pip install pillow로 모듈설치
 ※main함수에서 사용법
 from gui import gui_main,brain_typo,del_typo 함수를 추가한다
 이미지 파일 경로(대략 58~62줄)은 자신의 폴더에 맞게 수정바람,폰트(394줄)도 프로젝트 경로에 추가해주세요!
