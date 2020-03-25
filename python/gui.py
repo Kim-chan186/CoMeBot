@@ -1,14 +1,15 @@
 """
-pip install pillow로 모듈설치
 ※main함수에서 사용법
+pip install pillow로 모듈설치
 from gui import gui_main,brain_typo,del_typo 함수를 추가한다
-이미지 파일 경로(대략 58~62줄)은 자신의 폴더에 맞게 수정바람,폰트(394줄)도 프로젝트 경로에 추가해주세요!
+이미지 파일 경로(대략 21~25줄)은 자신의 폴더에 맞게 수정바람,폰트(27줄)도 프로젝트 경로에 추가해주세요!
 gui_main((mode좌표),(emotion좌표),mood값,energy값)    ex)gui_main((50,50),(-30,-70),-60,30)
 brain_typo('문장',hue값,투명도,(문장위치좌표),폰트크기) ex)brain_typo('반가워',70,100,(70,-30),40)
 -->투명도는 0(투명)~100(불투명)사이의값
 -->단어위치좌표 원점(0,0) max는(100,100), min는(-100,-100)임
 -->글자 폰트 크기는 30~50정도가 적당한 사이즈 딱히 범위 제한은 없음 필요한 사이즈로 조절하시길
 del_typo('문장') 입력했던 문장중에 지우고 싶은 문장 지우는 함수   ex)del_typo('반가워')
+참고)458줄에 __main__ 코드 작성(cv.Waitkey(0)있어서 화면넘기면서 변화확인)
 """
 from math import atan2
 from numpy import double
@@ -16,6 +17,14 @@ from typing import NamedTuple
 from PIL import ImageFont,ImageDraw,Image
 import numpy as np
 import cv2 as cv
+
+whale_path = "img/whale.jpg"    #원형그래프 이미지 경로
+stick_path = "img/stick.jpg"    #막대그래프 이미지 경로
+emotion_grid_path = "img/emotion_grid.jpg"  #emotion_grid 이미지 경로
+white_bg_path = "img/white_bg"  #흰배경 이미지 경로
+black_bg_path = "img/black_bg"  #검은배경 이미지 경로
+
+font_path = "./malgun.ttf"  #폰트경로
 
 PI = 3.14
 #scalar 색 정의(b,g,r)
@@ -56,11 +65,11 @@ class brain_data(NamedTuple):
     point: Point
     font_scale: int
 
-color_img = cv.imread(r"C:\Users\USER\PycharmProjects\Gui\img\whale.jpg", cv.IMREAD_COLOR) #원형색상그래프 이미지 불러오기
-stick_img = cv.imread(r"C:\Users\USER\PycharmProjects\Gui\img\stick.jpg", cv.IMREAD_COLOR) #막대그래프 이미지 불러오기
-emotion_grid = cv.imread(r"C:\Users\USER\PycharmProjects\Gui\img\emotion_grid.jpg", cv.IMREAD_COLOR)   #emotion_grid 이미지 불러오기
-black_bg = cv.imread(r"C:\Users\USER\PycharmProjects\Gui\img\black_bg.jpg", cv.IMREAD_COLOR)   #검정배경 불러오기
-white_bg = cv.imread(r"C:\Users\USER\PycharmProjects\Gui\img\white_bg.jpg", cv.IMREAD_COLOR)   #하얀배경 불러오기
+color_img = cv.imread(whale_path, cv.IMREAD_COLOR) #원형색상그래프 이미지 불러오기
+stick_img = cv.imread(stick_path, cv.IMREAD_COLOR) #막대그래프 이미지 불러오기
+emotion_grid = cv.imread(emotion_grid_path, cv.IMREAD_COLOR)   #emotion_grid 이미지 불러오기
+black_bg = cv.imread(black_bg_path, cv.IMREAD_COLOR)   #검정배경 불러오기
+white_bg = cv.imread(white_bg_path, cv.IMREAD_COLOR)   #하얀배경 불러오기
 
 index = 0
 pre_text = []
@@ -392,7 +401,7 @@ def whale_brain(data):
 
     text = data.word
     font_scale = data.font_scale
-    fontpath = "./malgun.ttf"
+    fontpath = font_path
     font = ImageFont.truetype(fontpath, font_scale)
     img_pil = Image.fromarray(brain)
     draw = ImageDraw.Draw(img_pil)
@@ -446,3 +455,25 @@ def combine_imshow(circleL,circleS,stick):
     vertical = np.vstack((circleS,stick))
     horizontal = np.hstack((circleL,vertical))
     cv.imshow("result",horizontal)
+
+if __name__ == "__main__":
+    gui_main((50, 50), (-30, -70), -60, 30)
+    brain_typo('잘되는구만', 20, 50, (0, 0), 100)
+    cv.waitKey(0)
+    brain_typo('반가워', 70, 100, (70, -30), 40)
+    cv.waitKey(0)
+    brain_typo('잘되는구만', 30, 50, (0, 0), 60)
+    cv.waitKey(0)
+    del_typo('잘되는구만')
+    cv.waitKey(0)
+    gui_main((-50, 50), (45, -40), 10, -90)
+    brain_typo('반가워', 120, 50, (-70, -30), 20)
+    cv.waitKey(0)
+    brain_typo('잘되는구만', 70, 20, (0, 0), 10)
+    cv.waitKey(0)
+    brain_typo('잘되는구만', 100, 100, (0, 50), 50)
+    cv.waitKey(0)
+    del_typo('잘되는구만')
+    cv.waitKey(0)
+    del_typo('반가워')
+    cv.waitKey(0)
