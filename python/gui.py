@@ -21,8 +21,8 @@ import cv2 as cv
 whale_path = "img/whale.jpg"    #원형그래프 이미지 경로
 stick_path = "img/stick.jpg"    #막대그래프 이미지 경로
 emotion_grid_path = "img/emotion_grid.jpg"  #emotion_grid 이미지 경로
-white_bg_path = "img/white_bg"  #흰배경 이미지 경로
-black_bg_path = "img/black_bg"  #검은배경 이미지 경로
+white_bg_path = "img/white_bg.jpg"  #흰배경 이미지 경로
+black_bg_path = "img/black_bg.jpg"  #검은배경 이미지 경로
 
 font_path = "./malgun.ttf"  #폰트경로
 
