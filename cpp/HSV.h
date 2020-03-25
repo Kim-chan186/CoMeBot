@@ -389,11 +389,9 @@ public:
 
 
 
-	Mat binarization(const Mat& _img) const {
+	Mat binarization(const Mat& _img, Mat& _mask1) const {
 
-		Mat _img_mask1,
-			_img_mask2,
-			_img_hsv;
+		Mat _img_hsv;
 
 		cvtColor(_img, _img_hsv, COLOR_BGR2HSV);
 		
@@ -401,27 +399,89 @@ public:
 		inRange(_img_hsv,
 			this->Low_Scalar(),
 			this->High_Scalar(),
-			_img_mask1
+			_mask1
 		);		//지정한 hsv 범위를 이용하여 영상을 이진화
 		
 
 		if ((this->key == 1) | (this->key == 2)) {
+			
+			Mat _mask2;
 
 			inRange(_img_hsv,
 				this->Low_Scalar(true),
 				this->High_Scalar(true),
-				_img_mask2);
+				_mask2);
 
-			_img_mask1 |= _img_mask2;
+			_mask1 |= _mask2;
 		}
 		
 			//morphological closing 모폴로지 열림연산
-		dilate(_img_mask1, _img_mask1, getStructuringElement(MORPH_ELLIPSE, this->_dilate));
+		dilate(_mask1, _mask1, getStructuringElement(MORPH_ELLIPSE, this->_dilate));
 		
-		erode(_img_mask1, _img_mask1, getStructuringElement(MORPH_ELLIPSE, this->_erode));
-		cout << _dilate << "D\n";
-		cout << _erode << "D\n";
-		return _img_mask1;
+		erode(_mask1, _mask1, getStructuringElement(MORPH_ELLIPSE, this->_erode));
+
+		return _mask1;
+	}
+
+
+
+	void labeling(Mat& frame, const Mat& _mask, Point& p) {
+
+
+		Mat img_labels, stats, centroids;
+
+		int numoflables = connectedComponentsWithStats(_mask, img_labels,
+			stats, centroids, 8, CV_32S);
+
+		//라벨링
+		int max[2] = { -1 - 1 }, idx[2] = { 0, 0 };
+
+
+		for (int j = 1; j < numoflables; j++) {
+			int area = stats.at<int>(j, CC_STAT_AREA);
+
+			if (area > 100) {
+
+				if (*max < area) {
+					*(max + 1) = *max;
+					*(idx + 1) = *idx;
+
+					*max = area;
+					*idx = j;
+				}
+				else if (*(max + 1) < area) {
+					*(max + 1) = area;
+					*(idx + 1) = j;
+				}
+			}
+		}
+
+
+		//유효 라벨 찾기
+		for (int j = 1; j < numoflables; j++) {
+
+			//모든 라벨 그리기
+			int left = stats.at<int>(j, CC_STAT_LEFT);
+			int top = stats.at<int>(j, CC_STAT_TOP);
+			int width = stats.at<int>(j, CC_STAT_WIDTH);
+			int height = stats.at<int>(j, CC_STAT_HEIGHT);
+
+
+			if (j == *idx){// | (j == *(idx + 1))) {
+				//사용할 라벨 그리기
+				rectangle(frame, Point(left, top), Point(left + width, top + height),
+					Scalar(255, 0, 255), 2);
+
+				p = Point(left + width / 2, top + height);
+			}
+			else {
+				//사용하지 않는 라벨 그리기
+				rectangle(frame, Point(left, top), Point(left + width, top + height),
+					Scalar(0, 0, 170), 1);
+			}
+
+		}
+
 	}
 
 
@@ -585,15 +645,6 @@ bool HSV(Mat& _cpm_img, Mat& _img_mask){
 
 
 
-	for (int i = 0; (i < numoflables)&(i < 2); i++) {
-		int left = stats.at<int>(*(idx + i), CC_STAT_LEFT);
-		int top = stats.at<int>(*(idx + i), CC_STAT_TOP);
-		int width = stats.at<int>(*(idx + i), CC_STAT_WIDTH);
-		int height = stats.at<int>(*(idx + i), CC_STAT_HEIGHT);
-
-		//int y = top + height;
-		//int x = left + width / 2;
-	}
 
 	/*
 	Mat img_show = imread("물고기.PNG");
