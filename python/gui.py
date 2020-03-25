@@ -21,7 +21,7 @@ import cv2 as cv
 whale_path = "img/whale.jpg"    #원형그래프 이미지 경로
 stick_path = "img/stick.jpg"    #막대그래프 이미지 경로
 emotion_grid_path = "img/emotion_grid.jpg"  #emotion_grid 이미지 경로
-white_bg_path = "img/white_bg.jpg"  #흰배경 이미지 경로
+white_bg_path = "img/black_bg.jpg"  #흰배경 이미지 경로
 black_bg_path = "img/black_bg.jpg"  #검은배경 이미지 경로
 
 font_path = "./malgun.ttf"  #폰트경로
@@ -71,7 +71,7 @@ emotion_grid = cv.imread(emotion_grid_path, cv.IMREAD_COLOR)   #emotion_grid 이
 black_bg = cv.imread(black_bg_path, cv.IMREAD_COLOR)   #검정배경 불러오기
 white_bg = cv.imread(white_bg_path, cv.IMREAD_COLOR)   #하얀배경 불러오기
 
-index = 0
+index = 10
 pre_text = []
 pre_data = []
 
@@ -100,26 +100,18 @@ def brain_typo(text,hue,transparency,point,font_scale):
         #print(type(img))
         data = brain_data(img,text,hue,transparency,point,font_scale)   #입력받은 값 data변수에 담기
 
-        if index == 0:
-            #처음값은 모두 data,text값 모두 저장
+        for i in range(len(pre_data)):
+            if pre_text[i] == data.word:
+                after_data = whale_brain(data)
+                pre_data[i] = after_data
+                #print("중복있음")
+                flag = 1
+        if flag == 0:
             after_data = whale_brain(data)
             pre_data.append(after_data)
             pre_text.append(data.word)
-            index += 1
-        else:
-            for i in range(len(pre_data)):
-                if pre_text[i] == data.word:
-                    after_data = whale_brain(data)
-                    pre_data[i] = after_data
-                    #print("중복있음")
-                    flag = 1
-            if flag == 0:
-                after_data = whale_brain(data)
-                pre_data.append(after_data)
-                pre_text.append(data.word)
-                #print("중복없음")
-                index += 1
-        print_typo()
+            #print("중복없음")
+
     except AttributeError:
         print("Can't open white_bg.jpg")
 
