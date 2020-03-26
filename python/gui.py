@@ -76,24 +76,21 @@ pre_text = []
 pre_data = []
 
 def gui_main(mode,emotion,mood,energy):
-    try :
-        try :
-            circleL = color_line_chart(color_img, mode)
-            circleS = color_line_chart(color_img, emotion)
-        except AttributeError:
+    if ((color_img is not None) & ((stick_img is not None))):
+        circleL = color_line_chart(color_img, mode)
+        circleS = color_line_chart(color_img, emotion)
+        stick = stick_chart(stick_img, mood, energy)
+        combine_imshow(circleL, circleS, stick)
+    else:
+        if (color_img is None) & (stick_img is None):
+            print("Can't open both whale.jpg and stick.jpg")
+        elif color_img is None:
             print("Can't open whale.jpg")
-
-        try :
-            stick = stick_chart(stick_img, mood, energy)
-        except AttributeError:
+        else:
             print("Can't open stick.jpg")
 
-        combine_imshow(circleL,circleS,stick)
-    except UnboundLocalError:
-        pass
-
 def brain_typo(text,hue,transparency,point,font_scale):
-    try:
+    if (white_bg is not None):
         flag = 0    #flag초기화
         global index
         img = white_bg  #기본배경 설정
@@ -120,7 +117,7 @@ def brain_typo(text,hue,transparency,point,font_scale):
                 #print("중복없음")
                 index += 1
         print_typo()
-    except AttributeError:
+    else:
         print("Can't open white_bg.jpg")
 
 def print_typo():
@@ -462,6 +459,7 @@ if __name__ == "__main__":
     cv.waitKey(0)
     brain_typo('반가워', 70, 100, (70, -30), 40)
     cv.waitKey(0)
+    brain_typo('안녕', 70, 100, (70, -30), 40)
     brain_typo('잘되는구만', 30, 50, (0, 0), 60)
     cv.waitKey(0)
     del_typo('잘되는구만')
