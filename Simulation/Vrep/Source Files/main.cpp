@@ -16,7 +16,6 @@ void ErrorHandling(char* message);
 #include <string.h>
 #include <windows.h>
 
-
 /*
 	Thread Include Files
 */
@@ -187,18 +186,12 @@ void recv_socket(SOCKET sock) {
 		if (bytesReceived > 0)
 		{
 			ibuff = atoi(buff); // buff : char[] -> int
-			//mode_buff = Mode[ibuff].c_str();
 			ibuff = atoi(Mode[ibuff].c_str());
-			//mMutex.lock();
+			
 			Oled_State = ibuff / 100;
 			Fin_State = (ibuff % 100) / 10;
 			Tail_State = ibuff % 10;
-			//mMutex.unlock();
 			printf("\nrecv: %s\n", &buff);
-			//printf("%d %d %d\n", Oled_State, Fin_State, Tail_State);
-			//cout << typeid(ibuff).name() << endl;
-			//cout << typeid(Oled_State).name() << endl;
-			//cout << "SERVER> " << string(buff, 0, bytesReceived) << endl;
 		}
 		Recv_CondVar.notifyOne();
 	}
@@ -207,19 +200,14 @@ void tran_socket(SOCKET sock) {
 	/* Transmit Variable */
 	char cMsg[] = "";
 	string packet;
-	int i = 0;
-	
+	int i = 0;	
 
 	/* ID Change */
-	//lock.unlock();
 	scanf_s("%d", &Id); //0 cpp 1 rei 2 stt
-	//Id = 0;
  	strcpy(cMsg, Data_Packet[0][Id].c_str()); //id : string -> char[]
 	send(sock, cMsg, strlen(cMsg), 0); // id setting in Server
 	
 	while (1) {
-		//unique_lock<mutex> lock(mMutex);
-		//mCondVar.wait(lock, []()->bool {return MotionEndFlag; });
 		Send_CondVar.wait();
 		
 		packet =
@@ -249,27 +237,18 @@ void motion_thread() {
 	int distribute = 0;
 	while(1){
 		Recv_CondVar.wait();
-		//unique_lock<mutex> lock(mMutex);
 		distribute = stoi(Mode[Mode_Select]);
-		//Oled_State = distribute / 100;
-		//Fin_State = (distribute % 100) / 10;
-		//Tail_State = distribute % 10;
 		printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);
 		/*Motion Function*/
 		Sleep(2000);
 		/*Motion End*/
 		
-		Send_CondVar.notifyOne();
-		//mCondVar.notify_all();		
+		Send_CondVar.notifyOne();	
 	}
 }
 
 int main(int argc, char* argv[])
 {
-	/* Main Variables */
-	//char cMsg[] = "";
-	//string packet;
-	//int i = 0;
 	Hungry_Para = 50;
 
 	/* TCP Transmission_Init */
@@ -295,35 +274,7 @@ int main(int argc, char* argv[])
 	vrep = thread(motion_thread);
 	tran = thread(tran_socket, hSocket);
 	recv = thread(recv_socket, hSocket);
-	
-	///* ID Change */
-	//scanf_s("%d", &Id); //0 cpp 1 rei 2 stt
 
-	//strcpy(cMsg, Data_Packet[0][Id].c_str()); //id : string -> char[]
-	//send(hSocket, cMsg, strlen(cMsg), 0); // id setting in Server
-	//while (1) {		
-	//	packet = 
-	//		 Data_Packet[0][Id]				+ "," 
-	//		+to_string(Hungry_Para)			+ "," 
-	//		+to_string(Tired_Para)			+ ","
-	//		+Data_Packet[3][Touch_Sensor]	+ ","
-	//		+Data_Packet[4][Force_Sensor]	+ ","
-	//		+Data_Packet[5][Lift_Sensor]	+ ","
-	//		+Data_Packet[6][Oled_State]		+ ","
-	//		+Data_Packet[7][Fin_State]		+ ","
-	//		+Data_Packet[8][Tail_State]		+ ","
-	//		+to_string(Oled_State)
-	//		+to_string(Fin_State)
-	//		+to_string(Tail_State)			+ ","
-	//		+to_string(Reward);
-
-	//	strcpy(cMsg, packet.c_str()); //packet : string -> char[]
-	//	//Packet Àü¼Û
-	//	send(hSocket, cMsg, strlen(cMsg), 0);
-
-	//	printf("\nSend_Packet: %s\n", cMsg);
-	//	Sleep(1000);
-	//}
 	recv.join();
 	para.join();
 	tran.join();
