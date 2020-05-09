@@ -2,7 +2,9 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <iostream>
 #include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
 
 #define TTT printf(" ** TEST0 **\n");
 #define TTT1 printf(" ** TEST1 **\n");
@@ -10,11 +12,7 @@
 #define TTT3 printf(" ** TEST3 **\n");
 #define TTT4 printf(" ** TEST4 **\n");
 
-/*
-if (CV_VERSION != "4.1.2")
-std::cout << "** OpcnCV Version is not 4.1.2\n"
-<< "** OpcnCV Version is " << CV_VERSION << std::endl;
-*/
+
 namespace debug {
 
 
@@ -22,28 +20,32 @@ namespace debug {
 
 	int calling = 1;
 
-
+	void check_PHAT() {
+		if (CV_VERSION != "4.1.2")
+			std::cout << "** OpcnCV Version is not 4.1.2\n"
+			<< "** OpcnCV Version is " << CV_VERSION << std::endl;
+	}
 
 	void empty(cv::Mat& data) {
-		cout << calling++ << ". debug empty : " << data.empty() << endl;
+		std::cout << calling++ << ". debug empty : " << data.empty() << std::endl;
 	}
 
 
 
 	void empty(cv::Mat& data, cv::Mat& data2) {
-		cout << calling++ << ". debug empty : " << data.empty() << data2.empty() << endl;
+		std::cout << calling++ << ". debug empty : " << data.empty() << data2.empty() << std::endl;
 	}
 
 
 
 	void empty(cv::Mat& data, cv::Mat& data2, cv::Mat& data3) {
-		cout << calling++ << ". debug empty : " << data.empty() << data2.empty() << data3.empty() << endl;
+		std::cout << calling++ << ". debug empty : " << data.empty() << data2.empty() << data3.empty() << std::endl;
 	}
 
 
 
 	void empty(cv::Mat& data, cv::Mat& data2, std::vector<cv::DMatch> data3) {
-		cout << calling++ << ". debug empty : " << data.empty() << data2.empty() << data3.empty() << endl;
+		std::cout << calling++ << ". debug empty : " << data.empty() << data2.empty() << data3.empty() << std::endl;
 	}
 
 
@@ -53,8 +55,8 @@ namespace debug {
 		cv::Mat show;
 		//cv::moveWindow("debug", 0, 0);
 		//cv::hconcat(data, data2, show);
-		imshow("debug:show1", data);
-		imshow("debug:show2", data2);
+		cv::imshow("debug:show1", data);
+		cv::imshow("debug:show2", data2);
 	}
 
 
@@ -63,9 +65,9 @@ namespace debug {
 		cv::Mat show;
 		//cv::moveWindow("debug", 0, 0);
 		//cv::hconcat(data, data2, show);
-		imshow("debug:show_wait1", data);
-		imshow("debug:show_wait2", data2);
-		waitKey(0);
+		cv::imshow("debug:show_wait1", data);
+		cv::imshow("debug:show_wait2", data2);
+		cv::waitKey(0);
 	}
 
 
@@ -77,7 +79,7 @@ namespace debug {
 		//cv::moveWindow("debug", 0, 0);
 		//cv::hconcat(data, data2, show);
 		cv::vconcat(data, data2, show);
-		imshow("debug:show_compare", show);
+		cv::imshow("debug:show_compare", show);
 	}
 
 
@@ -86,7 +88,7 @@ namespace debug {
 		cv::Mat show;
 		cv::vconcat(data, data2, show);
 		cv::vconcat(show, data3, show);
-		imshow("debug:show_compare", show);
+		cv::imshow("debug:show_compare", show);
 	}
 
 
@@ -96,7 +98,7 @@ namespace debug {
 		cv::vconcat(data, data2, show);
 		cv::vconcat(show, data3, show);
 		cv::vconcat(show, data4, show);
-		imshow("debug:show_compare", show);
+		cv::imshow("debug:show_compare", show);
 	}
 
 
@@ -107,7 +109,7 @@ namespace debug {
 		cv::vconcat(show, data3, show);
 		cv::vconcat(show, data4, show);
 		cv::vconcat(show, data5, show);
-		imshow("debug:show_compare", show);
+		cv::imshow("debug:show_compare", show);
 	}
 
 
@@ -124,7 +126,7 @@ namespace debug {
 			show_compare(data, show, n - 1);
 		}
 		else {
-			imshow("debug:show_compare", show);
+			cv::imshow("debug:show_compare", show);
 		}
 	}
 
@@ -133,12 +135,12 @@ namespace debug {
 	void show_blending(cv::Mat& data, cv::Mat& data2) {
 		cv::Mat show;
 		cv::addWeighted(data, 0.5, data2, 0.5, 0, show);
-		imshow("debug:show_blending", show);
+		cv::imshow("debug:show_blending", show);
 	}
 
 
 
-	string Mat_type[8] = {
+	std::string Mat_type[8] = {
 		"CV_8U"//   0
 		,"CV_8S"//   1
 		,"CV_16U"//  2
@@ -152,20 +154,20 @@ namespace debug {
 
 
 	void check_Mat(cv::Mat& data) {
-		cout << "\n >> debug check_Mat\n";
+		std::cout << "\n >> debug check_Mat\n";
 		if (data.empty()) {
-			cout << "빈 이미지 입니다.\n";
-			cout << " debug <<\n";
+			std::cout << "빈 이미지 입니다.\n";
+			std::cout << " debug <<\n";
 			return;
 		}
 		
-		cout << "cols     : " << data.cols << endl 
-			 << "rows     : "<< data.rows << endl;
-		cout << "channels : " << data.channels() << endl
-			 << "type     : " << Mat_type[data.type()] << endl
-			 << "depth    : " << data.depth() << endl;
+		std::cout << "cols     : " << data.cols << std::endl
+			 << "rows     : "<< data.rows << std::endl;
+		std::cout << "channels : " << data.channels() << std::endl
+			 << "type     : " << Mat_type[data.type()] << std::endl
+			 << "depth    : " << data.depth() << std::endl;
 
-		cout << " debug check_Mat <<\n";
+		std::cout << " debug check_Mat <<\n";
 	}
 }
 
