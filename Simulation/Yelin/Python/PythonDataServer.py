@@ -1,7 +1,7 @@
 import socketserver
 import threading
 
-HOST = '192.168.0.33'
+HOST = '192.168.0.26'
 PORT = 8585
 lock = threading.Lock()  # syncronized 동기화 진행하는 스레드 생성
 sync_lock = threading.Lock()

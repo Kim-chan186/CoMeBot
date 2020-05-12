@@ -3,7 +3,7 @@ from threading import Thread
 import threading
 import time
 
-HOST = '192.168.0.33'
+HOST = '192.168.0.26'
 PORT = 8585
 
 recv_packet =[]
