@@ -1,7 +1,7 @@
 import socketserver
 import threading
 
-HOST = '192.168.0.26'
+HOST = '192.168.0.33'
 PORT = 8585
 lock = threading.Lock()  # syncronized 동기화 진행하는 스레드 생성
 sync_lock = threading.Lock()
@@ -46,6 +46,7 @@ class DataManager:
                 self.sendMessageToOne("cpp", port, msg)
             if Id == "stt":
                 stt_data_num = int(msg)
+                print("stt:",stt_data_num)
             return
         if msg.strip() == '/quit':  # 보낸 메세지가 'quit'이면
             self.removeID(Id)
@@ -84,7 +85,6 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
             msg = 1
             while msg:
                 msg = self.request.recv(1024)
-                print(msg.decode())
                 if self.userman.messageHandler(Id, msg.decode(),self.client_address[1]) == -1:
                     self.request.close()
                     break

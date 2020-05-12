@@ -1,24 +1,31 @@
 #pragma once
+#ifndef DATA_FORMAT_H
+#define DATA_FORMAT_H
+
 #include <string>
 #include <string.h>
 
-#define IP_ADDRESS "192.168.0.26"
+#define IP_ADDRESS "127.0.0.1"
 #define BUFSIZE 1024
 
 using namespace std;
+
 /* ID */
 #define CPP			0
 #define REI			1
 #define STT			2
+
 /* TOUCH SENSOR MODE */
 #define DEFAULT		0
 #define HEAD		1
 #define BODY		2
 #define FIN			3
 #define TAIL		4
+
 /* SENSOR MODE*/	
 #define OFF			0
 #define ON			1
+
 /* OLED MODE */
 #define NORM		0
 #define HAPPY		1
@@ -26,18 +33,21 @@ using namespace std;
 #define ANGRY		3
 #define BORED		4
 #define FUN			5
+
 /* FIN MODE */
 #define SHAKE		0
 #define WING		1
 #define DOWN		2
 #define SLOW		3
 #define NOMOVE		4
+
 /* TAIL MODE */
 #define FAST		0
 #define SLOW		1
 //#define DOWN		2
 #define UP			3
 //#define NOMOVE	4
+
 /* FACE DETECT & MOTIONFLAG */
 #define NO			0
 #define YES			1
@@ -54,6 +64,7 @@ string Data_Packet[9][6] = {
 	{"m50","m51","m52","m53","m54"},		// FIN (0~3)
 	{"m60","m61","m62","m63","m64"},		// TAIL (0~3)
 };
+
 string Mode[20] = {
 	"002", // NORM		SHAKE		DOWN
 	"020", // NORM		DOWN		FAST
@@ -92,3 +103,4 @@ int				Reward = 0;
 int		   Mode_Select = 0;
 
 
+#endif
