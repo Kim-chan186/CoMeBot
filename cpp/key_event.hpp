@@ -14,9 +14,9 @@ namespace chan {
 	bool (*arrow_func)(bool) = cam::cam_brightness;
 
 
-	int waitKeySuper() {
+	int waitKeySuper(int num = 1) {
 		
-		int key = waitKeyEx(1);
+		int key = waitKeyEx(num);
 		if (key == -1) {
 			return -1;
 		}

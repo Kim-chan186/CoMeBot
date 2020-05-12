@@ -34,7 +34,8 @@ void Mouse_Event(int event, int x, int y, int flags, void* userdata)
 	}
 
 	if (event == EVENT_RBUTTONDOWN) {
-		std::cout << "오른쪽 마우스 버튼 클릭.. 좌표 = (" << x << ", " << y << ")" << endl;
+		//std::cout << "Point = (" << x << ", " << y << ")," << endl;
+		std::cout << "Rect (" << x << " - 40, " << y << " - 40, 80, 80);" << endl;
 	}
 }
 
