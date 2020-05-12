@@ -1,9 +1,8 @@
 #pragma once
 
-#ifndef COME_GUI_H
-#define COME_GUI_H
+#ifndef VREP_GUI_H
+#define VREP_GUI_H
 
-#include "Debug.h"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
