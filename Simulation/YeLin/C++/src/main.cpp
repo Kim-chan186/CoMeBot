@@ -1,7 +1,9 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 #include "main.h"
 #include "Data_Transmission.h"
 #include "VRep_GUI.h"
+
 
 using namespace std;
 using namespace cv;
@@ -25,9 +27,10 @@ void forcesensor()
 }
 void getpos()
 {
-	simxGetObjectPosition(clientID, come_objHandle[6], -1, bodyPos, simx_opmode_blocking);
+	simxGetObjectPosition(clientID, come_objHandle[6], -1, comebodyPos, simx_opmode_blocking);
 }
-void Parameter_Thread() {
+void Parameter_Thread()
+{
 	while (1) {
 		if (Hungry_Para > 0)
 			Hungry_Para--;
@@ -44,39 +47,63 @@ void Parameter_Thread() {
 // ?
 simxInt test_objHandle[2];
 
-
 /*///////////////////////////////////////////////////////////////////////////*/
 simxUChar*	   comeimage = 0;
 simxInt		   resolution[2];
 char _fps[5];	  string fps;
 void getimage()
 {
-	cv::namedWindow("vrep", CV_WINDOW_AUTOSIZE);
+	//namedWindow("vrep", CV_WINDOW_AUTOSIZE);
 
 	while (1) {//for (int time = 0; time < 1000; time++) {
-		int retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
-		if (retval != simx_return_ok) {
-			continue;
-		}
-		tpStart = system_clock::now();
-		dTime = 1.0 / duration_cast<milliseconds>(tpEnd - tpStart).count();
-		tpEnd = tpStart;
+
+		//tpStart = system_clock::now();
+		//dTime = 1.0 / duration_cast<milliseconds>(tpEnd - tpStart).count();
+		//tpEnd = tpStart;
 		//if (++cont_while == 1000) {
 		//	cont_while = 0;
 		//	tpEnd = system_clock::now();
 		//	dTime = 100000.0 / duration_cast<milliseconds>(tpEnd - tpStart).count();
 		//	tpStart = tpEnd;
 		//}
+		//_itoa_s(dTime + 0.1, _fps, 5, 10);	fps = _fps;
+		//
+		//putText(img, "FPS:" + fps, Point(430, 30), FONT_HERSHEY_PLAIN, 1.2, Scalar(255, 230, 100));
+		//imshow("vrep", img);
 
-		_itoa_s(dTime + 0.1, _fps, 5, 10);	fps = _fps;
-		Mat img(resolution[0], resolution[1], CV_8UC3, comeimage);
-		flip(img, img, 0);
-		cvtColor(img, img, cv::COLOR_RGB2BGR);
-		putText(img, "FPS:" + fps, Point(430, 30), FONT_HERSHEY_PLAIN, 1.2, Scalar(255, 230, 100));
-		cv::imshow("vrep", img);
-		cv::waitKey(27);
+		Mat img2 = Mat(Size(600, 600), CV_8UC3, Scalar::all(0));
+		GUI::img_vrep = &img2;
+		GUI::init();
+
+		for (int i = 0; GUI::waitKeySuper(1); i++) {
+			int retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
+			if (retval != simx_return_ok) {
+				continue;
+			}
+			Mat img(resolution[0], resolution[1], CV_8UC3, comeimage);
+			flip(img, img, 0);
+			cvtColor(img, img, cv::COLOR_RGB2BGR);
+			img2 = img;
+
+			// 밥, 잠, good, bad 순으로 보내는 부분
+			bool* bp = GUI::get_flag();
+			//for (int i = 0; i < 4; i++)
+			//	cout << bp[i] << " ";
+			//printf("\n");
+
+			// 받는 부분
+			bool cam_flag = false;
+			GUI::cam(0, 0, cam_flag);
+
+			int act[4] = { 2,2,2,1 };
+			GUI::action(act);
+			GUI::show();
+		}
+
+		waitKey(27);
 	}
 }
+
 void Mode_select(int Eye, int Wing, int Tail, int count)
 {
 	if (pre_EYE != Eye)
@@ -116,7 +143,7 @@ void motion_thread() {
 
 		if (clientID != -1) {
 			printf("Connection Established\n");
-			init();
+			vrepinit();
 			while (simxGetConnectionId(clientID) != -1) {
 				if (kbhit())
 				{
@@ -125,9 +152,6 @@ void motion_thread() {
 					switch (key) {
 					case I_COMMAND:
 						cout << " Initial Pos\n" << endl;
-						//_Init_walking_flag = true;
-						//_Walking_flag = false;
-						//_visibility_flag = false;
 						Mode_select(1, 3, 1, 2);
 						Send_CondVar.notifyOne();
 						break;
@@ -135,12 +159,6 @@ void motion_thread() {
 					case R_COMMAND:
 						cout << " Put\n" << endl;
 						Mode_select(4, 3, 1, 2);
-						//_Walking_flag = true;
-						//_Init_walking_flag = false;
-						//_visibility_flag = true;
-						//_WalkingCtrl._initialize();
-						//_WalkingCtrl.StartWalking();
-						//_WalkingCtrl.setApproachdata(0.0,0.0,50*DEGREE);
 						Send_CondVar.notifyOne();
 						break;
 
@@ -199,8 +217,8 @@ void motion_thread() {
 							simxSetObjectOrientation(clientID, test_objHandle[0], -1, Joint_Orientation_0, simx_opmode_streaming);
 						}
 						//////////// Read Body Position
-						simxGetObjectPosition(clientID, come_objHandle[6], -1, bodyPos, simx_opmode_streaming);
-						printf("Position : %f, %f, %f \n", bodyPos[0], bodyPos[1], bodyPos[2]);
+						simxGetObjectPosition(clientID, come_objHandle[6], -1, comebodyPos, simx_opmode_streaming);
+						printf("Position : %f, %f, %f \n", comebodyPos[0], comebodyPos[1], comebodyPos[2]);
 						Send_CondVar.notifyOne();
 						break;
 
@@ -214,26 +232,12 @@ void motion_thread() {
 					default:
 						break;
 					}
-				}
-
-				if (simulation_run == true) {
-					//if (_Init_walking_flag == true) {
-					//	/*      initial Pos      */
-					//	writedevice();
-					//	simxSynchronousTrigger(clientID);
-					//}
-					//else if (_Walking_flag == true) {
-					//	/*      target Pos      */
-					//	writedevice();
-					//	simxSynchronousTrigger(clientID);
-					//}
 					simxSynchronousTrigger(clientID);
 				}
-				/*Send_CondVar.notifyOne();*/
 			}
 			simxStopSimulation(clientID, simx_opmode_oneshot);
-			simxFinish(clientID);
 		}
+		simxFinish(clientID);
 	}
 }
 
@@ -244,9 +248,9 @@ void motion_thread() {
 int main(int argc, char* argv[])
 {
 	Hungry_Para = 50;
-	r
-		/* TCP Transmission_Init */
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리를 초기화하고 있다
+
+	/* TCP Transmission_Init */
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리를 초기화하고 있다
 			ErrorHandling("WSAStartup() error!");
 	hSocket = socket(PF_INET, SOCK_STREAM, 0); //소켓을 생성
 	if (hSocket == INVALID_SOCKET)
@@ -310,7 +314,6 @@ int main(int argc, char* argv[])
 	simxSetObjectIntParameter(clientID, R_eye_objHandle[HAPPY], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
 	simxSetObjectIntParameter(clientID, L_eye_objHandle[BORED], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
 	simxSetObjectIntParameter(clientID, R_eye_objHandle[BORED], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-
 
 
 	/*///////////////////////////////////////////////////////////////////////////*/

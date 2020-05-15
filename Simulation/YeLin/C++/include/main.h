@@ -30,7 +30,7 @@ extern "C" {
 
 
 /* VRep function */
-void				   init();
+void			   vrepinit();
 void	     delay(clock_t n);
 double dou_angle(double seta);
 
@@ -69,7 +69,7 @@ simxInt    R_eye_objHandle[6];
 simxInt		     image_Handle;
 simxInt		     force_Handle;
 
-simxFloat			   bodyPos[3] = { 0, };
+simxFloat		   comebodyPos[3] = { 0, };
 simxFloat		L_Wing_Joint_X[3] = { dou_angle(-180),dou_angle(-0.00000000033872),dou_angle(90) };
 simxFloat		R_Wing_Joint_X[3] = { dou_angle(-180),dou_angle(0.0000000000065138),dou_angle(-90) };
 simxFloat  Joint_Orientation_0[3] = { 0,0,0 };
@@ -81,7 +81,7 @@ simxFloat Joint_Orientation_90[3] = { 90 * M_PI / 180,0,0 };
 
 
 /*///////////////////////////////////////////////////////////////////////////*/
-void init() {
+void vrepinit() {
 	/* VREP Transmission_Init */
 	_Back_flag = false;
 	_Front_flag = false;
