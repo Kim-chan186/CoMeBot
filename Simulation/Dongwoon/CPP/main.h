@@ -14,7 +14,7 @@
 #include <string>
 #include <string.h>
 #include <windows.h>
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp>
 #include "Data_Format.h"
 /*
 	Thread Include Files

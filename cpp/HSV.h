@@ -210,7 +210,7 @@ class Color_Area {
 			img_mask,
 			gray_PNG;
 
-		gray_PNG = this->binarization(bgr_color_PNG);
+		gray_PNG = this->binarization(bgr_color_PNG, img_mask);
 
 		cvtColor(gray_PNG + 70, img_mask, COLOR_GRAY2BGR);
 		img_mask = ~(~img_mask + ~bgr_color_PNG);

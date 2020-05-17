@@ -40,7 +40,7 @@ void SIndex::set(std::string* _str, unsigned int _num) {
 	}
 	this->num = _num;
 
-	print_all();
+	//print_all();
 }
 
 int SIndex::search(std::string _str) //find string in index(map)
