@@ -1,4 +1,6 @@
 #pragma once
+#ifndef DATA_FORMAT_H
+#define DATA_FORMAT_H
 #include <string>
 #include <string.h>
 
@@ -54,26 +56,26 @@ string Data_Packet[9][6] = {
 	{"m60","m61","m62","m63","m64"},		// TAIL (0~3)
 };
 string Mode[20] = {
-	"002",//NORM		SHAKE		DOWN
-	"020",//NORM		DOWN		FAST
-	"030",//NORM		SLOW		FAST
-	"011",//NORM		WING		SLOW
-	"100",//HAPPY		SHAKE		FAST
-	"101",//HAPPY		SHAKE		SLOW
-	"131",//HAPPY		SLOW		SLOW
-	"212",//SAD			WING		DOWN
-	"221",//SAD			DOWN		SLOW
-	"222",//SAD			DOWN		DOWN
-	"232",//SAD			SLOW		DOWN
-	"300",//ANGRY		SHAKE		FAST
-	"303",//ANGRY		SHAKE		UP
-	"313",//ANGRY		WING		UP
-	"323",//ANGRY		DOWN		UP
-	"421",//BORED		DOWN		SLOW
-	"422",//BORED		WING		DOWN
-	"431",//BORED		SLOW		SLOW
-	"510",//FUN			WING		FAST
-	"513",//FUN			WING		UP
+	"002",//NORM		SHAKE		DOWN	0
+	"020",//NORM		DOWN		FAST	1
+	"030",//NORM		SLOW		FAST	2
+	"011",//NORM		WING		SLOW	3
+	"100",//HAPPY		SHAKE		FAST	4
+	"101",//HAPPY		SHAKE		SLOW	5
+	"131",//HAPPY		SLOW		SLOW	6
+	"212",//SAD			WING		DOWN	7
+	"221",//SAD			DOWN		SLOW	8
+	"222",//SAD			DOWN		DOWN	9
+	"232",//SAD			SLOW		DOWN	10
+	"300",//ANGRY		SHAKE		FAST	11
+	"303",//ANGRY		SHAKE		UP		12
+	"313",//ANGRY		WING		UP		13
+	"323",//ANGRY		DOWN		UP		14
+	"421",//BORED		DOWN		SLOW	15
+	"422",//BORED		WING		DOWN	16
+	"431",//BORED		SLOW		SLOW	17
+	"510",//FUN			WING		FAST	18
+	"513",//FUN			WING		UP		19
 };
 
 /* Packet Global Variables */
@@ -94,3 +96,4 @@ int Mode_Select = 0;
 /* Global Variables */
 
 
+#endif
