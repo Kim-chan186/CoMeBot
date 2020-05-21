@@ -256,217 +256,7 @@ simxFloat simxF_angle(simxFloat seta)	//Radian을 도로 바꾸는 함수
 {
 	return seta * M_PI / 180;
 }
-//Before
-//void Fin_Action_comebot(int n)
-//{
-//	switch (n) {
-//
-//	case 0:
-//		////////////// 날개 앞뒤로 크게 흔들기
-//		//////////// left wing
-//
-//		//if(flag == 0)	// A target 으로 가기
-//		simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
-//		//////////// right wing
-//		//else if(flag == 1) // B target 으로 가기
-//		simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
-//
-//		break;
-//
-//	case 1:
-//		////////////// 날개 위아래 흔들기
-//		//////////// left wing
-//
-//		//if(flag == 0)	// A target 으로 가기
-//		simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
-//		//////////// right wing
-//		//else if(flag == 1) // B target 으로 가기
-//		simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
-//
-//		break;
-//	case 2:
-//		////////////// 날개 아래로 떨구기
-//		//////////// left wing
-//
-//		//if(flag == 0)	// A target 으로 가기
-//		simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
-//		//////////// right wing
-//		//else if(flag == 1) // B target 으로 가기
-//		simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
-//
-//		break;
-//
-//	case 3:
-//		///////////slow 지느러미를 천천히 앞뒤로
-//
-//		if (mode_flag == 0)		// A target 으로 가기
-//		{
-//			//////////// left wing
-//			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
-//			//////////// right wing
-//			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
-//		}
-//		else if (mode_flag == 1)		// B target 으로 가기
-//		{
-//			//////////// left wing
-//			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(60.), simx_opmode_streaming);
-//			//////////// right wing
-//			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(-60.), simx_opmode_streaming);
-//		}
-//		break;
-//	case 4:		//slow 지느러미를 천천히 앞뒤로
-//
-//		break;
-//
-//	default:
-//
-//		break;
-//	}
-//}
-//void Tail_Action_comebot(int n)
-//{
-//
-//	switch (n) {
-//
-//	case 0:
-//		//////////// forward Tail
-//		simxSetJointTargetPosition(clientID, come_objHandle[0], dou_angle(200.), simx_opmode_streaming);
-//		//////////// back Tail
-//		simxSetJointTargetPosition(clientID, come_objHandle[1], dou_angle(140.), simx_opmode_streaming);
-//		break;
-//
-//	case 1:
-//		//////꼬리 천천히 흔들기
-//		if (mode_flag == 0)		// A target 으로 가기
-//		{
-//			//////////// forward Tail
-//			simxSetJointTargetPosition(clientID, come_objHandle[0], dou_angle(150.), simx_opmode_streaming);
-//			//////////// back Tail
-//			simxSetJointTargetPosition(clientID, come_objHandle[1], dou_angle(140.), simx_opmode_streaming);
-//		}
-//		else if (mode_flag == 1)		// B target 으로 가기
-//		{
-//			//////////// forward Tail
-//			simxSetJointTargetPosition(clientID, come_objHandle[0], dou_angle(200.), simx_opmode_streaming);
-//			//////////// back Tail
-//			simxSetJointTargetPosition(clientID, come_objHandle[1], dou_angle(230.), simx_opmode_streaming);
-//		}
-//		break;
-//
-//	case 2:
-//		//////////// forward Tail
-//		simxSetJointTargetPosition(clientID, come_objHandle[0], dou_angle(200.), simx_opmode_streaming);
-//		//////////// back Tail
-//		simxSetJointTargetPosition(clientID, come_objHandle[1], dou_angle(140.), simx_opmode_streaming);
-//		break;
-//	case 3:
-//		//////////// forward Tail
-//		simxSetJointTargetPosition(clientID, come_objHandle[0], dou_angle(200.), simx_opmode_streaming);
-//		//////////// back Tail
-//		simxSetJointTargetPosition(clientID, come_objHandle[1], dou_angle(140.), simx_opmode_streaming);
-//		break;
-//	case 4:
-//
-//		break;
-//	default:
-//
-//		break;
-//	}
-//}
-//void Eye_Action_comebot(int n)
-//{
-//	switch (n) {
-//	case NORM:
-//		//////////////////// 보이기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[NORM], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[NORM], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		//////////////////// 사라지기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		pre_EYE = n;
-//		break;
-//	case HAPPY:
-//		//////////////////// 보이기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[HAPPY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[HAPPY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		//////////////////// 사라지기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		pre_EYE = n;
-//		break;
-//	case SAD:
-//		//////////////////// 보이기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[SAD], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[SAD], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		//////////////////// 사라지기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		pre_EYE = n;
-//		break;
-//	case ANGRY:
-//		//////////////////// 보이기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[ANGRY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[ANGRY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		//////////////////// 사라지기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		pre_EYE = n;
-//		break;
-//	case BORED:
-//		//////////////////// 보이기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[BORED], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[BORED], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		//////////////////// 사라지기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		pre_EYE = n;
-//		break;
-//	case FUN:
-//		//////////////////// 보이기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[FUN], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[FUN], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-//		//////////////////// 사라지기
-//		simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-//		pre_EYE = n;
-//		break;
-//	default:
-//		break;
-//	}
-//}
-//void Mode_select(int Eye, int Wing, int Tail, int count)
-//{
-//	if (pre_EYE != Eye)
-//		Eye_Action_comebot(Eye);
-//
-//	for (int i = 0; i < count; i++)
-//	{
-//		for (int j = 0; j < 3; j++)
-//		{
-//			Fin_Action_comebot(Wing);
-//			Tail_Action_comebot(Tail);
-//			simxSynchronousTrigger(clientID);
-//		}
-//		/*for (int j = 0; j < 1000000; j++)
-//		{
-//		}*/
-//		mode_flag = 1;
-//		//delay(1000);
-//		//Sleep(1000);
-//		for (int j = 0; j < 3; j++)
-//		{
-//			Fin_Action_comebot(Wing);
-//			Tail_Action_comebot(Tail);
-//			simxSynchronousTrigger(clientID);
-//		}
-//		/*	for (int j = 0; j < 1000000; j++)
-//			{
-//			}*/
-//		mode_flag = 0;
-//		//delay(1000);
-//		//Sleep(1000);
-//	}
-//}
+
 
 void init_Joint_Angle_comebot()
 {
@@ -686,80 +476,37 @@ void Tail_Action_comebot(int n)
 void Eye_Action_comebot(int n)
 {
 	simxFloat prop;
-	prop = 1;
+	prop = 1;	// 눈 보이기
 	switch (n) {
 	case NORM:
-		// 보이기
 		simxCallScriptFunction(clientID, "normal_left", sim_scripttype_childscript, "normal_left", 1, &L_eye_objHandle[NORM], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 		simxCallScriptFunction(clientID, "normal_right", sim_scripttype_childscript, "normal_right", 1, &R_eye_objHandle[NORM], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[NORM], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[NORM], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//// 사라지기
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//pre_EYE = n;
 		break;
 	case HAPPY:
-		// 보이기
 		simxCallScriptFunction(clientID, "happy_left", sim_scripttype_childscript, "happy_left", 1, &L_eye_objHandle[HAPPY], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 		simxCallScriptFunction(clientID, "happy_right", sim_scripttype_childscript, "happy_right", 1, &R_eye_objHandle[HAPPY], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[HAPPY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[HAPPY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//// 사라지기
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//pre_EYE = n;
 		break;
 	case SAD:
-		// 보이기
 		simxCallScriptFunction(clientID, "sad_left", sim_scripttype_childscript, "sad_left", 1, &L_eye_objHandle[SAD], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 		simxCallScriptFunction(clientID, "sad_right", sim_scripttype_childscript, "sad_right", 1, &R_eye_objHandle[SAD], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[SAD], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[SAD], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//// 사라지기
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//pre_EYE = n;
 		break;
 	case ANGRY:
-		// 보이기
 		simxCallScriptFunction(clientID, "angry_left", sim_scripttype_childscript, "angry_left", 1, &L_eye_objHandle[ANGRY], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 		simxCallScriptFunction(clientID, "angry_right", sim_scripttype_childscript, "angry_right", 1, &R_eye_objHandle[ANGRY], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[ANGRY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[ANGRY], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//// 사라지기
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//pre_EYE = n;
 		break;
 	case BORED:
-		// 보이기
 		simxCallScriptFunction(clientID, "boring_left", sim_scripttype_childscript, "boring_left", 1, &L_eye_objHandle[BORED], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 		simxCallScriptFunction(clientID, "boring_right", sim_scripttype_childscript, "boring_right", 1, &R_eye_objHandle[BORED], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[BORED], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[BORED], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//// 사라지기
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//pre_EYE = n;
 		break;
 	case FUN:
-		// 보이기
 		simxCallScriptFunction(clientID, "fun_left", sim_scripttype_childscript, "fun_left", 1, &L_eye_objHandle[FUN], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 		simxCallScriptFunction(clientID, "fun_right", sim_scripttype_childscript, "fun_right", 1, &R_eye_objHandle[FUN], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[FUN], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[FUN], sim_objintparam_visibility_layer, 1, simx_opmode_oneshot_wait);
-		//// 사라지기
-		//simxSetObjectIntParameter(clientID, L_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//simxSetObjectIntParameter(clientID, R_eye_objHandle[pre_EYE], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-		//pre_EYE = n;
 		break;
 	default:
 		break;
 	}
 
-	// 눈 사라지기
-	prop = 2;
+	prop = 2;	// 눈 사라지기
 	switch (pre_EYE) {
 	case NORM:
 		simxCallScriptFunction(clientID, "normal_left", sim_scripttype_childscript, "normal_left", 1, &L_eye_objHandle[NORM], 1, &prop, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
