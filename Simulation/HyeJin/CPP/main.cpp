@@ -58,8 +58,7 @@ using namespace chrono;
 
 /* Function Define */
 void init();
-void readdevice();
-void writedevice();
+void vrep_parameter();
 void recv_socket(SOCKET sock);
 void delay(clock_t n);
 double dou_angle(double seta);
@@ -84,6 +83,7 @@ int i_mode = 0;
 int cnt;
 int joint_angle = 0;
 int	force_flag;
+int lift_flag;
 int mode_flag = 0;
 int pre_EYE = 0;
 
@@ -183,7 +183,8 @@ simxInt		   resolution[2];
 char _fps[5];	  string fps;
 
 /* Sensor Variables */
-simxFloat force_cur = -0.182;
+simxFloat force_cur = 0;		// -0.182;
+simxFloat vrep_cur[2];
 simxFloat getposition[3] = { 0, };
 
 /*////////////////////////////////[END Variable]//////////////////////////////// */
@@ -193,55 +194,29 @@ simxFloat getposition[3] = { 0, };
 /* Motion Function */
 void init()
 {
-	//_Init_walking_flag = false;
-	//_Walking_flag = false;
-	//_program_exit = false;
 	_Back_flag = false;
 	_Front_flag = false;
 	_program_exit = false;
 	_Reading_flag = false;
 	_program_exit = false;
 }
-void readdevice()
-{
-	simxFloat q_cur[2];
-	/*
-	simxFlo
- at *qc;   qc = q_cur;
-	for (int i = 0; i < 2; i++) {
-	   simxGetJointPosition(clientID, g_objHandle[i], qc, simx_opmode_streaming);
-	   }
-	*/
 
-	// comebot
-	for (int i = 0; i < 2; i++)
-		simxGetJointPosition(clientID, test_objHandle[0], &q_cur[i], simx_opmode_streaming);
-}
-void writedevice()
+void vrep_parameter()
 {
-	/*
-	if (_Init_walking_flag == true) {
-	   for (int i = 0; i < 6; i++)
-		  simxSetJointTargetPosition(clientID, g_objHandle[i], initialPos[i], simx_opmode_streaming);
-	}
-	if (_Walking_flag == true) {
-	   for (int i = 1; i < 7; i++) {
-		  simxSetJointTargetPosition(clientID, g_objHandle[i - 1], targetPos[0][i - 1], simx_opmode_streaming);
-		  //simxSetJointTargetPosition(clientID, g_objHandle[j], g_q[j], simx_opmode_streaming);
-	   }
-	}
-	*/
+	// force sensor
+	simxReadForceSensor(clientID, force_Handle, NULL, &force_cur, NULL, simx_opmode_streaming);
+	if (force_cur < - 0.20)			force_flag = 1;
+	else						force_flag = 0;
+	printf("force: %.3f\n", force_cur);
 
-	// comebot
-	if (_Init_walking_flag == true) {
-		for (int i = 0; i < 4; i++)
-			simxSetJointTargetPosition(clientID, come_objHandle[i], initialPos[i], simx_opmode_streaming);
-	}
-	if (_Walking_flag == true) {
-		for (int i = 0; i < 4; i++)
-			simxSetJointTargetPosition(clientID, come_objHandle[i], targetPos[2][i], simx_opmode_streaming);
-	}
+	// comebot position
+	simxGetObjectPosition(clientID, come_objHandle[6], -1, Body_Position, simx_opmode_streaming);
+	printf("Position : %f, %f, %f \n", Body_Position[0], Body_Position[1], Body_Position[2]);
+	if (getposition[2] > 2.0)		lift_flag = 1;
+	else							lift_flag = 0;
+	
 }
+
 void delay(clock_t n)
 
 {
@@ -582,41 +557,6 @@ void Mode_select(int Eye, int Wing, int Tail, int count)
 	}
 }
 
-void forcesensor()
-{
-	simxReadForceSensor(clientID, force_Handle, NULL, &force_cur, NULL, simx_opmode_streaming);
-}
-void getpos()
-{
-	simxGetObjectPosition(clientID, body_Handle, -1, getposition, simx_opmode_blocking);
-}
-void back()
-{
-	for (int i = 0; i < 4; i++)
-		simxSetJointTargetPosition(clientID, come_objHandle[i], initialPos[i], simx_opmode_streaming);
-
-	simxSetJointTargetVelocity(clientID, come_objHandle[4], initialPos[4], simx_opmode_streaming);
-	simxSetJointTargetVelocity(clientID, come_objHandle[5], initialPos[5], simx_opmode_streaming);
-}
-void front()
-{
-	for (int i = 0; i < 4; i++)
-		simxSetJointTargetPosition(clientID, come_objHandle[i], targetPos[2][i], simx_opmode_streaming);
-
-	simxSetJointTargetVelocity(clientID, come_objHandle[4], targetPos[2][4], simx_opmode_streaming);
-	simxSetJointTargetVelocity(clientID, come_objHandle[5], targetPos[2][5], simx_opmode_streaming);
-}
-void left()
-{
-	simxSetJointTargetVelocity(clientID, come_objHandle[4], leftrightPos[0][0], simx_opmode_streaming);
-	simxSetJointTargetVelocity(clientID, come_objHandle[5], leftrightPos[0][1], simx_opmode_streaming);
-}
-void right()
-{
-	simxSetJointTargetVelocity(clientID, come_objHandle[4], leftrightPos[1][0], simx_opmode_streaming);
-	simxSetJointTargetVelocity(clientID, come_objHandle[5], leftrightPos[1][1], simx_opmode_streaming);
-}
-
 /* Img Function */
 void getimage()
 {
@@ -869,7 +809,8 @@ void motion_control_thread() {
 					flag = 1;
 				}
 				Recv_CondVar.wait();
-				readdevice();
+				vrep_parameter();
+
 				/*Recv_CondVar.wait();
 				distribute = stoi(Mode[Mode_Select]);
 				printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);*/
@@ -1057,17 +998,3 @@ int main(int argc, const char* argv[])
 	closesocket(hSocket); //소켓 라이브러리 해제
 	WSACleanup();
 }
-
-
-/*
-	TCP Transmission User Func List
-*/
-//////////////////////////////////////////////////////////////////////////
-//void ErrorHandling(char* message) {
-//	WSACleanup();
-//	fputs(message, stderr);
-//	fputc('\n', stderr);
-//	_getch();
-//	exit(1);
-//}
-//////////////////////////////////////////////////////////////////////////
