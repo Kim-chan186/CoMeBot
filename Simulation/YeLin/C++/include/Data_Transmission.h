@@ -5,6 +5,7 @@
 #include "winsock2.h" // include before <windows.h>
 #include <windows.h>
 #include <conio.h>
+#include "VRep_GUI.h"
 /*
 	Thread Include Files
 */
@@ -13,6 +14,8 @@
 #include <mutex>
 #include <condition_variable>
 #include "typeinfo"
+
+#define BUFSIZE 1024
 
 using namespace std;
 
@@ -47,13 +50,8 @@ struct SafeCondVar
 SafeCondVar    Send_CondVar;
 SafeCondVar    Recv_CondVar;
 
-WSADATA				wsaData;
-SOCKET				hSocket;
-SOCKADDR_IN		   servAddr;
-
 void recv_socket(SOCKET sock);
 void tran_socket(SOCKET sock);
-void ErrorHandling(const char* message);
 
 
 
@@ -61,14 +59,13 @@ void ErrorHandling(const char* message);
 
 /*///////////////////////////////////////////////////////////////////////////*/
 void recv_socket(SOCKET sock) {
-	char buff[1024];
+	char buff[BUFSIZE];
 	int ibuff;
 	string mode_buff;
 	while (1) {
 		ZeroMemory(buff, 1024);
 		int bytesReceived = recv(sock, buff, 1024, 0);
-		if (bytesReceived > 0)
-		{
+		if (bytesReceived > 0) {
 			ibuff = atoi(buff); // buff : char[] -> int
 			ibuff = atoi(Mode[ibuff].c_str());
 
@@ -77,13 +74,13 @@ void recv_socket(SOCKET sock) {
 			Tail_State = ibuff % 10;
 			printf("\nrecv: %s\n", &buff);
 		}
+
 		Recv_CondVar.notifyOne();
 	}
 }
-
 void tran_socket(SOCKET sock) {
 	/* Transmit Variable */
-	char cMsg[] = "";
+	char cMsg[BUFSIZE] = "";
 	string packet;
 	int i = 0;
 
@@ -94,7 +91,7 @@ void tran_socket(SOCKET sock) {
 
 	while (1) {
 		Send_CondVar.wait();
-
+		GUI::getPara();
 		packet =
 			Data_Packet[0][Id] + ","
 			+ to_string(Hungry_Para) + ","
@@ -111,21 +108,13 @@ void tran_socket(SOCKET sock) {
 			+ to_string(Face_Detect) + ","
 			+ to_string(Reward);
 		strcpy(cMsg, packet.c_str()); //packet : string -> char[]
-
+		packet.clear();
 		/*Packet Àü¼Û*/
 		send(sock, cMsg, strlen(cMsg), 0);
 		printf("\nSend_Packet: %s\n", cMsg);
 
 		Sleep(10);
 	}
-}
-
-void ErrorHandling(const char* message) {
-	WSACleanup();
-	fputs(message, stderr);
-	fputc('\n', stderr);
-	_getch();
-	exit(1);
 }
 
 #endif /// !DATA_TRANSMISSION_H
