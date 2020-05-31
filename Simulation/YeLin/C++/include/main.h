@@ -57,32 +57,36 @@ int						mode_flag = 0;
 int						  pre_EYE = 0;
 simxFloat						 prop;
 simxFloat					force_cur;
-simxFloat	  getposition[3] = { 0, };
 
 
 /* General Variables */
-simxInt			 bodyHandle;
-simxInt	  come_objHandle[7];
-simxInt  L_eye_objHandle[6];
-simxInt  R_eye_objHandle[6];
-simxFloat  Body_Position[3] = { 0, };
-simxFloat L_Wing_Joint_X[3] = { dou_angle(-180),dou_angle(-0.00000000033872),dou_angle(90) };
-simxFloat L_Wing_Joint_Y[3] = { dou_angle(-90),dou_angle(-0.0000066594),dou_angle(90) };
-simxFloat R_Wing_Joint_X[3] = { dou_angle(-180),dou_angle(0.0000000000065138),dou_angle(-90) };
-simxFloat R_Wing_Joint_Y[3] = { dou_angle(-90),dou_angle(0.0000000085377),dou_angle(-90) };
-simxFloat   L_Wing_Angle[3] = { dou_angle(69.186),dou_angle(-28.243),dou_angle(78.224) };
-simxFloat   R_Wing_Angle[3] = { dou_angle(69.186),dou_angle(28.243),dou_angle(-78.224) };
+simxInt				  bodyHandle;
+simxInt		   come_objHandle[7];
+simxInt	come_wing_jointHandle[4];
+simxInt		  L_eye_objHandle[6];
+simxInt		  R_eye_objHandle[6];
+simxFloat	    Body_Position[3] = { 0, };
+simxFloat	   L_Wing_Joint_X[3] = { dou_angle(-180),dou_angle(-0.00000000033872),dou_angle(90) };
+simxFloat	   L_Wing_Joint_Y[3] = { dou_angle(-90),dou_angle(-0.0000066594),dou_angle(90) };
+simxFloat	   R_Wing_Joint_X[3] = { dou_angle(-180),dou_angle(0.0000000000065138),dou_angle(-90) };
+simxFloat	   R_Wing_Joint_Y[3] = { dou_angle(-90),dou_angle(0.0000000085377),dou_angle(-90) };
+simxFloat		 L_Wing_Angle[3] = { dou_angle(69.186),dou_angle(-28.243),dou_angle(78.224) };
+simxFloat		 R_Wing_Angle[3] = { dou_angle(69.186),dou_angle(28.243),dou_angle(-78.224) };
 
-simxInt		   image_Handle;
-simxInt		   force_Handle;
-double			 initPos[2] = { 200 * M_PI / 180, 190 * M_PI / 180 };
-double			 testPos[2] = { 160 * M_PI / 180, 150 * M_PI / 180 };
+simxInt			    image_Handle;
+simxInt			    force_Handle;
+double			   initialPos[6] = { dou_angle(220.),dou_angle(120.), dou_angle(40.), dou_angle(-40.),
+									(40 * M_PI / 180), (40 * M_PI / 180) };
+double				  initPos[2] = { 200 * M_PI / 180, 190 * M_PI / 180 };
+double				  testPos[2] = { 160 * M_PI / 180, 150 * M_PI / 180 };
 
 /*	TCP Variables	*/
 WSADATA				wsaData;
 SOCKET				hSocket;
 SOCKADDR_IN		   servAddr;
 /*////////////////////////////////[END Variable]//////////////////////////////// */
+
+
 
 
 
@@ -109,15 +113,7 @@ void vreptcp_init()
 void vrep_parameter()
 {
 	// force sensor
-	simxReadForceSensor(clientID, force_Handle, NULL, &force_cur, NULL, simx_opmode_streaming);
-	if (force_cur < -0.20)			force_flag = 1;			// -0.182;
-	else							force_flag = 0;
-	printf("force: %.3f\t\t", force_cur);
-
-	// comebot position
-	simxGetObjectPosition(clientID, come_objHandle[6], -1, Body_Position, simx_opmode_streaming);
-	printf("Position : %.2f, %.2f, %.2f \n", Body_Position[0]*100, Body_Position[1]*100, Body_Position[2]*100);
-	if (getposition[2] > 2.0)		lift_flag = 1;
-	else							lift_flag = 0;
-
+	simxReadForceSensor(clientID, force_Handle, NULL, &force_cur, NULL, simx_opmode_blocking);
+	if ((force_cur < -0.0065) | (force_cur > 0.001))			Force_Sensor = ON;
+	else														Force_Sensor = OFF;
 }

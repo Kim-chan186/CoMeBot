@@ -1,14 +1,15 @@
 import socketserver
 import threading
+from time import struct_time
 
-HOST = '192.168.0.33'
+HOST = '192.168.0.26'
 PORT = 8585
 lock = threading.Lock()  # syncronized 동기화 진행하는 스레드 생성
 sync_lock = threading.Lock()
 cpp_Packet = []
 py_Packet = []
-stt_data_num = 0
-
+stt_data_rei = 0
+stt_data_cpp = 0
 
 class DataManager:
 
@@ -38,6 +39,8 @@ class DataManager:
         print('--- Client 수 [%d]' % len(self.IDs))
     
     def messageHandler(self, Id, msg, port):
+        global stt_data_rei
+        global stt_data_cpp
         if msg[0] != '/':  # 보낸 메세지의 첫문자가 '/'가 아니면
             if Id == "cpp":
                 self.sendMessageToOne("rei", port, msg)
@@ -45,8 +48,9 @@ class DataManager:
                 py_Packet.append(msg.split(','))
                 self.sendMessageToOne("cpp", port, msg)
             if Id == "stt":
-                stt_data_num = int(msg)
-                print("stt:",stt_data_num)
+                stt_data_rei = int(msg)
+                stt_data_cpp = int(msg)
+                print("stt:",stt_data_rei)
             return
         if msg.strip() == '/quit':  # 보낸 메세지가 'quit'이면
             self.removeID(Id)
@@ -57,6 +61,8 @@ class DataManager:
             conn.send(msg.encode())
             
     def sendMessageToOne(self,sendId,port,msg):
+        global stt_data_rei
+        global stt_data_cpp
         print(sendId,":",msg,"\n")
         buffer = msg
         for Id, info in self.IDs.items():
@@ -64,13 +70,16 @@ class DataManager:
             if Id == sendId :
                 conn = info[0] #IDs = {Id : (conn, addr)}
                 if sendId == "cpp":
-                    buffer = ''.join(msg)
+                    buffer = ''.join(msg)+str(stt_data_cpp)
+                    stt_data_cpp = 0
                     conn.send(buffer.encode())
                 elif sendId == "rei":
-                    buffer = ''.join(msg) + ","  + str(stt_data_num)
+                    buffer = ''.join(msg) + ","+ str(stt_data_rei)
+                    stt_data_rei = 0
                     conn.send(buffer.encode())
                 elif sendId == "stt":
-                    buffer = "stt data" + msg
+                    buffer = ''.join(msg)+str(stt_data_cpp)
+                    stt_data_cpp = 0
                     conn.send(msg.encode())
                 else:
                     print("해당되는 ID가 없습니다")

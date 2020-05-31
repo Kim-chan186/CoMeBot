@@ -4,6 +4,7 @@
 
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
+#include "Data_Format.h"
 
 using namespace cv;
 using namespace std;
@@ -17,18 +18,18 @@ namespace GUI {
 
 	/* Str Event Control Variables */
 	//					"기본", "행복", "슬픔", "화남", "지루" , "신남"
-	string O_LED[6] = { "Basic", "Happy", "Sorrow", "Angry", "Bore", "Excite" }; //
+	string O_LED[6] = { "Basic", "Happy", "Sad", "Angry", "Bore", "Excite" }; //
 	string bodyPos[4] = { "Fast", "Slow", "Up", "Down" }; //
 	//				  "앞뒤", "날개짓", "내림", "뒤로"
 	string T_AIL[4] = { "wave", "Wings", "Down", "Back" }; //
-	string txt[2] = { "없음", "NULL" };
+	string txt[7] = { "  ", "Act", "NoHop", "Sad", "Bored", "Sorry", "Bad" };
 
-	string HUNGER[5] = {"배부름", "포만감", "보통", "배고픔", "굶주림"};
-	string FATIGUE[5] = {"활발", "생기", "보통", "힘듬", "아픔"};
-	string TOUCH[3] = {"없음", "머리", "꼬리"};
-	string MOVENT[2] = {"없음", "충돌"};
-	string FACE[2] = {"없음", "보임"};
-	
+	string HUNGER[5] = { "배부름", "포만감", "보통", "배고픔", "굶주림" };
+	string FATIGUE[5] = { "활발", "생기", "보통", "힘듬", "아픔" };
+	string TOUCH[3] = { "없음", "머리", "꼬리" };
+	string MOVENT[2] = { "없음", "충돌" };
+	string FACE[2] = { "없음", "보임" };
+
 	string str_frame[8] = {
 		"Tuch", "cam", //touch
 		"food", "zZZ",
@@ -111,7 +112,6 @@ namespace GUI {
 
 
 
-
 	/*///////////////////////////////////////////////////////////////////////////*/
 	int act[4] = {};
 
@@ -136,12 +136,12 @@ namespace GUI {
 
 
 	// 배고픔, 체력 게이지
-	unsigned int bar1 = 100, bar2 = 100;
+	unsigned int bar1 = 75, bar2 = 75;
 
 	// 이거 현제 퍼센트 계산 하도록 수정
 	// 강제 값 변경이 없을때 flag = 0
 	void rectbar(double per1, double per2, bool flag = 0) {
-		if (flag) {	
+		if (flag) {
 			if (bar1 != 0)
 				bar1--;
 
@@ -162,7 +162,7 @@ namespace GUI {
 
 			per1 = 1 - per1 / 100;
 			per2 = 1 - per2 / 100;
-		}			
+		}
 		// 게이지 표현
 		rectangle(*frame, vertex1[0], vertex1[2], Scalar(0, 0, 0), -1);
 		rectangle(*frame, vertex2[0], vertex2[2], Scalar(0, 0, 0), -1);
@@ -188,6 +188,20 @@ namespace GUI {
 		);
 	}
 
+	void GazeSync(double per1, double per2) {
+		if (per1 > 100)
+			per1 = 100;
+		if (per2 > 100)
+			per2 = 100;
+		per1 = 1 - per1 / 100;
+		per2 = 1 - per2 / 100;
+		// 게이지 표현
+		rectangle(*frame, vertex1[0], vertex1[2], Scalar(0, 0, 0), -1);
+		rectangle(*frame, vertex2[0], vertex2[2], Scalar(0, 0, 0), -1);
+
+		rectangle(*frame, vertex1[0] + Point(0, 240 * per1), vertex1[2], Scalar(0, 152, 243), -1);
+		rectangle(*frame, vertex2[0] + Point(0, 240 * per2), vertex2[2], Scalar(240, 32, 160), -1);
+	}
 
 
 
@@ -197,17 +211,17 @@ namespace GUI {
 
 	//				  X, X, O, O, O, O
 	bool flag_buf[4] = { 0, 0, 0, 0 }; // 통신용
+	bool _flag_buf[4] = { 0, 0, 0, 0 };
 	bool click_flag[4] = {};
 
 	// 밥, 잠, good, bad 순
 	bool* get_flag() {
-		bool _flag_buf[4] = {};
 
 		for (int i = 0; i < 4; i++) {
 			_flag_buf[i] = flag_buf[i];
 			flag_buf[i] = 0;
 		}
-		rectbar(0, 0, true);
+		//rectbar(0, 0, true);
 
 		return _flag_buf;
 	}
@@ -242,6 +256,7 @@ namespace GUI {
 			box(1, mflag[1]);
 		}
 	}
+	
 	// Mouse Event가 들어오면 Callback 일어남
 	void GUI_Event(int event, int x, int y, int flags, void* userdata) {
 		//push
@@ -265,7 +280,7 @@ namespace GUI {
 					return;
 				}
 			}
-			cout << "좌표 = (" << x << ", " << y << ")" << endl;
+			//cout << "좌표 = (" << x << ", " << y << ")" << endl;
 		}
 
 		else if (event == EVENT_LBUTTONUP) {
@@ -274,15 +289,20 @@ namespace GUI {
 					box(i, 1);
 					mflag[i] = false;
 					flag_buf[i - 2] = true;
-					//2:feed, 3:sleep, 4:good, 5:bad
-					click_flag[i - 2] = true;
-					printf("%d click!!\n", i);
 
 					//표시용
-					if (i == 2)
+					if (i == 2) {
 						rectbar(50, 0);
-					else if (i == 3)
+						Hungry_Para += 50;
+						if (Hungry_Para > 100)
+							Hungry_Para = 100;
+					}
+					else if (i == 3) {
 						rectbar(0, 50);
+						Tired_Para += 50;
+						if (Tired_Para > 100)
+							Tired_Para = 100;
+					}
 					return;
 				}			
 			}
@@ -369,6 +389,11 @@ namespace GUI {
 
 	} // init() end
 
+	simxFloat wantpos[3] = { 0, 0, 1.5907 };
+	void goingposition() {
+		simxCallScriptFunction(clientID, "camera", sim_scripttype_childscript, "gotoposition", 1, &come_objHandle[6], 3, wantpos, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
+	}
+
 	void show() {
 		Mat show;
 		resize(*img_vrep, *img_vrep, Size(600, 600));
@@ -412,8 +437,22 @@ namespace GUI {
 		//방향키 왼쪽   2424832
 		else if (key == 2424832) {
 		}
-
-
+		else if (key == 49) {
+			goingposition();
+			Lift_Sensor = ON;
+		}
+		else if (key == 50) {
+			Touch_Sensor = HEAD;
+		}
+		else if (key == 51) {
+			Touch_Sensor = BODY;
+		}
+		else if (key == 52) {
+			Touch_Sensor = FIN;
+		}
+		else if (key == 53) {
+			Touch_Sensor = TAIL;
+		}
 		//F1
 		else if (key == 7340032) {
 		}

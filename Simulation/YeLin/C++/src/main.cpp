@@ -34,129 +34,84 @@ simxFloat simxF_angle(simxFloat seta)	//Radian을 도로 바꾸는 함수
 
 void init_Joint_Angle_comebot()
 {
-	simxSetJointTargetPosition(clientID, come_objHandle[2], initPos[0], simx_opmode_streaming);
-	simxSetJointTargetPosition(clientID, come_objHandle[3], initPos[1], simx_opmode_streaming);
-	simxSetJointTargetPosition(clientID, come_objHandle[0], initPos[2], simx_opmode_streaming);
-	simxSetJointTargetPosition(clientID, come_objHandle[1], initPos[3], simx_opmode_streaming);
-}
-void Fin_Angle_comebot(int n)
-{
-	switch (n) {
-
-	case 0:
-		////////////// 날개 앞뒤로 크게 흔들기
-		/////////Left wing Orientation X 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[2], -1, L_Wing_Joint_X, simx_opmode_oneshot_wait);
-
-		/////////Right wing Orientation X 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[3], -1, R_Wing_Joint_X, simx_opmode_oneshot_wait);
-		break;
-
-	case 1:
-		////////////// 날개 위아래 흔들기
-		/////////Left wing Orientation Y 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[2], -1, L_Wing_Joint_Y, simx_opmode_oneshot_wait);
-		//simxSetObjectOrientation(clientID, come_objHandle[7], -1, L_Wing_Angle, simx_opmode_oneshot_wait);
-		/////////Right wing Orientation Y 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[3], -1, R_Wing_Joint_Y, simx_opmode_oneshot_wait);
-		//simxSetObjectOrientation(clientID, come_objHandle[8], -1, R_Wing_Angle, simx_opmode_oneshot_wait);
-		break;
-	case 2:
-		////////////// 날개 아래로 떨구기
-		/////////Left wing Orientation Y 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[2], -1, L_Wing_Joint_Y, simx_opmode_oneshot_wait);
-		/////////Right wing Orientation Y 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[3], -1, R_Wing_Joint_Y, simx_opmode_oneshot_wait);
-
-		break;
-
-	case 3:
-		///////////slow 지느러미를 천천히 앞뒤로
-		/////////Left wing Orientation X 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[2], -1, L_Wing_Joint_X, simx_opmode_oneshot_wait);
-
-		/////////Right wing Orientation X 축으로 움직이게 끔 
-		simxSetObjectOrientation(clientID, come_objHandle[3], -1, R_Wing_Joint_X, simx_opmode_oneshot_wait);
-
-		break;
-	case 4:      //slow 지느러미를 천천히 앞뒤로
-
-		break;
-
-	default:
-
-		break;
-	}
+	simxSetJointTargetPosition(clientID, come_objHandle[0], initialPos[0], simx_opmode_streaming);
+	simxSetJointTargetPosition(clientID, come_objHandle[1], initialPos[1], simx_opmode_streaming);
+	//////wing joint inside
+	simxSetJointTargetPosition(clientID, come_wing_jointHandle[1], initialPos[2], simx_opmode_streaming);
+	simxSetJointTargetPosition(clientID, come_wing_jointHandle[3], initialPos[3], simx_opmode_streaming);
+	/////wing joint outside
+	simxSetJointTargetPosition(clientID, come_wing_jointHandle[0], initialPos[4], simx_opmode_streaming);
+	simxSetJointTargetPosition(clientID, come_wing_jointHandle[2], initialPos[5], simx_opmode_streaming);
 }
 void Fin_Action_comebot(int n)
 {
 	switch (n) {
 
 	case 0:
-		////////////// 날개 앞뒤로 크게 흔들기      
+		////////////// 날개 앞뒤로 크게 흔들기		
 		//////////// left wing
-		if (mode_flag == 0)      // A target 으로 가기
+		if (mode_flag == 0)		// A target 으로 가기
 		{
 			//////////// left wing
-			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[1], dou_angle(-40.), simx_opmode_streaming);
 			//////////// right wing
-			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[3], dou_angle(40.), simx_opmode_streaming);
 		}
-		else if (mode_flag == 1)      // B target 으로 가기
+		else if (mode_flag == 1)		// B target 으로 가기
 		{
 			//////////// left wing
-			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(100.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[1], dou_angle(100.), simx_opmode_streaming);
 			//////////// right wing
-			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(-100.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[3], dou_angle(-100.), simx_opmode_streaming);
 		}
 		break;
 
 	case 1:
 		////////////// 날개 위아래 흔들기
-		if (mode_flag == 0)      // A target 으로 가기
+		if (mode_flag == 0)		// A target 으로 가기
 		{
 			//////////// left wing
-			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[0], dou_angle(-40.), simx_opmode_streaming);
 			//////////// right wing
-			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[2], dou_angle(120.), simx_opmode_streaming);
 		}
-		else if (mode_flag == 1)      // B target 으로 가기
+		else if (mode_flag == 1)		// B target 으로 가기
 		{
 			//////////// left wing
-			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(60.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[0], dou_angle(60.), simx_opmode_streaming);
 			//////////// right wing
-			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(-60.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[2], dou_angle(20.), simx_opmode_streaming);
 		}
 		break;
 	case 2:
 		////////////// 날개 아래로 떨구기
 
-	 //////////// left wing
-		simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(90.), simx_opmode_streaming);
+	//////////// left wing
+		simxSetJointTargetPosition(clientID, come_wing_jointHandle[0], dou_angle(90.), simx_opmode_streaming);
 		//////////// right wing
-		simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(-90.), simx_opmode_streaming);
+		simxSetJointTargetPosition(clientID, come_wing_jointHandle[2], dou_angle(-10.), simx_opmode_streaming);
 
 		break;
 
 	case 3:
 		///////////slow 지느러미를 천천히 앞뒤로
 
-		if (mode_flag == 0)      // A target 으로 가기
+		if (mode_flag == 0)		// A target 으로 가기
 		{
 			//////////// left wing
-			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(-40.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[1], dou_angle(-40.), simx_opmode_streaming);
 			//////////// right wing
-			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(40.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[3], dou_angle(40.), simx_opmode_streaming);
 		}
-		else if (mode_flag == 1)      // B target 으로 가기
+		else if (mode_flag == 1)		// B target 으로 가기
 		{
 			//////////// left wing
-			simxSetJointTargetPosition(clientID, come_objHandle[2], dou_angle(30.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[1], dou_angle(30.), simx_opmode_streaming);
 			//////////// right wing
-			simxSetJointTargetPosition(clientID, come_objHandle[3], dou_angle(-30.), simx_opmode_streaming);
+			simxSetJointTargetPosition(clientID, come_wing_jointHandle[3], dou_angle(-30.), simx_opmode_streaming);
 		}
 		break;
-	case 4:      //slow 지느러미를 천천히 앞뒤로
+	case 4:		//slow 지느러미를 천천히 앞뒤로
 
 		break;
 
@@ -335,25 +290,21 @@ void Eye_Action_comebot(int n)
 	pre_EYE = n;
 }
 
-simxFloat wantpos[3] = { 0, 0, 1.5907 };
 void Mode_select(int Eye, int Wing, int Tail, int count)
 {
-	//simxCallScriptFunction(clientID, "camera", sim_scripttype_childscript, "gotoposition", 1, &come_objHandle[6], 3, wantpos, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
-	//simxSetObjectPosition(clientID, come_objHandle[6], -1, wantpos, simx_opmode_oneshot_wait);
 	if (pre_EYE != Eye)
 		Eye_Action_comebot(Eye);
 
-	Fin_Angle_comebot(Wing);
 	for (int i = 0; i < count; i++)
 	{
-		for (int j = 0; j < 5; j++) {
+		for (int j = 0; j < 3; j++) {
 			Fin_Action_comebot(Wing);
 			Tail_Action_comebot(Tail);
 			simxSynchronousTrigger(clientID);
 		}
 		mode_flag = 1;
 
-		for (int j = 0; j < 5; j++) {
+		for (int j = 0; j < 3; j++) {
 			Fin_Action_comebot(Wing);
 			Tail_Action_comebot(Tail);
 			simxSynchronousTrigger(clientID);
@@ -361,13 +312,15 @@ void Mode_select(int Eye, int Wing, int Tail, int count)
 		mode_flag = 0;
 	}
 
-	for (int j = 0; j < 2; j++) {
+	for (int j = 0; j < 3; j++) {
 		init_Joint_Angle_comebot();
 		simxSynchronousTrigger(clientID);
 	}
 }
+/*////////////////////////////////[END Function]//////////////////////////////// */
 
-/* Img Function */
+
+/*////////////////////////////////[START Thread]//////////////////////////////// */
 void getimage()
 {
 	while (1) {
@@ -377,10 +330,9 @@ void getimage()
 		for (int i = 0; GUI::waitKeySuper(1); i++) {
 			int retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
 			if (retval != simx_return_ok) {
-				printf("\n ** Vrep 연결 문제 !! \n ");
+				//printf("\n ** Vrep 연결 문제 !! \n ");
 				continue;
 			}
-
 			// fps, 언제 끊기는지 !!
 
 			Mat img(resolution[0], resolution[1], CV_8UC3, comeimage);
@@ -389,28 +341,26 @@ void getimage()
 				continue;
 			}
 			cvtColor(img, img2, cv::COLOR_RGB2BGR);
+			GUI::GazeSync(Hungry_Para, Tired_Para);
 
 			// 밥, 잠, good, bad 순으로 보내는 부분
-			bool* bp = GUI::get_flag();
 			//for (int i = 0; i < 4; i++)
 			//	cout << bp[i] << " ";
 			//printf("\n");
+
+
+			//vrep_parameter();
 
 			// 받는 부분
 			bool cam_flag = false;
 			GUI::cam(0, 0, cam_flag);
 
-			int act[4] = { Oled_State,Fin_State,Tail_State,1 };
+			int act[4] = { Oled_State,Fin_State,Tail_State,Stt_Data };
 			GUI::action(act);
 			GUI::show();
 		}
-		waitKey(27);
 	}
 }
-/*////////////////////////////////[END Function]//////////////////////////////// */
-
-
-/*////////////////////////////////[START Thread]//////////////////////////////// */
 void Parameter_Thread() {
 	while (1) {
 		if (Hungry_Para > 0)
@@ -422,6 +372,7 @@ void Parameter_Thread() {
 			Tired_Para--;
 		else
 			Tired_Para = 100;
+	
 		Sleep(5000);
 	}
 }
@@ -434,8 +385,10 @@ void motion_control_thread() {
 	simxGetObjectHandle(clientID, "body_tail1",		   &come_objHandle[0], simx_opmode_oneshot_wait);
 	simxGetObjectHandle(clientID, "tail1_tail2",	   &come_objHandle[1], simx_opmode_oneshot_wait);
 	/* Wing Init */
-	simxGetObjectHandle(clientID, "wing_left_Motor",   &come_objHandle[2], simx_opmode_oneshot_wait);
-	simxGetObjectHandle(clientID, "wing_right_Motor",  &come_objHandle[3], simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "wing_left_Motor1", &come_wing_jointHandle[0], simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "wing_left_Motor2", &come_wing_jointHandle[1], simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "wing_right_Motor1", &come_wing_jointHandle[2], simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "wing_right_Motor2", &come_wing_jointHandle[3], simx_opmode_oneshot_wait);
 	/* Moter Init */
 	simxGetObjectHandle(clientID, "left_wheel_Motor",  &come_objHandle[4], simx_opmode_oneshot_wait);
 	simxGetObjectHandle(clientID, "right_wheel_Motor", &come_objHandle[5], simx_opmode_oneshot_wait);
@@ -486,9 +439,6 @@ void motion_control_thread() {
 	int flag = 0;
 	while (1) {
 
-		distribute = stoi(Mode[Mode_Select]);
-		printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);
-
 		/*Motion Function*/
 		if (clientID != -1) {
 			printf("Connection Established\n");
@@ -499,11 +449,20 @@ void motion_control_thread() {
 					flag = 1;
 				}
 				Recv_CondVar.wait();
-				//vrep_parameter();
 
+				distribute = stoi(Mode[Mode_Select]);
+				Oled_State = distribute / 100;
+				Fin_State = (distribute % 100)/10;
+				Tail_State = distribute % 10;
+				printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);
+
+	
 				Mode_select(Oled_State, Fin_State, Tail_State, 2);
+				vrep_parameter();
+				
 				Send_CondVar.notifyOne();
-				if (simulation_run == true) {
+				if (simulation_run == true) {	
+					
 					simxSynchronousTrigger(clientID);
 				}
 			}

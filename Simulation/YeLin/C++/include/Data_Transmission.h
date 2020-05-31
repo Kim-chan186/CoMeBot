@@ -15,7 +15,7 @@
 #include <condition_variable>
 #include "typeinfo"
 
-#define BUFSIZE 1024
+#define BUFSIZE 3072
 
 using namespace std;
 
@@ -46,7 +46,6 @@ struct SafeCondVar
 		}
 	}
 };
-
 SafeCondVar    Send_CondVar;
 SafeCondVar    Recv_CondVar;
 
@@ -59,22 +58,24 @@ void tran_socket(SOCKET sock);
 
 /*///////////////////////////////////////////////////////////////////////////*/
 void recv_socket(SOCKET sock) {
-	char buff[BUFSIZE];
+	char buff[1024];
 	int ibuff;
-	string mode_buff;
+	string sbuff;
+	string str_data[3];
+	int str_cnt = 0;
+	char* tok;
 	while (1) {
 		ZeroMemory(buff, 1024);
 		int bytesReceived = recv(sock, buff, 1024, 0);
 		if (bytesReceived > 0) {
 			ibuff = atoi(buff); // buff : char[] -> int
-			ibuff = atoi(Mode[ibuff].c_str());
+			//ibuff = atoi(Mode[ibuff].c_str());
+			Mode_Select = ibuff / 10;
+			Stt_Data = ibuff % 10;
 
-			Oled_State = ibuff / 100;
-			Fin_State = (ibuff % 100) / 10;
-			Tail_State = ibuff % 10;
 			printf("\nrecv: %s\n", &buff);
 		}
-
+		
 		Recv_CondVar.notifyOne();
 	}
 }
@@ -83,6 +84,7 @@ void tran_socket(SOCKET sock) {
 	char cMsg[BUFSIZE] = "";
 	string packet;
 	int i = 0;
+	bool* bp;
 
 	/* ID Change */
 	scanf_s("%d", &Id); //0 cpp 1 rei 2 stt
@@ -91,7 +93,15 @@ void tran_socket(SOCKET sock) {
 
 	while (1) {
 		Send_CondVar.wait();
-		GUI::getPara();
+
+		bp = GUI::get_flag();
+		for (int i = 0; i < 4; i++) {
+			if (bp[2] == 1)
+				Reward = 100;
+			if (bp[3] == 1)
+				Reward = -30;
+		}
+		//GUI::getPara();
 		packet =
 			Data_Packet[0][Id] + ","
 			+ to_string(Hungry_Para) + ","
@@ -109,9 +119,11 @@ void tran_socket(SOCKET sock) {
 			+ to_string(Reward);
 		strcpy(cMsg, packet.c_str()); //packet : string -> char[]
 		packet.clear();
+		Send_Init_Variable();
 		/*Packet Àü¼Û*/
 		send(sock, cMsg, strlen(cMsg), 0);
-		printf("\nSend_Packet: %s\n", cMsg);
+		printf("Send_Packet: %s\n", cMsg);
+		printf("force: %f\n\n", force_cur);
 
 		Sleep(10);
 	}

@@ -94,6 +94,19 @@ int	   Tail_State = NOMOVE;
 int		  Face_Detect = NO;
 int				Reward = 0;
 int		   Mode_Select = 0;
+int			  Stt_Data = 0;
 
+/* Global Variables */
+
+void Send_Init_Variable() {
+	Touch_Sensor = DEFAULT;
+	Force_Sensor	 = OFF;
+	Lift_Sensor		 = OFF;
+	Reward			   = 0;
+}
+void Recv_Init_Variable() {
+	Stt_Data		   = 0;
+	Face_Detect		  = NO;
+}
 
 #endif
