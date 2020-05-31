@@ -2,6 +2,7 @@ import gym
 from gym import spaces
 from vrep_test import Vrep_state
 # import ReinforcePython
+from face_module import faceDetect
 
 # state_feature = 10 ############################
 
@@ -89,6 +90,10 @@ class ComebotEnv(gym.Env):      #gym.Env 상속
         print('----step----')
         if action < 10:
             action = 17
+        # elif action <10 :
+        #     action = 6
+        # elif action <15 :
+        #     action = 5
         else :
             action = 6
         self.mode.clear()
@@ -103,7 +108,7 @@ class ComebotEnv(gym.Env):      #gym.Env 상속
         self.cv_recv.release()
 
         if self.recv_packet[0] == "ID:":
-            pass
+            print("**Server Connect**")
         else :
             print("packet: ", self.recv_packet)
             Hungry_Para     = self.recv_packet[1]
@@ -117,6 +122,7 @@ class ComebotEnv(gym.Env):      #gym.Env 상속
             Face_Detect     = self.recv_packet[10]
             Reward          = self.recv_packet[11]
             STT_Mode     = self.recv_packet[12]
+            print("facedetect",faceDetect())
 
 
         # print('v-rep에 action {} 보내기'.format(action))

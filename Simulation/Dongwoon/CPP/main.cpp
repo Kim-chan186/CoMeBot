@@ -1,4 +1,4 @@
-/* #define _WINSOCK_DEPRECATED_NO_WARNINGS */
+//#define _WINSOCK_DEPRECATED_NO_WARNINGS
 /*
 	TCP include Files
 */
@@ -39,6 +39,7 @@ extern "C" {
 
 	//#include "extApiPlatform.h" 
 }
+#include <cstring>
 
 using namespace std;
 using namespace cv;
@@ -753,14 +754,14 @@ void Mode_select(int Eye, int Wing, int Tail, int count)
 	for (int i = 0; i < count; i++)
 	{
 		for (int j = 0; j < 5; j++)
+		/*for (int j = 0; j < 1000000; j++)
+		{
+		}*/
 		{
 			Fin_Action_comebot(Wing);
 			Tail_Action_comebot(Tail);
 			simxSynchronousTrigger(clientID);
 		}
-		/*for (int j = 0; j < 1000000; j++)
-		{
-		}*/
 		mode_flag = 1;
 		//delay(1000);
 		//Sleep(1000);
@@ -822,48 +823,32 @@ void right()
 /* Img Function */
 void getimage()
 {
-	//cv::namedWindow("vrep", WINDOW_AUTOSIZE);
-	//Recv_CondVar.wait();
-	while (1) {//for (int time = 0; time < 1000; time++) {
-		/*Yelins Only*/
-		/*int retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
-		if (retval != simx_return_ok) {
-			
-			continue;
-		}
-		_itoa_s(dTime + 0.1, _fps, 5, 10);	fps = _fps;
-		Mat img(resolution[0], resolution[1], CV_8UC3, comeimage);
-		flip(img, img, 0);
-		cvtColor(img, img, cv::COLOR_RGB2BGR);
-		putText(img, "FPS:" + fps, Point(430, 30), FONT_HERSHEY_PLAIN, 1.2, Scalar(255, 230, 100));
-		cv::imshow("vrep", img);
-		if (++cont_while == 1000) {
-			cont_while = 0;
-			tpEnd = chrono::system_clock::now();
-			dTime = 100000.0 / chrono::duration_cast<chrono::milliseconds>(tpEnd - tpStart).count();
-			tpStart = tpEnd;
-		}
-		simxSynchronousTrigger(clientID);
-		cv::waitKey(27);*/
-
+	while (1) {
 		Mat img2 = Mat(Size(600, 600), CV_8UC3, Scalar::all(0));
 		GUI::img_vrep = &img2;
 		GUI::init();
 		for (int i = 0; GUI::waitKeySuper(1); i++) {
 			int retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
 			if (retval != simx_return_ok) {
+				printf("\n ** ! 통신! \n");
 				continue;
 			}
 			Mat img(resolution[0], resolution[1], CV_8UC3, comeimage);
-			flip(img, img, 0);
-			cvtColor(img, img, cv::COLOR_RGB2BGR);
-			img2 = img;
-
+			//flip(img, img, 0);
+			if (img.empty()) {
+				printf("\n ** Vrep img is empty! *********************************************\n");
+				continue;
+			}
+			else {
+				cvtColor(img, img2, cv::COLOR_RGB2BGR);
+			}
+			GUI::GazeSync(Hungry_Para, Tired_Para);
 			// 밥, 잠, good, bad 순으로 보내는 부분
-			bool* bp = GUI::get_flag();
-			//for (int i = 0; i < 4; i++)
-			//	cout << bp[i] << " ";
-			//printf("\n");
+			/*bool* bp = GUI::get_flag();
+			for (int i = 0; i < 4; i++) {
+				printf("@%d@", bp[i]);
+			}
+			printf("\n")z;*/
 
 			// 받는 부분
 			bool cam_flag = false;
@@ -876,6 +861,45 @@ void getimage()
 		waitKey(27);
 	}
 }
+void getPara()
+{	//GUI에서 클릭이벤트 받아오는 함수, 한 step동안 입력된 클릭이벤트들 받아옴
+	bool data[4] = {};
+	bool flag[4] = {};
+	for (int i = 0; i < 4; i++)
+	{
+		flag[i] = GUI::get_click()[i];
+	}
+	//printf(flag[0] ? "feed:true\t" : "feed:false\t");
+	//클릭이벤트에 따른 parameter업데이트
+	if (flag[0])
+	{
+		if (Hungry_Para <= 70)
+			Hungry_Para += 30;
+		else
+			Hungry_Para = 100;
+	}
+	//printf(flag[1] ? "sleep:true\t" : "sleep:false\t");
+	if (flag[1])
+	{
+		if (Tired_Para <= 70)
+			Tired_Para += 30;
+		else
+			Tired_Para = 100;
+	}
+	//printf(flag[2] ? "good:true\t" : "good:false\t");
+	//printf(flag[3] ? "bad:true\t" : "bad:false\n");
+	if (flag[2] | flag[3])
+	{
+		if (flag[2])
+			Reward = 100;
+		else
+			Reward = -30;
+	}
+	else
+		Reward = 0;
+
+	GUI::reset_click();	//click event 초기화
+}
 
 /*////////////////////////////////[END Function]//////////////////////////////// */
 
@@ -887,40 +911,42 @@ void Parameter_Thread() {
 			Hungry_Para--;
 		else
 			Hungry_Para = 100;
+
 		if (Tired_Para > 0)
 			Tired_Para--;
 		else
-			Hungry_Para = 100;
+			Tired_Para = 100;
 		Sleep(5000);
 	}
 }
 void recv_socket(SOCKET sock) {
 	char buff[1024];
 	int ibuff;
-	string mode_buff;
+	string sbuff;
+	string str_data[3];
+	int str_cnt=0;
+	char* tok;
 	while (1) {
-		
 		ZeroMemory(buff, 1024);
 		int bytesReceived = recv(sock, buff, 1024, 0);
 		if (bytesReceived > 0)
 		{
 			ibuff = atoi(buff); // buff : char[] -> int
-			ibuff = atoi(Mode[ibuff].c_str());
-
-			Oled_State = ibuff / 100;
-			Fin_State = (ibuff % 100) / 10;
-			Tail_State = ibuff % 10;
+			//ibuff = atoi(Mode[ibuff].c_str());
+			Mode_Select = ibuff / 10;
+			Stt_Data = ibuff % 10;
+			printf("%d", Mode_Select);
 			printf("\nrecv: %s\n", &buff);
 		}
-		
 		Recv_CondVar.notifyOne();
 	}
 }
 void tran_socket(SOCKET sock) {
 	/* Transmit Variable */
-	char cMsg[] = "";
+	char cMsg[1024] = "";
 	string packet;
 	int i = 0;
+	bool* bp;
 
 	/* ID Change */
 	scanf_s("%d", &Id); //0 cpp 1 rei 2 stt
@@ -929,24 +955,38 @@ void tran_socket(SOCKET sock) {
 
 	while (1) {
 		Send_CondVar.wait();
+		bp = GUI::get_flag();
+		for (int i = 0; i < 4; i++) {
+			printf("@%d@", bp[i]);
+			if (bp[2] == 1)
+				Reward = 10;
+			if (bp[3] == 1)
+				Reward = -10;
+		}
+		printf("\n");
 
-		packet =
-			Data_Packet[0][Id] + ","
-			+ to_string(Hungry_Para) + ","
-			+ to_string(Tired_Para) + ","
-			+ Data_Packet[3][Touch_Sensor] + ","
-			+ Data_Packet[4][Force_Sensor] + ","
-			+ Data_Packet[5][Lift_Sensor] + ","
-			+ Data_Packet[6][Oled_State] + ","
-			+ Data_Packet[7][Fin_State] + ","
-			+ Data_Packet[8][Tail_State] + ","
-			+ to_string(Oled_State)
-			+ to_string(Fin_State)
-			+ to_string(Tail_State) + ","
-			+ to_string(Face_Detect) + ","
-			+ to_string(Reward);
+		//getPara();	//클릭이벤트에 따른 parameter업데이트
+		packet = //"cpp, m10, m20, m30, m41, m53, m61, 131, 0, 0, 0";
+		Data_Packet[0][Id] + ","
+		+ to_string(Hungry_Para) + "," //bp[0]
+		+ to_string(Tired_Para) + "," //bp[1]
+		+ Data_Packet[3][Touch_Sensor] + ","
+		+ Data_Packet[4][Force_Sensor] + ","
+		+ Data_Packet[5][Lift_Sensor] + ","
+		+ Data_Packet[6][Oled_State] + ","
+		+ Data_Packet[7][Fin_State] + ","
+		+ Data_Packet[8][Tail_State] + ","
+		+ to_string(Oled_State)
+		+ to_string(Fin_State)
+		+ to_string(Tail_State) + ","
+		+ to_string(Face_Detect) + ","
+		+ to_string(Reward);
+
 		strcpy(cMsg, packet.c_str()); //packet : string -> char[]
 		/*Packet 전송*/
+		packet.clear();
+		//Reward = 0;
+		Send_Init_Variable();
 		send(sock, cMsg, strlen(cMsg), 0);
 		printf("\nSend_Packet: %s\n", cMsg);
 
@@ -1013,9 +1053,6 @@ void motion_control_thread() {
 	int flag = 0;
 	while (1) {
 		
-		distribute = stoi(Mode[Mode_Select]);
-		printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);
-
 		/*Motion Function*/
 		if (clientID != -1) {
 			printf("Connection Established\n");
@@ -1026,137 +1063,20 @@ void motion_control_thread() {
 					flag = 1;
 				}
 				Recv_CondVar.wait();
-				readdevice();
-				/*Recv_CondVar.wait();
+				readdevice();				
+				
 				distribute = stoi(Mode[Mode_Select]);
-				printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);*/
-				
-				/*				
-				if (kbhit())
-				{
-					int key = _getch();
-					printf("%d\t", key);
-					switch (key) {
-					case I_COMMAND:
-						cout << " Initial Pos\n" << endl;
-						//_Init_walking_flag = true;
-						//_Walking_flag = false;
-						//_visibility_flag = false;
-						Mode_select(1, 3, 1, 2);
-						Send_CondVar.notifyOne();
-						break;
-
-					case R_COMMAND:
-
-						cout << " Put\n" << endl;
-						Mode_select(4, 3, 1, 2);
-						//_Walking_flag = true;
-						//_Init_walking_flag = false;
-						//_visibility_flag = true;
-						//_WalkingCtrl._initialize();
-						//_WalkingCtrl.StartWalking();
-						//_WalkingCtrl.setApproachdata(0.0,0.0,50*DEGREE);
-						Send_CondVar.notifyOne();
-						break;
-
-					case TAB_COMMAND:
-						if (simulation_run) {
-							simulation_run = false;
-							cout << " Stop\n" << endl;
-						}
-						else {
-							simulation_run = true;
-							cout << "  Go\n" << endl;
-						}
-						Send_CondVar.notifyOne();
-						break;
-
-					case W_COMMAND:
-						//////// GO
-						simxSetJointTargetVelocity(clientID, come_objHandle[4], -10, simx_opmode_streaming);
-						simxSetJointTargetVelocity(clientID, come_objHandle[5], -10, simx_opmode_streaming);
-						cout << "Motor Go\n" << endl;
-						Send_CondVar.notifyOne();
-						break;
-
-					case S_COMMAND:
-						//////// BACK
-						simxSetJointTargetVelocity(clientID, come_objHandle[4], 10, simx_opmode_streaming);
-						simxSetJointTargetVelocity(clientID, come_objHandle[5], 10, simx_opmode_streaming);
-						cout << "Motor Back\n" << endl;
-						Send_CondVar.notifyOne();
-						break;
-
-					case A_COMMAND:
-						//////// LEFT TURN
-						simxSetJointTargetVelocity(clientID, come_objHandle[4], -5, simx_opmode_streaming);
-						simxSetJointTargetVelocity(clientID, come_objHandle[5], -10, simx_opmode_streaming);
-						cout << "Motor Left\n" << endl;
-						Send_CondVar.notifyOne();
-						break;
-
-					case D_COMMAND:
-						//////// RIGHT TURN
-						simxSetJointTargetVelocity(clientID, come_objHandle[4], -10, simx_opmode_streaming);
-						simxSetJointTargetVelocity(clientID, come_objHandle[5], -5, simx_opmode_streaming);
-						cout << "Motor Right\n" << endl;
-						Send_CondVar.notifyOne();
-						break;
-
-					case E_COMMAND:
-						simxSetJointTargetVelocity(clientID, come_objHandle[4], 0, simx_opmode_streaming);
-						simxSetJointTargetVelocity(clientID, come_objHandle[5], 0, simx_opmode_streaming);
-						cout << "Motor Stop\n" << endl;
-
-						//////// joint rotation
-						if (joint_angle == 0)
-						{
-							joint_angle = 1;
-							simxSetObjectOrientation(clientID, test_objHandle[0], -1, Joint_Orientation_90, simx_opmode_streaming);
-						}
-						else if (joint_angle == 1)
-						{
-							joint_angle = 0;
-							simxSetObjectOrientation(clientID, test_objHandle[0], -1, Joint_Orientation_0, simx_opmode_streaming);
-						}
-						//////////// Read Body Position
-						simxGetObjectPosition(clientID, come_objHandle[6], -1, Body_Position, simx_opmode_streaming);
-						printf("Position : %f, %f, %f \n", Body_Position[0], Body_Position[1], Body_Position[2]);
-						Send_CondVar.notifyOne();
-						break;
-
-					case Q_COMMAND:
-						cout << " Program End\n" << endl;
-						simulation_run = false;
-						_program_exit = true;
-						Send_CondVar.notifyOne();
-						break;
-
-					default:
-						break;
-					}
-				}
-				*/
-				
-
+				Oled_State = distribute / 100;
+				Fin_State = (distribute % 100) / 10;
+				Tail_State = distribute % 10;
+				printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);
 				Mode_select(Oled_State,Fin_State,Tail_State, 2);
 				Send_CondVar.notifyOne();
-				//Send_CondVar.notifyAll();
+
 				if (simulation_run == true)
 				{
-					//if (_Init_walking_flag == true) {
-					//	/*      initial Pos      */
-					//	writedevice();
-					//	simxSynchronousTrigger(clientID);
-					//}
-					//else if (_Walking_flag == true) {
-					//	/*      target Pos      */
-					//	writedevice();
-					//	simxSynchronousTrigger(clientID);
-					//}
 					simxSynchronousTrigger(clientID);					
 				}
-				/*Send_CondVar.notifyOne();*/
 			}
 			simxFinish(clientID);
 			
@@ -1172,7 +1092,7 @@ void motion_control_thread() {
 int main(int argc, char* argv[])
 {
 	Hungry_Para = 50;
-
+	Tired_Para = 50;
 	/* TCP Transmission_Init */
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리를 초기화하고 있다
 		ErrorHandling("WSAStartup() error!");
@@ -1201,8 +1121,6 @@ int main(int argc, char* argv[])
 	recvimg = thread(getimage);
 	vrep = thread(motion_control_thread);
 	tran = thread(tran_socket, hSocket);
-	
-	
 
 	recv.join();
 	para.join();

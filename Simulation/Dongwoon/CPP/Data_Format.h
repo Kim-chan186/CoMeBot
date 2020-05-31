@@ -81,8 +81,8 @@ string Mode[20] = {
 /* Packet Global Variables */
 
 int Id = CPP;
-int Hungry_Para = 100;
-int Tired_Para = 100;
+static int Hungry_Para = 100;
+static int Tired_Para = 100;
 int Touch_Sensor = DEFAULT;
 int Force_Sensor = OFF;
 int	Lift_Sensor = OFF;
@@ -92,8 +92,21 @@ int Tail_State = NOMOVE;
 int Face_Detect = NO;
 int Reward = 0;
 int Mode_Select = 0;
+int Stt_Data = 0;
+
 
 /* Global Variables */
+
+void Send_Init_Variable() {
+	Touch_Sensor = DEFAULT;
+	Force_Sensor = OFF;
+	Lift_Sensor = OFF;
+	Reward = 0;
+}
+void Recv_Init_Variable() {
+	Stt_Data = 0;
+	Face_Detect = NO;
+}
 
 
 #endif

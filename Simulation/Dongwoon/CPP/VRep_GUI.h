@@ -5,7 +5,7 @@
 // include <Eigen/Dense> 오류해결 : http://eigen.tuxfamily.org/index.php?title=Main_Page 에서 최신버젼 다운 후 Project에 링크
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
-
+#include "Data_Format.h"
 
 
 using namespace cv;
@@ -168,13 +168,26 @@ namespace GUI {
 		}			
 		// 게이지 표현
 		rectangle(*frame, vertex1[0], vertex1[2], Scalar(0, 0, 0), -1);
-		rectangle(*frame, vertex2[0], vertex2[2], Scalar(0, 0, 0), -1);
+		rectangle(*frame, vertex2[0], vertex2[2], Scalar(0, 0, 0), -1); 
 
 		rectangle(*frame, vertex1[0] + Point(0, 240 * per1), vertex1[2], Scalar(0, 152, 243), -1);
 		rectangle(*frame, vertex2[0] + Point(0, 240 * per2), vertex2[2], Scalar(240, 32, 160), -1);
 
 	} // end rectbar
+	void GazeSync(double per1, double per2) {
+		if (per1 > 100)
+			per1 = 100;
+		if (per2 > 100)
+			per2 = 100;
+		per1 = 1 - per1 / 100;
+		per2 = 1 - per2 / 100;
+		// 게이지 표현
+		rectangle(*frame, vertex1[0], vertex1[2], Scalar(0, 0, 0), -1);
+		rectangle(*frame, vertex2[0], vertex2[2], Scalar(0, 0, 0), -1);
 
+		rectangle(*frame, vertex1[0] + Point(0, 240 * per1), vertex1[2], Scalar(0, 152, 243), -1);
+		rectangle(*frame, vertex2[0] + Point(0, 240 * per2), vertex2[2], Scalar(240, 32, 160), -1);
+	}
 	void box(int i, bool flag = 1) {
 		Rect r(fpoint[i] - Point(40, 40), Size(80, 80));
 		(*frame)(r) = (*icon)(ricon[i]) - Scalar::all(50 * (!flag));
@@ -200,18 +213,34 @@ namespace GUI {
 
 	//				  X, X, O, O, O, O
 	bool flag_buf[4] = { 0, 0, 0, 0 }; // 통신용
+	bool _flag_buf[4] = { 0, 0, 0, 0 };
 
+	bool click_flag[4] = {};
 	// 밥, 잠, good, bad 순
 	bool* get_flag() {
-		bool _flag_buf[4] = {};
 
 		for (int i = 0; i < 4; i++) {
 			_flag_buf[i] = flag_buf[i];
 			flag_buf[i] = 0;
 		}
-		rectbar(0, 0, true);
-
+		//rectbar(0, 0, true);
 		return _flag_buf;
+	}
+	bool* get_click() {	//한 step동안 발생한 클릭이벤트 넘겨주는
+		bool _click_flag[4] = {};
+		for (int i = 0; i < 4; i++)
+		{
+			_click_flag[i] = click_flag[i];
+		}
+		return _click_flag;
+	}
+
+	void reset_click() { //click_flag초기화
+		for (int i = 0; i < 4; i++)
+		{
+			click_flag[i] = false;
+		}
+		//printf("---reset_flag---\n");
 	}
 
 	// NULL  CAM
@@ -225,6 +254,8 @@ namespace GUI {
 			box(1, mflag[1]);
 		}
 	}
+
+
 	// Mouse Event가 들어오면 Callback 일어남
 	void GUI_Event(int event, int x, int y, int flags, void* userdata) {
 		//push
@@ -258,10 +289,19 @@ namespace GUI {
 					flag_buf[i - 2] = true;
 
 					//표시용
-					if (i == 2)
-						rectbar(50, 0);
-					else if (i == 3)
+					if (i == 2) {
+						rectbar(50, 0); 
+						Hungry_Para += 50;
+						if (Hungry_Para > 100)
+							Hungry_Para = 100;						
+					}						
+					else if (i == 3) {
 						rectbar(0, 50);
+						Tired_Para += 50;
+						if(Tired_Para > 100)
+							Tired_Para = 100;						
+					}
+						
 					return;
 				}			
 			}
@@ -316,14 +356,23 @@ namespace GUI {
 
 	void show() {
 		Mat show;
-		resize(*img_vrep, *img_vrep, Size(600, 600));
-		vconcat(*img_vrep, *img_event, show);
-		hconcat(show, *frame, show);		
-		imshow("GUI", show); 
+		if (img_vrep->empty()) {
+			printf(" ** VRep_GUI error : img_vrep is empty !!\n");
+			show = Mat(Size(600, 600), CV_8UC3, Scalar::all(50));
+			imshow("GUI", show);
+		}
+		else {
+			resize(*img_vrep, *img_vrep, Size(600, 600));
+			vconcat(*img_vrep, *img_event, show);
+			hconcat(show, *frame, show);
+			imshow("GUI", show);
+		}
 	}
 
 	int waitKeySuper(int num = 1) {
 		int key = waitKeyEx(num);
+		if(key != -1)
+			cout << key << endl;
 		if (key == -1) {
 			return -1;
 		}
@@ -347,6 +396,7 @@ namespace GUI {
 
 		//방향키 위     2490368
 		else if (key == 2490368) {
+			Lift_Sensor = ON;
 		}
 		//방향키 아래   2621440
 		else if (key == 2621440) {
@@ -365,12 +415,29 @@ namespace GUI {
 		//F2
 		else if (key == 7405568) {
 		}
+		else if (key == 49) {
+			Lift_Sensor = ON;
+		}
+		else if (key == 50) {
+			Touch_Sensor = HEAD;
+		}
+		else if (key == 51) {
+			Touch_Sensor = BODY;
+		}
+		else if (key == 52) {
+			Touch_Sensor = FIN;
+		}
+		else if (key == 53) {
+			Touch_Sensor = TAIL;
+		}
 		//echo
 		else if (key > 255) {
 			cout << key << endl;
 		}
+		
 		else {
 		}
+		
 
 		return key;
 	}//end waitKeySuper
