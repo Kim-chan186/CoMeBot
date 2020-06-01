@@ -12,7 +12,7 @@ namespace chan {
 
 	double dTime; // 1loop 당 걸리는 시간
 
-	int CH_count = -1;
+	int CH_count = - 1;
 	std::chrono::system_clock::time_point tpStart, tpEnd;
 
 	/*
@@ -27,12 +27,12 @@ namespace chan {
 	-추후 윈도우 상에 글자로 띄우는 것으로 수정 예정
 	-초기화 함수를 만들 예정
 	*/
-	bool Check_Time(int Loop = 1000) {
+	bool Check_Time(int Loop = 5000) {
 		CH_count++;
 
 		if (CH_count == 0) {
+			//printf("시간측정 시작\n");
 			tpStart = std::chrono::system_clock::now(); //시간 측정 시작 
-			printf("tlwkr");
 			return 1;
 		}
 		else if (CH_count < Loop) {
@@ -41,11 +41,11 @@ namespace chan {
 		else if (CH_count == Loop) {
 			tpEnd = std::chrono::system_clock::now(); //시간 측정 끝
 			dTime = std::chrono::duration_cast<std::chrono::nanoseconds>(tpEnd - tpStart).count() / 1e6 / Loop;
-			std::cout << "Loop Time: " << dTime << "ms" << std::endl;
+
 			printf("Loop Time: %.3lf ms\n", dTime);
 
 			tpStart = std::chrono::system_clock::now(); //시간 측정 시작
-			CH_count = 0;
+			CH_count = -1;
 			return 1;
 		}
 		else {
