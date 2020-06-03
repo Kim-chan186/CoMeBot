@@ -377,7 +377,7 @@ void Parameter_Thread() {
 	}
 }
 void motion_control_thread() {
-	int distribute = 0;
+	
 	printf("Start Program\n");
 	clientID = simxStart((simxChar*)"127.0.0.1", 9200, true, true, 5000, 5);
 
@@ -435,7 +435,8 @@ void motion_control_thread() {
 	simxSetObjectIntParameter(clientID, R_eye_objHandle[ANGRY], sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
 	simxSetObjectIntParameter(clientID, L_eye_objHandle[FUN],   sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
 	simxSetObjectIntParameter(clientID, R_eye_objHandle[FUN],   sim_objintparam_visibility_layer, 256, simx_opmode_oneshot_wait);
-
+	
+	int distribute = 0;
 	int flag = 0;
 	while (1) {
 
@@ -450,16 +451,17 @@ void motion_control_thread() {
 				}
 				Recv_CondVar.wait();
 
+
 				distribute = stoi(Mode[Mode_Select]);
 				Oled_State = distribute / 100;
 				Fin_State = (distribute % 100)/10;
 				Tail_State = distribute % 10;
 				printf("Motion : %d %d %d \n", Oled_State, Fin_State, Tail_State);
 
-	
 				Mode_select(Oled_State, Fin_State, Tail_State, 2);
 				vrep_parameter();
 				
+
 				Send_CondVar.notifyOne();
 				if (simulation_run == true) {	
 					

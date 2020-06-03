@@ -15,7 +15,7 @@
 #include <condition_variable>
 #include "typeinfo"
 
-#define BUFSIZE 3072
+#define BUFSIZE 1024
 
 using namespace std;
 
@@ -58,12 +58,13 @@ void tran_socket(SOCKET sock);
 
 /*///////////////////////////////////////////////////////////////////////////*/
 void recv_socket(SOCKET sock) {
-	char buff[1024];
+	char buff[BUFSIZE];
 	int ibuff;
 	string sbuff;
 	string str_data[3];
 	int str_cnt = 0;
-	char* tok;
+	//int distribute = 0;
+
 	while (1) {
 		ZeroMemory(buff, 1024);
 		int bytesReceived = recv(sock, buff, 1024, 0);
@@ -72,7 +73,10 @@ void recv_socket(SOCKET sock) {
 			//ibuff = atoi(Mode[ibuff].c_str());
 			Mode_Select = ibuff / 10;
 			Stt_Data = ibuff % 10;
-
+			//distribute = stoi(Mode[Mode_Select]);
+			//Oled_State = distribute / 100;
+			//Fin_State = (distribute % 100) / 10;
+			//Tail_State = distribute % 10;
 			printf("\nrecv: %s\n", &buff);
 		}
 		
@@ -81,7 +85,7 @@ void recv_socket(SOCKET sock) {
 }
 void tran_socket(SOCKET sock) {
 	/* Transmit Variable */
-	char cMsg[BUFSIZE] = "";
+	char cMsg[BUFSIZE] = { 0, };
 	string packet;
 	int i = 0;
 	bool* bp;
@@ -97,32 +101,44 @@ void tran_socket(SOCKET sock) {
 		bp = GUI::get_flag();
 		for (int i = 0; i < 4; i++) {
 			if (bp[2] == 1)
-				Reward = 100;
+				Reward = 10;
 			if (bp[3] == 1)
-				Reward = -30;
+				Reward = -10;
 		}
-		//GUI::getPara();
-		packet =
-			Data_Packet[0][Id] + ","
-			+ to_string(Hungry_Para) + ","
-			+ to_string(Tired_Para) + ","
-			+ Data_Packet[3][Touch_Sensor] + ","
-			+ Data_Packet[4][Force_Sensor] + ","
-			+ Data_Packet[5][Lift_Sensor] + ","
-			+ Data_Packet[6][Oled_State] + ","
-			+ Data_Packet[7][Fin_State] + ","
-			+ Data_Packet[8][Tail_State] + ","
-			+ to_string(Oled_State)
-			+ to_string(Fin_State)
-			+ to_string(Tail_State) + ","
-			+ to_string(Face_Detect) + ","
-			+ to_string(Reward);
+
+		packet.append(Data_Packet[0][Id]);
+		packet.append(",");
+		packet.append(to_string(Hungry_Para));
+		packet.append(",");
+		packet.append(to_string(Tired_Para));
+		packet.append(",");
+		packet.append(Data_Packet[3][Touch_Sensor]);
+		packet.append(",");
+		packet.append(Data_Packet[4][Force_Sensor]);
+		packet.append(",");
+		packet.append(Data_Packet[5][Lift_Sensor]);
+		packet.append(",");
+		packet.append(Data_Packet[6][Oled_State]);
+		packet.append(",");
+		packet.append(Data_Packet[7][Fin_State]);
+		packet.append(",");
+		packet.append(Data_Packet[8][Tail_State]);
+		packet.append(",");
+		packet.append(to_string(Oled_State));
+		packet.append(to_string(Fin_State));
+		packet.append(to_string(Tail_State));
+		packet.append(",");
+		packet.append(to_string(Face_Detect));
+		packet.append(",");
+		packet.append(to_string(Reward));
+
 		strcpy(cMsg, packet.c_str()); //packet : string -> char[]
 		packet.clear();
 		Send_Init_Variable();
+
 		/*Packet Àü¼Û*/
+		printf("\nsend :%d %d %d\n", Oled_State, Fin_State, Tail_State);
 		send(sock, cMsg, strlen(cMsg), 0);
-		printf("Send_Packet: %s\n", cMsg);
 		printf("force: %f\n\n", force_cur);
 
 		Sleep(10);
