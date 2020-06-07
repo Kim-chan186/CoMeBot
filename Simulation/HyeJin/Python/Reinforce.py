@@ -27,7 +27,7 @@ condition_recv = threading.Condition()
 condition_send = threading.Condition()
 
 Actions = 20  # action 가짓수
-Spaces = [5, 5, 3, 2, 2, 4, 3, 3, 2, 10]  # state종류와 각 종류별 가짓수
+Spaces = [5, 5, 5, 2, 2, 6, 5, 5, 2, 8]  # state종류와 각 종류별 가짓수
 
 Hungry_Para = 0
 Tired_Para = 0
@@ -111,8 +111,8 @@ class ComebotEnv(gym.Env):  # gym.Env 상속
             pass
         else:
             print("packet: ", recv_packet)
-            self.Hungry_Para = int(recv_packet[1])
-            self.Tired_Para = int(recv_packet[2])
+            self.Hungry_Para = int(int(recv_packet[1])/20)
+            self.Tired_Para = int(int(recv_packet[2])/20)
             self.Touch_Sensor = int(recv_packet[3][2])
             self.Force_Sensor = int(recv_packet[4][2])
             self.Lift_Sensor = int(recv_packet[5][2])
@@ -285,11 +285,11 @@ def ReinForceThread(cv_send, cv_recv):
 
         model = build_model(state_space, num_actions)
 
-        memory = SequentialMemory(limit=5000, window_length=1)
+        memory = SequentialMemory(limit=500, window_length=1)
 
         policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps',
                                       value_max=1., value_min=.25, value_test=.1,
-                                      nb_steps=5000)
+                                      nb_steps=500)
 
         dqn = DQNAgent(model=model, nb_actions=num_actions,
                        memory=memory, nb_steps_warmup=100,
@@ -300,7 +300,7 @@ def ReinForceThread(cv_send, cv_recv):
         # lr 0.01-->0.1로 수정 학습step수가 감소함에 따라
         callbacks = build_callbacks('comebot')
         # 학습step수 1000단위로 학습되가는지 확인해보고 늘리기
-        hist = dqn.fit(env, nb_steps=5000,
+        hist = dqn.fit(env, nb_steps=500,
                        visualize=False,
                        verbose=2,
                        callbacks=callbacks)
@@ -309,7 +309,7 @@ def ReinForceThread(cv_send, cv_recv):
 
         print(hist.history)
 
-        #dqn.test(env, nb_episodes=5, visualize=False)
+       # dqn.test(env, nb_episodes=5, visualize=False)
 
         # print(hist.history['metrics'])
         import matplotlib.pyplot as plt
