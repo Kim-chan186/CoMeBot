@@ -15,7 +15,7 @@
 #include <condition_variable>
 #include "typeinfo"
 
-#define BUFSIZE 1024
+#define BUFSIZE 2048
 
 using namespace std;
 
@@ -96,8 +96,12 @@ void tran_socket(SOCKET sock) {
 	send(sock, cMsg, strlen(cMsg), 0); // id setting in Server
 
 	while (1) {
+		
 		Send_CondVar.wait();
-
+		if ((Lift_Sensor != 0) & (Lift_Sensor != 1))
+		{
+			Lift_Sensor = OFF;
+		}
 		bp = GUI::get_flag();
 		for (int i = 0; i < 4; i++) {
 			if (bp[2] == 1)
