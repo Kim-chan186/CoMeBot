@@ -3,6 +3,8 @@
 #ifndef VREP_GUI_H
 #define VREP_GUI_H
 
+
+#include "Debug.h"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -20,25 +22,29 @@ namespace GUI {
 
 	Mat *icon = &Micon;
 
-	//					"기본", "행복", "신남", "슬픔", "화남", "지루"
-	string O_LED[6] = { "Basic", "Happy", "Excite", "Sorrow", "Angry", "Bore" }; //
 
-	string TAIL[4] = { "Fast", "Slow", "Up", "Down" }; //
 
-	//				  "앞뒤", "날개짓", "내림", "뒤로"
-	string FIN[4] = { "wave", "Wings", "Down", "Back" }; //
+
+
 
 	string HUNGER[5] = {"배부름", "포만감", "보통", "배고픔", "굶주림"};
 
 	string FATIGUE[5] = {"활발", "생기", "보통", "힘듬", "아픔"};
 
-	string TOUCH[3] = {"없음", "머리", "꼬리"};
+	string TOUCH[4] = {"없음", "머리", "날개", "꼬리"};
 
 	string MOVENT[2] = {"없음", "충돌"};
 
-	string FACE[2] = {"없음", "보임"};
 
-	string txt[2] = { "없음", "NULL" };
+	////////////
+	string FACE[7] = { "Act", "Cute", "Nohop", "Sad", "Bored", "Sorry", "Bad" };
+	//				  "앞뒤", "날개짓", "내림", "뒤로"
+	string WING[4] = { "wave", "Wings", "Down", "Back" };
+
+	string TAIL[4] = { "Fast", "Slow", "Up", "Down" };
+
+	string txt[2] = { "NULL", "non" };
+	////////////
 
 	string str_frame[8] = {
 		"Tuch", "cam", //touch
@@ -51,7 +57,7 @@ namespace GUI {
 	};
 
 	// "표정", "Wing", "Tail", "Text"
-	string* str_event[4] = { O_LED, TAIL, FIN, txt };
+	string* str_event[4] = { FACE, TAIL, WING, txt };
 
 	//string* str_state[9] = { O_LED, TAIL, FIN, HUNGER, FATIGUE, TOUCH, MOVENT };
 
@@ -130,8 +136,11 @@ namespace GUI {
 
 	Rect ricon[6] = { ping, human, bab, zzZ, good, bad };
 
-
-	int act[4] = {};
+	// 머리 날개 꼬리
+	Rect rtouch[3] = { Rect(325, 325, 50, 50), Rect(150, 410, 100, 30), Rect(110, 300, 70, 45) };
+	
+	// 이전 state 저장
+	int act[4] = { -1, -1, -1, -1 };
 
 	// 표정, Wing, Tail, Txt
 	void action(int a[4]) {
@@ -214,23 +223,23 @@ namespace GUI {
 	}
 
 
-
+	// // touch(x), cam(x), 밥, 잠, good, bad, touch, 마우스 눌림 판단
 	bool mflag[6] = { 0, 0, 0, 0, 0, 0 };
 
-	//				  X, X, O, O, O, O
-	bool flag_buf[4] = { 0, 0, 0, 0 }; // 통신용
+	//			  		  
+	int flag_buf[5] = { 0, 0, 0, 0, 0 }; // 통신용
 
 
 	// 밥, 잠, good, bad 순
-	bool* get_flag() {
-		bool _flag_buf[4] = {};
+	int* get_flag() {
+		int _flag_buf[5] = {};
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 5; i++) {
 			_flag_buf[i] = flag_buf[i];
 			flag_buf[i] = 0;
 		}
 		
-		rectbar(0, 0, true);
+		rectbar(0, 0, true);	//감소
 
 		return _flag_buf;
 	}
@@ -255,9 +264,10 @@ namespace GUI {
 
 	void GUI_Event(int event, int x, int y, int flags, void* userdata) {
 
-		//push
+
 		if (event == EVENT_LBUTTONDOWN)
-		{
+		{		
+			// push
 			for (int i = 2; i < 6; i++) {
 
 				if (Rect(fpoint[i] - Point(40, 40), Size(80, 80)).contains(Point(x - 600, y))) {
@@ -271,8 +281,7 @@ namespace GUI {
 			}
 
 
-
-			//togle
+			// togle
 			for (int i = 0; i < 2; i++) {
 
 				if (Rect(fpoint[i] - Point(40, 40), Size(80, 80)).contains(Point(x - 600, y))) {
@@ -280,6 +289,18 @@ namespace GUI {
 					mflag[i] = !mflag[i];
 
 					box(i, mflag[i]);
+
+					return;
+				}
+			}
+
+			// touch
+			for (int i = 0; i < 3; i++) {
+
+				if (rtouch[i].contains(Point(x, y))) {
+
+					flag_buf[4] = i+1;
+					cout << TOUCH[i+1] << endl;
 
 					return;
 				}
@@ -306,7 +327,6 @@ namespace GUI {
 
 					return;
 				}
-				
 			}
 		}
 
@@ -325,6 +345,9 @@ namespace GUI {
 
 		setMouseCallback("GUI", GUI_Event, nullptr);
 
+		if (Micon.empty()) {
+			printf(" ** Vrep_GUI.h error : icon img의 경로가 잘못 되었습니다.\n");
+		}
 
 
 		if (img_vrep == nullptr) {
@@ -370,22 +393,6 @@ namespace GUI {
 
 
 	} // init() end
-
-	
-
-	void show() {
-		Mat show;
-
-		resize(*img_vrep, *img_vrep, Size(600, 600));
-
-
-		vconcat(*img_vrep, *img_event, show);
-
-		hconcat(show, *frame, show);
-		
-		imshow("GUI", show); 
-	}
-
 
 
 
@@ -445,6 +452,28 @@ namespace GUI {
 
 		return key;
 	}//end waitKeySuper
+
+
+
+	void show(int ms=1) {
+		Mat show;
+
+		resize(*img_vrep, *img_vrep, Size(600, 600));
+		
+		/*rectangle(*img_vrep, Rect(110, 300, 70, 45), Scalar::all(0), 2);
+		rectangle(*img_vrep, Rect(325, 325, 50, 50), Scalar::all(0), 2);
+		rectangle(*img_vrep, Rect(150, 410, 100, 30), Scalar::all(0), 2);*/
+
+		vconcat(*img_vrep, *img_event, show);
+
+		hconcat(show, *frame, show);
+
+
+		imshow("GUI", show);
+
+		GUI::waitKeySuper(ms);
+	}
+
 }
 
 
