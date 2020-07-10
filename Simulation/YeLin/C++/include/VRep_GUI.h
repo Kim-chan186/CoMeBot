@@ -19,14 +19,14 @@ namespace GUI {
 	/* Str Event Control Variables */
 	//					"기본", "행복", "슬픔", "화남", "지루" , "신남"
 	string O_LED[6] = { "Basic", "Happy", "Sad", "Angry", "Bore", "Excite" }; //
-	string bodyPos[4] = { "Fast", "Slow", "Up", "Down" }; //
+	string bodyPos[5] = { "Shake", "Wing", "Down", "Slow", "None" }; //
 	//				  "앞뒤", "날개짓", "내림", "뒤로"
-	string T_AIL[4] = { "wave", "Wings", "Down", "Back" }; //
-	string txt[7] = { "  ", "Act", "NoHop", "Sad", "Bored", "Sorry", "Bad" };
+	string T_AIL[5] = { "Fast", "Slow", "Down", "Up", "None" }; //
+	string txt[8] = { "  ", "Thank", "praise", "dissa", "sad", "bored", "Sorry", "Bad" };
 
 	string HUNGER[5] = { "배부름", "포만감", "보통", "배고픔", "굶주림" };
 	string FATIGUE[5] = { "활발", "생기", "보통", "힘듬", "아픔" };
-	string TOUCH[3] = { "없음", "머리", "꼬리" };
+	string TOUCH[4] = { "없음", "머리", "지느러미","꼬리"};
 	string MOVENT[2] = { "없음", "충돌" };
 	string FACE[2] = { "없음", "보임" };
 
@@ -109,27 +109,31 @@ namespace GUI {
 
 	Rect ricon[6] = { ping, human, bab, zzZ, good, bad };
 
-
+	// 머리 날개 꼬리
+	Rect rtouch[3] = { Rect(325, 325, 65, 65), Rect(108, 383, 100, 50), Rect(100, 250, 80, 50) };
 
 
 	/*///////////////////////////////////////////////////////////////////////////*/
-	int act[4] = {};
+	int act[4] = {-1,-1,-1,-1};
 
 	// 표정, Wing, Tail, Txt 상태 Rectangle 표시
 	void action(int a[4]) {
 		for (int i = 0; i < 4; i++) {
 			if (act[i] != a[i]) {
-				act[i] = a[i];
-				// Rectangle 그리기
-				rectangle(*img_event, epoint[i]-Point(50, 40), epoint[i] + Point(50, 40), Scalar(255, 255, 255), -1);
-
-				putText(*img_event, str_event[i][act[i]], epoint[i] + eshift[i],
-					FONT_HERSHEY_COMPLEX,
-					0.7,
-					Scalar(0, 0, 0),
-					2, //굵기
-					8
-				);
+					act[i] = a[i];
+					//string text = str_event[i][act[i];
+					// Rectangle 그리기
+					rectangle(*img_event, epoint[i]-Point(50, 40), epoint[i] + Point(50, 40), Scalar(255, 255, 255), -1);
+					//putText(*img_event, str_event[i][i], Point(50, 50), FONT_HERSHEY_COMPLEX, 1, Scalar(0, 0, 0));
+					
+					putText(*img_event, str_event[i][act[i]], epoint[i] + eshift[i],
+						FONT_HERSHEY_COMPLEX,
+						0.7,
+						Scalar(0, 0, 0),
+						2, //굵기
+						8
+					);
+					
 			}
 		}
 	}
@@ -210,14 +214,12 @@ namespace GUI {
 	bool mflag[6] = { 0, 0, 0, 0, 0, 0 };
 
 	//				  X, X, O, O, O, O
-	bool flag_buf[4] = { 0, 0, 0, 0 }; // 통신용
-	bool _flag_buf[4] = { 0, 0, 0, 0 };
-	bool click_flag[4] = {};
+	int flag_buf[5] = { 0, 0, 0, 0, 0 }; // 통신용
 
 	// 밥, 잠, good, bad 순
-	bool* get_flag() {
-
-		for (int i = 0; i < 4; i++) {
+	int* get_flag() {
+		int _flag_buf[5] = {};
+		for (int i = 0; i < 5; i++) {
 			_flag_buf[i] = flag_buf[i];
 			flag_buf[i] = 0;
 		}
@@ -226,24 +228,6 @@ namespace GUI {
 		return _flag_buf;
 	}
 
-	//한 step동안 발생한 클릭이벤트 넘겨주는
-	bool* get_click() {	
-		bool _click_flag[4] = {};
-		for (int i = 0; i < 4; i++)
-		{
-			_click_flag[i] = click_flag[i];
-		}
-		return _click_flag;
-	}
-
-	//click_flag초기화
-	void reset_click() { 
-		for (int i = 0; i < 4; i++)
-		{
-			click_flag[i] = false;
-		}
-		//printf("---reset_flag---\n");
-	}
 
 	// NULL  CAM
 	void cam(bool b0, bool b1, bool flag = 1) {
@@ -281,6 +265,17 @@ namespace GUI {
 				}
 			}
 			//cout << "좌표 = (" << x << ", " << y << ")" << endl;
+			// touch
+			for (int i = 0; i < 3; i++) {
+
+				if (rtouch[i].contains(Point(x, y))) {
+
+					flag_buf[4] = i + 1;
+					cout << TOUCH[i + 1] << endl;
+
+					return;
+				}
+			}
 		}
 
 		else if (event == EVENT_LBUTTONUP) {
@@ -314,39 +309,7 @@ namespace GUI {
 		}
 	}
 
-	void getPara()
-	{	//GUI에서 클릭이벤트 받아오는 함수, 한 step동안 입력된 클릭이벤트들 받아옴
-		bool data[4] = {};
-		bool flag[4] = {};
-		for (int i = 0; i < 4; i++) {
-			flag[i] = get_click()[i];
-		}
-
-		//printf(flag[0] ? "feed:true\t" : "feed:false\t");
-		//클릭이벤트에 따른 parameter업데이트
-		if (flag[0]) {
-			if (Hungry_Para <= 70)		Hungry_Para += 30;
-			else						Hungry_Para = 100;
-		}
-
-		//printf(flag[1] ? "sleep:true\t" : "sleep:false\t");
-		if (flag[1]) {
-			if (Tired_Para <= 70)		Tired_Para += 30;
-			else						Tired_Para = 100;
-		}
-		//printf(flag[2] ? "good:true\t" : "good:false\t");
-		//printf(flag[3] ? "bad:true\t" : "bad:false\n");
-
-		if (flag[2] | flag[3]) {
-			if (flag[2])				Reward = 100;
-			else						Reward = -30;
-		}
-		else
-			Reward = 0;
-
-		reset_click();	//click event 초기화
-	}
-
+	
 
 	void init() {
 		namedWindow("GUI");
@@ -394,13 +357,14 @@ namespace GUI {
 		simxCallScriptFunction(clientID, "camera", sim_scripttype_childscript, "gotoposition", 1, &come_objHandle[6], 3, wantpos, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, simx_opmode_oneshot_wait);
 	}
 
-	void show() {
-		Mat show;
-		resize(*img_vrep, *img_vrep, Size(600, 600));
-		vconcat(*img_vrep, *img_event, show);
-		hconcat(show, *frame, show);		
-		imshow("GUI", show); 
-	}
+	//void show() {
+	//	Mat show;
+	//	resize(*img_vrep, *img_vrep, Size(600, 600));
+	//	vconcat(*img_vrep, *img_event, show);
+	//	hconcat(show, *frame, show);		
+	//	imshow("GUI", show); 
+	//}
+
 
 	int waitKeySuper(int num = 1) {
 		int key = waitKeyEx(num);
@@ -423,8 +387,6 @@ namespace GUI {
 			cout << "\n  ** ESC로 프로그램을 종료합니다. \n\n";
 			quick_exit(EXIT_SUCCESS);
 		}
-
-
 		//방향키 위     2490368
 		else if (key == 2490368) {
 		}
@@ -437,27 +399,49 @@ namespace GUI {
 		//방향키 왼쪽   2424832
 		else if (key == 2424832) {
 		}
-		else if (key == 49) {
-			goingposition();
-			Lift_Sensor = ON;
+		else if (key == 49) {//1
+			Stt_Data = 1;
 		}
-		else if (key == 50) {
-			Touch_Sensor = HEAD;
+		else if (key == 50) {//2
+			Stt_Data = 2;
 		}
-		else if (key == 51) {
-			Touch_Sensor = BODY;
+		else if (key == 51) {//3
+			Stt_Data = 3;
 		}
-		else if (key == 52) {
-			Touch_Sensor = FIN;
+		else if (key == 52) {//4
+			Stt_Data = 4;
 		}
-		else if (key == 53) {
-			Touch_Sensor = TAIL;
+		else if (key == 53) {//5
+			Stt_Data = 5;
+		}
+		else if (key == 54) {//6
+			Stt_Data = 6;
+			
+		}
+		else if (key == 55) {//7
+			Stt_Data = 7;
+			
+		}
+		else if (key == 56) {//8
+							 //goingposition();
+			windo_change = ON;
+		}
+		else if (key == 57) {//9
+							 //goingposition();
+			windo_change = OFF;
 		}
 		//F1
 		else if (key == 7340032) {
+			Force_Sensor = ON;
+			flag_FORCE = 1;
+			printf("%d\n", Force_Sensor);
 		}
 		//F2
 		else if (key == 7405568) {
+			goingposition();
+			Lift_Sensor = ON;
+			flag_Lift = 1;
+			printf("%d\n", Lift_Sensor);
 		}
 		//echo
 		else if (key > 255) {
@@ -468,6 +452,25 @@ namespace GUI {
 
 		return key;
 	}//end waitKeySuper
+
+	void show(int ms = 1) {
+		Mat show;
+
+		resize(*img_vrep, *img_vrep, Size(600, 600));
+
+		/*rectangle(*img_vrep, Rect(110, 300, 70, 45), Scalar::all(0), 2);
+		rectangle(*img_vrep, Rect(325, 325, 50, 50), Scalar::all(0), 2);
+		rectangle(*img_vrep, Rect(150, 410, 100, 30), Scalar::all(0), 2);*/
+
+		vconcat(*img_vrep, *img_event, show);
+
+		hconcat(show, *frame, show);
+
+
+		imshow("GUI", show);
+
+		GUI::waitKeySuper(ms);
+	}
 }
 
 #endif /// !VREP_GUI_H

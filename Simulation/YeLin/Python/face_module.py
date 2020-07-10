@@ -3,7 +3,7 @@ import cv2
 font = cv2.FONT_ITALIC
 
 try:
-    cam = cv2.VideoCapture(1)
+    cam = cv2.VideoCapture(0)
     cam.set(cv2.CAP_PROP_CONVERT_RGB, 1)
     face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")  # 얼굴찾기 haar 파일
 
@@ -30,9 +30,9 @@ def faceDetect():
 
         # 480 * 640
         if x < 80 or x > 400 or y < 40 or y > 600:
-            flag -= 5
+            flag -= 20
         else:
-            flag -= 1
+            flag -= 5
 
         if flag > 0:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)  # 사각형 범위

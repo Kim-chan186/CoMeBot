@@ -15,7 +15,7 @@
 #include <condition_variable>
 #include "typeinfo"
 
-#define BUFSIZE 1024
+#define BUFSIZE 2048
 
 using namespace std;
 
@@ -88,7 +88,7 @@ void tran_socket(SOCKET sock) {
 	char cMsg[BUFSIZE] = { 0, };
 	string packet;
 	int i = 0;
-	bool* bp;
+	int* bp;
 
 	/* ID Change */
 	scanf_s("%d", &Id); //0 cpp 1 rei 2 stt
@@ -96,16 +96,31 @@ void tran_socket(SOCKET sock) {
 	send(sock, cMsg, strlen(cMsg), 0); // id setting in Server
 
 	while (1) {
+		
 		Send_CondVar.wait();
-
+		if ((Lift_Sensor != 0) & (Lift_Sensor != 1))
+		{
+			Lift_Sensor = OFF;
+		}
 		bp = GUI::get_flag();
 		for (int i = 0; i < 4; i++) {
 			if (bp[2] == 1)
-				Reward = 10;
+				Reward = 30;
 			if (bp[3] == 1)
 				Reward = -10;
 		}
-
+		if (bp[4] == 1)
+			Touch_Sensor = 1;
+		else if (bp[4] == 2)
+			Touch_Sensor = 2;
+		else if (bp[4] == 3)
+			Touch_Sensor = 3;
+		if (flag_FORCE == 1)
+			Force_Sensor = 1;
+		if (flag_Lift == 1)
+			Lift_Sensor = 1;
+		//windo_change = OFF;
+			
 		packet.append(Data_Packet[0][Id]);
 		packet.append(",");
 		packet.append(to_string(Hungry_Para));
@@ -131,15 +146,19 @@ void tran_socket(SOCKET sock) {
 		packet.append(to_string(Face_Detect));
 		packet.append(",");
 		packet.append(to_string(Reward));
+		packet.append(",");
+		packet.append(to_string(Stt_Data));
 
 		strcpy(cMsg, packet.c_str()); //packet : string -> char[]
 		packet.clear();
+		flag_FORCE = 0;
+		flag_Lift = 0;
 		Send_Init_Variable();
 
 		/*Packet Àü¼Û*/
 		printf("\nsend :%d %d %d\n", Oled_State, Fin_State, Tail_State);
 		send(sock, cMsg, strlen(cMsg), 0);
-		printf("force: %f\n\n", force_cur);
+		//printf("force: %f\n\n", force_cur);
 
 		Sleep(10);
 	}

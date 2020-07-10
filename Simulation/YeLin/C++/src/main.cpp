@@ -297,14 +297,14 @@ void Mode_select(int Eye, int Wing, int Tail, int count)
 
 	for (int i = 0; i < count; i++)
 	{
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < 4; j++) {
 			Fin_Action_comebot(Wing);
 			Tail_Action_comebot(Tail);
 			simxSynchronousTrigger(clientID);
 		}
 		mode_flag = 1;
 
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < 4; j++) {
 			Fin_Action_comebot(Wing);
 			Tail_Action_comebot(Tail);
 			simxSynchronousTrigger(clientID);
@@ -312,7 +312,7 @@ void Mode_select(int Eye, int Wing, int Tail, int count)
 		mode_flag = 0;
 	}
 
-	for (int j = 0; j < 3; j++) {
+	for (int j = 0; j < 4; j++) {
 		init_Joint_Angle_comebot();
 		simxSynchronousTrigger(clientID);
 	}
@@ -323,32 +323,42 @@ void Mode_select(int Eye, int Wing, int Tail, int count)
 /*////////////////////////////////[START Thread]//////////////////////////////// */
 void getimage()
 {
+	int retval;
+	Mat img2 = Mat(Size(600, 600), CV_8UC3, Scalar::all(0));
 	while (1) {
-		Mat img2 = Mat(Size(600, 600), CV_8UC3, Scalar::all(0));
+		
 		GUI::img_vrep = &img2;
 		GUI::init();
 		for (int i = 0; GUI::waitKeySuper(1); i++) {
-			int retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
-			if (retval != simx_return_ok) {
-				//printf("\n ** Vrep 연결 문제 !! \n ");
-				continue;
-			}
-			// fps, 언제 끊기는지 !!
 
 			Mat img(resolution[0], resolution[1], CV_8UC3, comeimage);
-			if (img.empty()) {
-				printf("\n ** Vrep img is empty !! \n ");
-				continue;
+			if (windo_change == OFF) {
+				retval = simxGetVisionSensorImage(clientID, image_Handle, resolution, &comeimage, 0, simx_opmode_streaming);
+
+				if (retval != simx_return_ok) {
+					//printf("\n ** Vrep 연결 문제 !! \n ");
+					continue;
+				}
+				if (img.empty() | (resolution[0] < 0) | (resolution[1] < 0) | resolution[0] > 10000 | resolution[1] > 10000) {
+					//printf("\n ** Vrep img is empty !! \n ");
+					continue;
+				}
 			}
+			else {
+				retval = simxGetVisionSensorImage(clientID, whole_camera, resolution, &comeimage, 0, simx_opmode_streaming);
+
+				if (retval != simx_return_ok) {
+					//printf("\n ** Vrep 연결 문제 !! \n ");
+					continue;
+				}
+				if (img.empty() | (resolution[0] < 0) | (resolution[1] < 0) | resolution[0] > 10000 | resolution[1] > 10000) {
+					//printf("\n ** Vrep img is empty !! \n ");
+					continue;
+				}
+			}
+
 			cvtColor(img, img2, cv::COLOR_RGB2BGR);
 			GUI::GazeSync(Hungry_Para, Tired_Para);
-
-			// 밥, 잠, good, bad 순으로 보내는 부분
-			//for (int i = 0; i < 4; i++)
-			//	cout << bp[i] << " ";
-			//printf("\n");
-
-
 			//vrep_parameter();
 
 			// 받는 부분
@@ -365,14 +375,14 @@ void Parameter_Thread() {
 	while (1) {
 		if (Hungry_Para > 0)
 			Hungry_Para--;
-		else
-			Hungry_Para = 100;
+		/*else
+			Hungry_Para = 100;*/
 
 		if (Tired_Para > 0)
 			Tired_Para--;
-		else
+		/*else
 			Tired_Para = 100;
-	
+	*/
 		Sleep(5000);
 	}
 }
@@ -396,6 +406,7 @@ void motion_control_thread() {
 	simxGetObjectHandle(clientID, "body",			   &come_objHandle[6], simx_opmode_oneshot_wait);
 	/* Sensor Init */
 	simxGetObjectHandle(clientID, "camera",			   &image_Handle, simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "whole_camera", &whole_camera, simx_opmode_oneshot_wait);
 	simxGetObjectHandle(clientID, "shock",			   &force_Handle, simx_opmode_oneshot_wait);
 	/* Eye Setting */
 	simxGetObjectHandle(clientID, "normal_left",	   &L_eye_objHandle[NORM], simx_opmode_oneshot_wait);
@@ -478,6 +489,7 @@ void motion_control_thread() {
 
 int main(int argc, const char* argv[])
 {
+
 	/* VRep & TCP Init */
 	vreptcp_init();
 

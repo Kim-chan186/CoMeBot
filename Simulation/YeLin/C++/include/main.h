@@ -74,6 +74,7 @@ simxFloat		 L_Wing_Angle[3] = { dou_angle(69.186),dou_angle(-28.243),dou_angle(7
 simxFloat		 R_Wing_Angle[3] = { dou_angle(69.186),dou_angle(28.243),dou_angle(-78.224) };
 
 simxInt			    image_Handle;
+simxInt				whole_camera;
 simxInt			    force_Handle;
 double			   initialPos[6] = { dou_angle(220.),dou_angle(120.), dou_angle(40.), dou_angle(-40.),
 									(40 * M_PI / 180), (40 * M_PI / 180) };
